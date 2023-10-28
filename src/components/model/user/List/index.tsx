@@ -1,4 +1,6 @@
 import React from "react";
-import { UserList } from "./List";
+import { List as ListImpl } from "./List";
 
-export default UserList;
+export const List = () => {
+  return <ListImpl />;
+};

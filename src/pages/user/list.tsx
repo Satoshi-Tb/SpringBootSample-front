@@ -1,8 +1,8 @@
+import { ListPage } from "@/components/page/user/ListPage";
 import React from "react";
-import UserList from "@/components/model/user/List";
 
 const list = () => {
-  return <UserList />;
+  return <ListPage />;
 };
 
 export default list;
