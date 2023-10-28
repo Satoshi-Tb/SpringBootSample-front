@@ -21,6 +21,8 @@ type UserListType = {};
 export const List = () => {
   const [condition, setCondition] = useState("");
   const [rowData, setRowData] = useState<any[]>([]);
+  const [userId, setUseId] = useState("");
+  const [userName, setUseName] = useState("");
 
   const fetcher = (input: RequestInfo | URL, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
@@ -30,6 +32,22 @@ export const List = () => {
     fetcher
   );
   console.log("fetch data", data);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const conditions: { key: string; value: string }[] = [];
+    if (userId) conditions.push({ key: "userId", value: userId });
+    if (userName) conditions.push({ key: "userName", value: userName });
+
+    const cond =
+      conditions.length === 0
+        ? ""
+        : "?" + conditions.map((item) => `${item.key}=${item.value}`).join("&");
+
+    console.log("submit.condition", cond);
+    setCondition(cond);
+  };
 
   // グリッドデータ
   const sampleData = [
@@ -68,7 +86,6 @@ export const List = () => {
       item.id = i;
       return item;
     });
-    console.log("mod data", modData);
     setRowData(modData);
   }, [data]);
 
@@ -87,10 +104,27 @@ export const List = () => {
             "& .MuiTextField-root": { m: 1, width: "25ch" },
           }}
           autoComplete="off"
+          onSubmit={handleSubmit}
         >
-          <TextField id="user-id" label="ユーザーID" defaultValue="" />
-          <TextField id="user-name" label="ユーザー名" defaultValue="" />
-          <Button variant="contained">検索</Button>
+          <TextField
+            id="user-id"
+            label="ユーザーID"
+            value={userId}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setUseId(e.target.value)
+            }
+          />
+          <TextField
+            id="user-name"
+            label="ユーザー名"
+            value={userName}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setUseName(e.target.value)
+            }
+          />
+          <Button type="submit" variant="contained">
+            検索
+          </Button>
         </Box>
         <Divider />
         <DataGrid columns={columns} rows={rowData} disableRowSelectionOnClick />
