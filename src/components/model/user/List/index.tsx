@@ -1,4 +1,4 @@
 import React from "react";
-import { List } from "./List";
+import { UserList } from "./List";
 
-export default List;
+export default UserList;

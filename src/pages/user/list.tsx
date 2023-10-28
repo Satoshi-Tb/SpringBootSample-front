@@ -1,8 +1,8 @@
 import React from "react";
-import List from "@/components/model/user/List";
+import UserList from "@/components/model/user/List";
 
 const list = () => {
-  return <List />;
+  return <UserList />;
 };
 
 export default list;
