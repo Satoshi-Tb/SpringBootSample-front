@@ -16,22 +16,44 @@ type BasicResponseType = {
   message: string;
 };
 
-type UserListType = {};
+type UserListType = {
+  id: string | number;
+  userId: string;
+  password?: string;
+  userName?: string;
+  birthday?: string;
+  age?: number;
+  gender?: number;
+  departmentId?: number;
+  department?: string;
+  role?: string;
+  salaryList?: {
+    userId: string;
+    yearMonth: string;
+    salary: number;
+  };
+};
+
+type ResponseType = { data: UserListType[] } & BasicResponseType;
 
 export const List = () => {
   const [condition, setCondition] = useState("");
-  const [rowData, setRowData] = useState<any[]>([]);
+  const [rowData, setRowData] = useState<UserListType[]>([]);
   const [userId, setUseId] = useState("");
   const [userName, setUseName] = useState("");
 
   const fetcher = (input: RequestInfo | URL, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
 
-  const { data, error, isLoading } = useSWR(
+  const {
+    data: userListData,
+    error,
+    isLoading,
+  } = useSWR<ResponseType>(
     `http://localhost:8080/api/user/get/list${condition}`,
     fetcher
   );
-  console.log("fetch data", data);
+  console.log("fetch data", userListData);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,7 +71,7 @@ export const List = () => {
     setCondition(cond);
   };
 
-  // グリッドデータ
+  // サンプルグリッドデータ
   const sampleData = [
     {
       id: 1,
@@ -80,14 +102,13 @@ export const List = () => {
 
   //TODO 暫定処理 ID列の修正
   useEffect(() => {
-    if (!data || !data.userList) return;
-    const prevData = data.userList as any[];
-    const modData = prevData.map((item, i) => {
-      item.id = i;
+    if (!userListData || !userListData.data) return;
+    const modData = userListData.data.map((item, i) => {
+      item.id = i + 1;
       return item;
     });
     setRowData(modData);
-  }, [data]);
+  }, [userListData]);
 
   if (error) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
