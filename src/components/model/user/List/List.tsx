@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
 import useSWR from "swr";
 
 type BasicResponseType = {
@@ -36,12 +37,16 @@ type UserListType = {
 
 type ResponseType = { data: UserListType[] } & BasicResponseType;
 
+type FormData = {
+  userId?: string;
+  userName?: string;
+};
+
 export const List = () => {
   const [condition, setCondition] = useState("");
   const [rowData, setRowData] = useState<UserListType[]>([]);
-  const [userId, setUseId] = useState("");
-  const [userName, setUseName] = useState("");
 
+  // データ取得処理
   const fetcher = (input: RequestInfo | URL, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
 
@@ -55,12 +60,14 @@ export const List = () => {
   );
   console.log("fetch data", userListData);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // 検索ボタン押下アクション
+  const onSubmit = (form: FormData) => {
+    console.log(form);
 
     const conditions: { key: string; value: string }[] = [];
-    if (userId) conditions.push({ key: "userId", value: userId });
-    if (userName) conditions.push({ key: "userName", value: userName });
+    if (form.userId) conditions.push({ key: "userId", value: form.userId });
+    if (form.userName)
+      conditions.push({ key: "userName", value: form.userName });
 
     const cond =
       conditions.length === 0
@@ -100,6 +107,9 @@ export const List = () => {
     { field: "gender", headerName: "性", width: 100 },
   ];
 
+  /** フォーム定義 */
+  const { handleSubmit, control } = useForm<FormData>();
+
   //TODO 暫定処理 ID列の修正
   useEffect(() => {
     if (!userListData || !userListData.data) return;
@@ -125,23 +135,19 @@ export const List = () => {
             "& .MuiTextField-root": { m: 1, width: "25ch" },
           }}
           autoComplete="off"
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
         >
-          <TextField
-            id="user-id"
-            label="ユーザーID"
-            value={userId}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setUseId(e.target.value)
-            }
+          <Controller
+            name="userId"
+            control={control}
+            defaultValue=""
+            render={({ field }) => <TextField label="ユーザーID" {...field} />}
           />
-          <TextField
-            id="user-name"
-            label="ユーザー名"
-            value={userName}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setUseName(e.target.value)
-            }
+          <Controller
+            name="userName"
+            control={control}
+            defaultValue=""
+            render={({ field }) => <TextField label="ユーザー名" {...field} />}
           />
           <Button type="submit" variant="contained">
             検索
