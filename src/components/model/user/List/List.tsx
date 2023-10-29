@@ -9,79 +9,19 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import useSWR from "swr";
-import { z } from "zod";
-
-type BasicResponseType = {
-  code: string;
-  message: string;
-};
-
-type UserListType = {
-  id: string | number;
-  userId: string;
-  password?: string;
-  userName?: string;
-  birthday?: string;
-  age?: number;
-  gender?: number;
-  departmentId?: number;
-  department?: string;
-  role?: string;
-  salaryList?: {
-    userId: string;
-    yearMonth: string;
-    salary: number;
-  };
-};
-
-type ResponseType = { data: UserListType[] } & BasicResponseType;
-
-// Zod スキーマ
-const schema = z.object({
-  userId: z.string().optional(),
-  userName: z.string().optional(),
-});
-
-type FormData = z.infer<typeof schema>;
+import { Controller } from "react-hook-form";
+import { useListHook } from "./ListHook";
+import { UserListType, useUserList } from "@/components/usecase/useUserList";
 
 export const List = () => {
   const [condition, setCondition] = useState("");
   const [rowData, setRowData] = useState<UserListType[]>([]);
 
   // データ取得処理
-  const fetcher = (input: RequestInfo | URL, init?: RequestInit | undefined) =>
-    fetch(input, init).then((res) => res.json());
+  const { userListData, hasError, isLoading } = useUserList(condition);
 
-  const {
-    data: userListData,
-    error,
-    isLoading,
-  } = useSWR<ResponseType>(
-    `http://localhost:8080/api/user/get/list${condition}`,
-    fetcher
-  );
-  console.log("fetch data", userListData);
-
-  // 検索ボタン押下アクション
-  const onSubmit = (form: FormData) => {
-    console.log(form);
-
-    const conditions: { key: string; value: string }[] = [];
-    if (form.userId) conditions.push({ key: "userId", value: form.userId });
-    if (form.userName)
-      conditions.push({ key: "userName", value: form.userName });
-
-    const cond =
-      conditions.length === 0
-        ? ""
-        : "?" + conditions.map((item) => `${item.key}=${item.value}`).join("&");
-
-    console.log("submit.condition", cond);
-    setCondition(cond);
-  };
+  // フォーム定義、アクション
+  const { handleSubmit, onValid, control } = useListHook(setCondition);
 
   // サンプルグリッドデータ
   const sampleData = [
@@ -112,11 +52,6 @@ export const List = () => {
     { field: "gender", headerName: "性", width: 100 },
   ];
 
-  /** フォーム定義 */
-  const { handleSubmit, control } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
-
   //TODO 暫定処理 ID列の修正
   useEffect(() => {
     if (!userListData || !userListData.data) return;
@@ -127,7 +62,7 @@ export const List = () => {
     setRowData(modData);
   }, [userListData]);
 
-  if (error) return <div>failed to load</div>;
+  if (hasError) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
   return (
     <Container maxWidth="md">
@@ -142,7 +77,7 @@ export const List = () => {
             "& .MuiTextField-root": { m: 1, width: "25ch" },
           }}
           autoComplete="off"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onValid)}
         >
           <Controller
             name="userId"
