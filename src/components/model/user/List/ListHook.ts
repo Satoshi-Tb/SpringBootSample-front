@@ -1,6 +1,7 @@
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useListSearchConditionMutators } from "@/components/store/useListSearchConditionState";
 
 // Zod スキーマ
 const schema = z.object({
@@ -10,9 +11,10 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export const useListHook = (
-  setCondition: React.Dispatch<React.SetStateAction<string>> // SWRに条件切替を伝えるため必要
-) => {
+export const useListHook = () => {
+  // 検索条件のセッター
+  const { setListSearchCondition } = useListSearchConditionMutators();
+
   // 検索ボタン押下アクション
   const onValid = (form: FormData) => {
     console.log(form);
@@ -28,7 +30,7 @@ export const useListHook = (
         : "?" + conditions.map((item) => `${item.key}=${item.value}`).join("&");
 
     console.log("submit.condition", cond);
-    setCondition(cond);
+    setListSearchCondition(cond);
   };
 
   /** フォーム定義 */

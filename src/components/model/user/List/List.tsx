@@ -12,16 +12,19 @@ import React, { useState, useEffect } from "react";
 import { Controller } from "react-hook-form";
 import { useListHook } from "./ListHook";
 import { UserListType, useUserList } from "@/components/usecase/useUserList";
+import { useListSearchConditionState } from "@/components/store/useListSearchConditionState";
 
 export const List = () => {
-  const [condition, setCondition] = useState("");
   const [rowData, setRowData] = useState<UserListType[]>([]);
+
+  // 検索条件
+  const condition = useListSearchConditionState();
 
   // データ取得処理
   const { userListData, hasError, isLoading } = useUserList(condition);
 
   // フォーム定義、アクション
-  const { handleSubmit, onValid, control } = useListHook(setCondition);
+  const { handleSubmit, onValid, control } = useListHook();
 
   // サンプルグリッドデータ
   const sampleData = [
