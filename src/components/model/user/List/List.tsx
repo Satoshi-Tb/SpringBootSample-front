@@ -10,7 +10,9 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import useSWR from "swr";
+import { z } from "zod";
 
 type BasicResponseType = {
   code: string;
@@ -37,10 +39,13 @@ type UserListType = {
 
 type ResponseType = { data: UserListType[] } & BasicResponseType;
 
-type FormData = {
-  userId?: string;
-  userName?: string;
-};
+// Zod スキーマ
+const schema = z.object({
+  userId: z.string().optional(),
+  userName: z.string().optional(),
+});
+
+type FormData = z.infer<typeof schema>;
 
 export const List = () => {
   const [condition, setCondition] = useState("");
@@ -108,7 +113,9 @@ export const List = () => {
   ];
 
   /** フォーム定義 */
-  const { handleSubmit, control } = useForm<FormData>();
+  const { handleSubmit, control } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
 
   //TODO 暫定処理 ID列の修正
   useEffect(() => {
