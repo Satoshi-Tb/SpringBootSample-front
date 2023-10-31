@@ -13,6 +13,7 @@ export type UserListType = {
   birthday?: string;
   age?: number;
   gender?: number;
+  genderName?: string;
   departmentId?: number;
   department?: string;
   role?: string;

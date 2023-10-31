@@ -37,7 +37,7 @@ export const useListHook = () => {
     { field: "userName", headerName: "ユーザー名", width: 150 },
     { field: "birthday", headerName: "誕生日", width: 130 },
     { field: "age", headerName: "年齢", width: 100 },
-    { field: "gender", headerName: "性", width: 100 },
+    { field: "genderName", headerName: "性別", width: 100 },
   ];
 
   //TODO 暫定処理 ID列の修正
