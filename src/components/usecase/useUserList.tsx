@@ -5,7 +5,7 @@ type BasicResponseType = {
   message: string;
 };
 
-export type UserListType = {
+export type UserType = {
   id: string | number;
   userId: string;
   password?: string;
@@ -14,8 +14,10 @@ export type UserListType = {
   age?: number;
   gender?: number;
   genderName?: string;
-  departmentId?: number;
-  department?: string;
+  department?: {
+    departmentId?: number;
+    departmentName?: string;
+  };
   role?: string;
   salaryList?: {
     userId: string;
@@ -24,7 +26,7 @@ export type UserListType = {
   };
 };
 
-type ResponseType = { data: UserListType[] } & BasicResponseType;
+type ResponseType = { data: UserType[] } & BasicResponseType;
 
 export const useUserList = (condition?: string) => {
   // データ取得処理
