@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useCategoryCode } from "@/components/usecase/useCategoryCodeList";
 import {
   TextField,
@@ -28,15 +29,64 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
+// watch関数とgetValues関数メリット/デメリット
+
+// watch関数
+// [メリット]
+// リアルタイムの監視：
+//  watchはリアルタイムでフォームフィールドの値の変更を監視します。
+//  これにより、ユーザーがフォームのフィールドに入力をするたびに、その変更を即座に捉えることができます。
+
+// 柔軟性：
+//  特定のフィールドだけを監視するか、またはすべてのフィールドを監視するかを選択することができます。
+
+// [デメリット]
+// 再レンダリングの頻度：
+//  監視対象のフィールドの値が変更されるたびに再レンダリングがトリガーされます。
+//  これはパフォーマンスに影響を及ぼす可能性があります、特に大きなフォームや高頻度の更新が行われるフォームでの使用には注意が必要です。
+
+// getValues関数
+// [メリット]
+// 再レンダリングの抑制：
+//   getValues関数を使用して値を取得することで、再レンダリングをトリガーすることなく、現在のフォームの値を取得できます。
+
+// 瞬時の値取得：
+//   任意のタイミングでフォームの値を取得する際に適しています。
+
+// [デメリット]
+// リアルタイムではない：
+//   getValuesはリアルタイムでの値の変更を監視するものではありません。そのため、特定のイベントやアクションが発生した時に明示的に呼び出す必要があります。
+
+// コードの冗長性：
+//   リアルタイムの変更を捉えたい場合、イベントハンドラやuseEffectなどと組み合わせて使用することで実現する必要があり、コードがやや冗長になる可能性があります。
+
+// まとめ：
+// どちらの関数を使用するかは、具体的な使用ケースや要件によって異なります。リアルタイムの変更を捉えたい場合やコードのシンプルさを重視する場合はwatchが適しています。
+// 一方、不要な再レンダリングを避けたい場合や、特定のイベントに基づいてフォームの値を取得する場合はgetValuesが適しています。
 export const Signup = () => {
+  const [enableAge, setEnableAge] = useState(false);
+
   /** フォーム定義 */
   const {
     handleSubmit,
     control,
     formState: { errors },
+    watch,
+    getValues,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
+
+  // パスワードフィールドの入力監視
+  // 未入力の場合、誕生日フィールドを非活性(watchによる実装)
+  const watchUserId = watch("userId", "");
+
+  // ユーザー名フィールド取得
+  // 未入力の場合、年齢フィールドを非活性(getValuesによる実装)
+  const handleTextAreaAChange = () => {
+    const valueA = getValues("userName");
+    setEnableAge(!!valueA);
+  };
 
   // 検索ボタン押下アクション
   const onValid = (form: FormData) => {
@@ -50,8 +100,8 @@ export const Signup = () => {
   const { categoryCodeListData, hasError, isLoading } =
     useCategoryCode("gender");
 
-  if (hasError) return <div>failed to load</div>;
-  if (isLoading) return <div>loading...</div>;
+  // if (hasError) return <div>failed to load</div>;
+  // if (isLoading) return <div>loading...</div>;
 
   return (
     <>
@@ -97,7 +147,16 @@ export const Signup = () => {
             control={control}
             defaultValue=""
             render={({ field }) => (
-              <TextField margin="normal" label="ユーザー名" {...field} />
+              <TextField
+                {...field}
+                margin="normal"
+                label="ユーザー名"
+                onChange={(e) => {
+                  // react-hook-formの内部状態の更新を確実に行うためコール。
+                  field.onChange(e);
+                  handleTextAreaAChange();
+                }}
+              />
             )}
           />
           {errors.userName?.message && <p>{errors.userName.message}</p>}
@@ -113,6 +172,7 @@ export const Signup = () => {
                 margin="normal"
                 label="誕生日"
                 placeholder="yyyy/MM/dd"
+                disabled={!watchUserId}
                 {...field}
               />
             )}
@@ -126,7 +186,13 @@ export const Signup = () => {
             control={control}
             defaultValue={undefined}
             render={({ field }) => (
-              <TextField fullWidth margin="normal" label="年齢" {...field} />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="年齢"
+                disabled={!enableAge}
+                {...field}
+              />
             )}
           />
         </Box>
