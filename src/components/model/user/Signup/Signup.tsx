@@ -1,4 +1,4 @@
-import { useCategoryCode } from "@/components/usecase/useCategoryCode";
+import { useCategoryCode } from "@/components/usecase/useCategoryCodeList";
 import React from "react";
 
 export const Signup = () => {

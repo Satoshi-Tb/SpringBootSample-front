@@ -22,18 +22,18 @@ export type UserType = {
   };
 };
 
-type ResponseType = { data: UserType[] } & BasicResponseType;
+export type UserListResponseType = { data: UserType[] } & BasicResponseType;
 
 export const useUserList = (condition?: string) => {
   // データ取得処理
   const fetcher = (input: RequestInfo | URL, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
 
-  const { data, error, isLoading } = useSWR<ResponseType>(
+  const { data, error, isLoading, mutate } = useSWR<UserListResponseType>(
     `http://localhost:8080/api/user/get/list${condition}`,
     fetcher
   );
   console.log("fetch data", data);
 
-  return { userListData: data, hasError: error, isLoading };
+  return { userListData: data, hasError: error, isLoading, mutate };
 };

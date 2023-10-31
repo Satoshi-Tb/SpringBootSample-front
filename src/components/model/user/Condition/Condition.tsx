@@ -1,18 +1,16 @@
-import {
-  Paper,
-  TextField,
-  Box,
-  Button,
-  Typography,
-  Divider,
-  Container,
-} from "@mui/material";
+import { TextField, Box, Button } from "@mui/material";
 import { Controller } from "react-hook-form";
 import { useConditionHook } from "./ConditionHook";
+import { useSWRMutator } from "@/components/usecase/useSWRMutator";
+import { useListSearchConditionState } from "@/components/store/useListSearchConditionState";
 
 export const Condition = () => {
   // フォーム定義、アクション
   const { handleSubmit, onValid, control } = useConditionHook();
+
+  // 再読込処理用
+  const condition = useListSearchConditionState();
+  const { mutate } = useSWRMutator();
 
   return (
     <Box
@@ -22,6 +20,7 @@ export const Condition = () => {
       }}
       autoComplete="off"
       onSubmit={handleSubmit(onValid)}
+      display="flex"
     >
       <Controller
         name="userId"
@@ -35,9 +34,28 @@ export const Condition = () => {
         defaultValue=""
         render={({ field }) => <TextField label="ユーザー名" {...field} />}
       />
-      <Button type="submit" variant="contained">
-        検索
-      </Button>
+      <Box
+        display="flex"
+        alignContent="center"
+        justifyContent="space-around"
+        margin={2}
+      >
+        <Button type="submit" variant="contained" sx={{ margin: "2px" }}>
+          検索
+        </Button>
+        <Button
+          variant="contained"
+          sx={{ margin: "2px" }}
+          onClick={() => {
+            // 最新データ強制読み込み
+            const key = `http://localhost:8080/api/user/get/list${condition}`;
+            mutate(key);
+            console.log("reload! key:", key);
+          }}
+        >
+          再読込
+        </Button>
+      </Box>
     </Box>
   );
 };
