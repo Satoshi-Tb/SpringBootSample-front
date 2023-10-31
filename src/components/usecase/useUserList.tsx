@@ -1,9 +1,5 @@
 import useSWR from "swr";
-
-type BasicResponseType = {
-  code: string;
-  message: string;
-};
+import type { BasicResponseType } from "@/TypeDef";
 
 export type UserType = {
   id: string | number;
