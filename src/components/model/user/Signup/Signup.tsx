@@ -13,8 +13,40 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+// Zod スキーマ
+const schema = z.object({
+  userId: z.string().min(1, "入力必須です"),
+  password: z.string().min(1, "入力必須です"),
+  userName: z.string().min(1, "入力必須です"),
+  birthday: z.string().optional(),
+  age: z.number().optional(),
+});
+
+type FormData = z.infer<typeof schema>;
 
 export const Signup = () => {
+  /** フォーム定義 */
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
+
+  // 検索ボタン押下アクション
+  const onValid = (form: FormData) => {
+    console.log("submit", form);
+  };
+
+  const onInvalid = () => {
+    console.log("Submit Invalid!");
+  };
+
   const { categoryCodeListData, hasError, isLoading } =
     useCategoryCode("gender");
 
@@ -25,9 +57,7 @@ export const Signup = () => {
     <>
       <Box
         component="form"
-        onSubmit={() => {
-          alert("submit!");
-        }}
+        onSubmit={handleSubmit(onValid, onInvalid)}
         display="flex"
         flexDirection="column"
         alignItems="center"
@@ -38,45 +68,67 @@ export const Signup = () => {
         </Typography>
 
         <Box>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="ユーザーID"
+          <Controller
             name="userId"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField margin="normal" label="ユーザーID" {...field} />
+            )}
           />
+          {errors.userId?.message && <p>{errors.userId.message}</p>}
         </Box>
 
         <Box>
-          <TextField
-            fullWidth
-            margin="normal"
-            type="password"
-            label="パスワード"
+          <Controller
             name="password"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField margin="normal" label="パスワード" {...field} />
+            )}
           />
+          {errors.password?.message && <p>{errors.password.message}</p>}
         </Box>
 
         <Box>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="ユーザー名"
+          <Controller
             name="userName"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField margin="normal" label="ユーザー名" {...field} />
+            )}
           />
+          {errors.userName?.message && <p>{errors.userName.message}</p>}
         </Box>
 
         <Box>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="誕生日"
-            placeholder="yyyy/MM/dd"
+          <Controller
             name="birthday"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                margin="normal"
+                label="誕生日"
+                placeholder="yyyy/MM/dd"
+                {...field}
+              />
+            )}
           />
+          {errors.birthday?.message && <p>{errors.birthday.message}</p>}
         </Box>
 
         <Box>
-          <TextField fullWidth margin="normal" label="年齢" name="age" />
+          <Controller
+            name="age"
+            control={control}
+            defaultValue={undefined}
+            render={({ field }) => (
+              <TextField fullWidth margin="normal" label="年齢" {...field} />
+            )}
+          />
         </Box>
 
         <Box>
