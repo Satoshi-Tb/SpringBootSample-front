@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { UserType, useUserList } from "@/components/usecase/useUserList";
 import { useListSearchConditionState } from "@/components/store/useListSearchConditionState";
-import { GridColDef } from "@mui/x-data-grid";
+import { GridColDef, GridPreProcessEditCellProps } from "@mui/x-data-grid";
 
 // // サンプルグリッドデータ
 // const sampleData = [
@@ -35,7 +35,16 @@ export const useListHook = () => {
   // グリッドのカラム定義
   const columns: GridColDef[] = [
     { field: "userId", headerName: "ユーザーID", width: 150 },
-    { field: "userName", headerName: "ユーザー名", width: 150 },
+    {
+      field: "userName",
+      headerName: "ユーザー名",
+      width: 150,
+      editable: true,
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const hasError = params.props.value.length === 0;
+        return { ...params.props, error: hasError };
+      },
+    },
     { field: "birthday", headerName: "誕生日", width: 130 },
     { field: "age", headerName: "年齢", width: 100 },
     { field: "genderName", headerName: "性別", width: 100 },
