@@ -84,6 +84,7 @@ export const List = () => {
         }}
         loading={isLoading}
         onPaginationModelChange={handlePaginationModelChange}
+        rowCount={22} // テスト固定値。本来、APIから受け取った総件数をセットする
       />
     </Box>
   );

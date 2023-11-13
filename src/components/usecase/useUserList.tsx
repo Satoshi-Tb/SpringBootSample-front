@@ -22,7 +22,10 @@ export type UserType = {
   };
 };
 
-export type UserListResponseType = { data: UserType[] } & BasicResponseType;
+export type UserListResponseType = {
+  data: UserType[];
+  totalCount: number;
+} & BasicResponseType;
 
 export const useUserList = (condition?: string) => {
   // データ取得処理

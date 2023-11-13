@@ -42,7 +42,7 @@ export const useConditionHook = () => {
     setListSearchCondition(cond);
   };
 
-  // 初期検索条件
+  // 初期検索条件の構築。これが必要なはず
   useEffect(() => {
     const conditions: { key: string; value: string }[] = [];
     conditions.push({ key: "page", value: userListPageOffset.toString() });
