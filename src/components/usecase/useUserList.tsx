@@ -30,7 +30,7 @@ export const useUserList = (condition?: string) => {
     fetch(input, init).then((res) => res.json());
 
   const { data, error, isLoading, mutate } = useSWR<UserListResponseType>(
-    `http://localhost:8080/api/user/get/list${condition}`,
+    `http://localhost:8080/api/user/get/list-pager${condition}`,
     fetcher
   );
   console.log("fetch data", data);

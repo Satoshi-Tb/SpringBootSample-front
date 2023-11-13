@@ -1,11 +1,24 @@
 import { Box } from "@mui/material";
-import { DataGrid, GridCellEditStopParams, MuiEvent } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridCellEditStopParams,
+  GridPaginationModel,
+  MuiEvent,
+} from "@mui/x-data-grid";
 import { useListHook } from "./ListHook";
 import { useUpdateUser } from "@/components/usecase/useUserMutator";
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useListSearchConditionState } from "@/components/store/useListSearchConditionState";
+import {
+  useListPageOffsetMutators,
+  useListRowsPerPageMutators,
+} from "@/components/store/useUserListPaginationState";
 
 export const List = () => {
+  // 行選択状態
+  const { setUserListPageOffset } = useListPageOffsetMutators();
+  const { setUserListRowsPerPage } = useListRowsPerPageMutators();
+
   // 照会
   const { rowData, hasError, isLoading, columns } = useListHook();
 
@@ -33,7 +46,7 @@ export const List = () => {
 
       // 更新後データ再読込
       console.log("condition", condition);
-      const key = `http://localhost:8080/api/user/get/list${condition}`;
+      const key = `http://localhost:8080/api/user/get/list-pager${condition}`;
       mutate(key);
 
       // DB更新が成功した場合、新しい行データを返してグリッドにコミットする
@@ -45,8 +58,16 @@ export const List = () => {
     }
   };
 
+  // ページネーションチェンジイベント
+  const handlePaginationModelChange = (
+    newPaginationModel: GridPaginationModel
+  ) => {
+    console.log("handlePaginationModelChange", newPaginationModel);
+    setUserListPageOffset(newPaginationModel.page);
+    setUserListRowsPerPage(newPaginationModel.pageSize);
+  };
+
   if (hasError) return <div>failed to load</div>;
-  if (isLoading) return <div>loading...</div>;
   return (
     <Box>
       <DataGrid
@@ -59,8 +80,10 @@ export const List = () => {
         }}
         pageSizeOptions={[5, 10, 25]}
         initialState={{
-          pagination: { paginationModel: { pageSize: 5 } },
+          pagination: { paginationModel: { pageSize: 5, page: 0 } },
         }}
+        loading={isLoading}
+        onPaginationModelChange={handlePaginationModelChange}
       />
     </Box>
   );
