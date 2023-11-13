@@ -57,6 +57,10 @@ export const List = () => {
         onProcessRowUpdateError={(error) => {
           console.error(`Error while processing row update: ${error.message}`);
         }}
+        pageSizeOptions={[5, 10, 25]}
+        initialState={{
+          pagination: { paginationModel: { pageSize: 5 } },
+        }}
       />
     </Box>
   );
