@@ -13,6 +13,7 @@ import {
   useListPageOffsetMutators,
   useListRowsPerPageMutators,
 } from "@/components/store/useUserListPaginationState";
+import { useState, useEffect } from "react";
 
 export const List = () => {
   // 行選択状態
@@ -20,7 +21,7 @@ export const List = () => {
   const { setUserListRowsPerPage } = useListRowsPerPageMutators();
 
   // 照会
-  const { rowData, hasError, isLoading, columns } = useListHook();
+  const { rowData, rowCount, hasError, isLoading, columns } = useListHook();
 
   //再読込
   const condition = useListSearchConditionState();
@@ -84,7 +85,7 @@ export const List = () => {
         }}
         loading={isLoading}
         onPaginationModelChange={handlePaginationModelChange}
-        rowCount={22} // テスト固定値。本来、APIから受け取った総件数をセットする
+        rowCount={rowCount}
       />
     </Box>
   );

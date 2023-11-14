@@ -24,7 +24,10 @@ import { GridColDef, GridPreProcessEditCellProps } from "@mui/x-data-grid";
 // ];
 
 export const useListHook = () => {
+  // 画面データ
   const [rowData, setRowData] = useState<UserType[]>([]);
+  // 検索データ件数
+  const [rowCount, setRowCount] = useState<number>(0);
 
   // 検索条件
   const condition = useListSearchConditionState();
@@ -70,7 +73,8 @@ export const useListHook = () => {
       return item;
     });
     setRowData(modData);
+    setRowCount(userListData.totalCount);
   }, [userListData]);
 
-  return { rowData, hasError, isLoading, columns };
+  return { rowData, rowCount, hasError, isLoading, columns };
 };
