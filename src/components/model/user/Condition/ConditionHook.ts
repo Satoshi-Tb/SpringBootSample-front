@@ -22,7 +22,7 @@ export const useConditionHook = () => {
   const userListPageOffset = useListPageOffsetState();
   const userListRowsPerPage = useListRowsPerPageState();
 
-  const buildParam = (form: FormData | undefined) => {
+  const buildParam = (form: { userId?: string; userName?: string }) => {
     const conditions: { key: string; value: string }[] = [];
     if (form?.userId) conditions.push({ key: "userId", value: form.userId });
     if (form?.userName)
@@ -56,17 +56,20 @@ export const useConditionHook = () => {
     setListSearchCondition(cond);
   };
 
+  /** フォーム定義 */
+  const { handleSubmit, control, getValues } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
+
   // 初期検索条件の構築。これが必要なはず
   useEffect(() => {
-    const cond = buildParam(undefined);
+    const cond = buildParam({
+      userId: getValues("userId"),
+      userName: getValues("userName"),
+    });
     console.log("condition init", cond);
     setListSearchCondition(cond);
   }, [buildParam, setListSearchCondition]);
-
-  /** フォーム定義 */
-  const { handleSubmit, control } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
 
   return { handleSubmit, onValid, control };
 };

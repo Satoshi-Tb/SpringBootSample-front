@@ -86,6 +86,7 @@ export const List = () => {
         loading={isLoading}
         onPaginationModelChange={handlePaginationModelChange}
         rowCount={rowCount}
+        paginationMode="server"
       />
     </Box>
   );
