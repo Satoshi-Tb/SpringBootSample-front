@@ -120,13 +120,13 @@ export const useListHook = () => {
 
   //TODO 暫定処理 ID列の修正
   useEffect(() => {
-    if (!userListData || !userListData.data) return;
-    const modData = userListData.data.map((item, i) => {
+    if (!userListData || !userListData.data.userList) return;
+    const modData = userListData.data.userList.map((item, i) => {
       item.id = i + 1;
       return item;
     });
     setRowData(modData);
-    setRowCount(userListData.totalCount);
+    setRowCount(userListData.data.resultNum);
   }, [userListData]);
 
   return {

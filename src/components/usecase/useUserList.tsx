@@ -23,8 +23,10 @@ export type UserType = {
 };
 
 export type UserListResponseType = {
-  data: UserType[];
-  totalCount: number;
+  data: {
+    userList: UserType[];
+    resultNum: number;
+  };
 } & BasicResponseType;
 
 export const useUserList = (condition?: string) => {
