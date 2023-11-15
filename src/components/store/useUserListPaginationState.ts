@@ -1,42 +1,42 @@
 import React from "react";
 import { useRecoilValue, useSetRecoilState, atom } from "recoil";
 
-const userListPageOffset = atom<number>({
-  key: "userListPageOffset",
+const userListSelectedPage = atom<number>({
+  key: "userListSelectedPage",
   default: 0,
 });
 
-export const useListPageOffsetState = () => {
-  return useRecoilValue(userListPageOffset);
+export const useUserListSelectedPage = () => {
+  return useRecoilValue(userListSelectedPage);
 };
 
-export const useListPageOffsetMutators = () => {
-  const setState = useSetRecoilState(userListPageOffset);
+export const useUserListSelectedPageMutators = () => {
+  const setState = useSetRecoilState(userListSelectedPage);
 
-  const setUserListPageOffset = React.useCallback(
+  const setUserListSelectedPage = React.useCallback(
     (condition: number) => setState(condition),
     [setState]
   );
 
-  return { setUserListPageOffset };
+  return { setUserListSelectedPage };
 };
 
-const userListRowsPerPage = atom<number>({
-  key: "userListRowsPerPage",
+const userListPageSize = atom<number>({
+  key: "userListPageSize",
   default: 5,
 });
 
-export const useListRowsPerPageState = () => {
-  return useRecoilValue(userListRowsPerPage);
+export const useUserListPageSizeState = () => {
+  return useRecoilValue(userListPageSize);
 };
 
-export const useListRowsPerPageMutators = () => {
-  const setState = useSetRecoilState(userListRowsPerPage);
+export const useUserListPageSizeMutators = () => {
+  const setState = useSetRecoilState(userListPageSize);
 
-  const setUserListRowsPerPage = React.useCallback(
+  const setUserListPageSize = React.useCallback(
     (condition: number) => setState(condition),
     [setState]
   );
 
-  return { setUserListRowsPerPage };
+  return { setUserListPageSize };
 };

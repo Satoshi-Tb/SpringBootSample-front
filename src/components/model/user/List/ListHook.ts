@@ -7,8 +7,8 @@ import {
   GridPreProcessEditCellProps,
 } from "@mui/x-data-grid";
 import {
-  useListPageOffsetMutators,
-  useListRowsPerPageMutators,
+  useUserListSelectedPageMutators,
+  useUserListPageSizeMutators,
 } from "@/components/store/useUserListPaginationState";
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useUpdateUser } from "@/components/usecase/useUserMutator";
@@ -39,9 +39,9 @@ export const useListHook = () => {
   // 検索データ件数
   const [rowCount, setRowCount] = useState<number>(0);
   // 選択ページ
-  const { setUserListPageOffset } = useListPageOffsetMutators();
+  const { setUserListSelectedPage } = useUserListSelectedPageMutators();
   // ページサイズ
-  const { setUserListRowsPerPage } = useListRowsPerPageMutators();
+  const { setUserListPageSize } = useUserListPageSizeMutators();
   // 検索条件
   const condition = useListSearchConditionState();
   //再読込
@@ -85,8 +85,8 @@ export const useListHook = () => {
   const handlePaginationModelChange = (
     newPaginationModel: GridPaginationModel
   ) => {
-    setUserListPageOffset(newPaginationModel.page);
-    setUserListRowsPerPage(newPaginationModel.pageSize);
+    setUserListSelectedPage(newPaginationModel.page);
+    setUserListPageSize(newPaginationModel.pageSize);
   };
 
   // セル編集処理

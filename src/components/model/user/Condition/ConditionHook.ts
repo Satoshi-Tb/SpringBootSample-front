@@ -3,8 +3,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useListSearchConditionMutators } from "@/components/store/useListSearchConditionState";
 import {
-  useListPageOffsetState,
-  useListRowsPerPageState,
+  useUserListSelectedPage,
+  useUserListPageSizeState,
 } from "@/components/store/useUserListPaginationState";
 import { useEffect } from "react";
 
@@ -19,8 +19,8 @@ type FormData = z.infer<typeof schema>;
 export const useConditionHook = () => {
   // 検索条件のセッター
   const { setListSearchCondition } = useListSearchConditionMutators();
-  const userListPageOffset = useListPageOffsetState();
-  const userListRowsPerPage = useListRowsPerPageState();
+  const userListPageOffset = useUserListSelectedPage();
+  const userListRowsPerPage = useUserListPageSizeState();
 
   const buildParam = (form: { userId?: string; userName?: string }) => {
     const conditions: { key: string; value: string }[] = [];
