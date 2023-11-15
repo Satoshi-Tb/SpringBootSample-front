@@ -1,7 +1,17 @@
 import { useEffect, useState } from "react";
 import { UserType, useUserList } from "@/components/usecase/useUserList";
 import { useListSearchConditionState } from "@/components/store/useListSearchConditionState";
-import { GridColDef, GridPreProcessEditCellProps } from "@mui/x-data-grid";
+import {
+  GridColDef,
+  GridPaginationModel,
+  GridPreProcessEditCellProps,
+} from "@mui/x-data-grid";
+import {
+  useListPageOffsetMutators,
+  useListRowsPerPageMutators,
+} from "@/components/store/useUserListPaginationState";
+import { useSWRMutator } from "@/components/usecase/useSWRMutator";
+import { useUpdateUser } from "@/components/usecase/useUserMutator";
 
 // // サンプルグリッドデータ
 // const sampleData = [
@@ -28,12 +38,18 @@ export const useListHook = () => {
   const [rowData, setRowData] = useState<UserType[]>([]);
   // 検索データ件数
   const [rowCount, setRowCount] = useState<number>(0);
-
+  // 選択ページ
+  const { setUserListPageOffset } = useListPageOffsetMutators();
+  // ページサイズ
+  const { setUserListRowsPerPage } = useListRowsPerPageMutators();
   // 検索条件
   const condition = useListSearchConditionState();
-
+  //再読込
+  const { mutate } = useSWRMutator();
   // データ取得処理
   const { userListData, hasError, isLoading } = useUserList(condition);
+  // 更新処理
+  const { trigger: updateUser, error, data } = useUpdateUser();
 
   // グリッドのカラム定義
   const columns: GridColDef[] = [
@@ -65,6 +81,43 @@ export const useListHook = () => {
     },
   ];
 
+  // ページサイズ／ページチェンジイベント
+  const handlePaginationModelChange = (
+    newPaginationModel: GridPaginationModel
+  ) => {
+    setUserListPageOffset(newPaginationModel.page);
+    setUserListRowsPerPage(newPaginationModel.pageSize);
+  };
+
+  // セル編集処理
+  const handleProcessRowUpdate = async (newRow: any, oldRow: any) => {
+    console.log("new row", newRow);
+    console.log("old row", oldRow);
+
+    try {
+      const result = await updateUser({
+        id: newRow.id,
+        userId: newRow.userId,
+        userName: newRow.userName,
+        password: newRow.password,
+      });
+      console.log("更新結果", result);
+      console.log("更新データ", data);
+
+      // 更新後データ再読込
+      console.log("condition", condition);
+      const key = `http://localhost:8080/api/user/get/list-pager${condition}`;
+      mutate(key);
+
+      // DB更新が成功した場合、新しい行データを返してグリッドにコミットする
+      return newRow;
+    } catch (e) {
+      console.log(e);
+      // DB更新に失敗した場合は、変更を破棄する
+      return oldRow;
+    }
+  };
+
   //TODO 暫定処理 ID列の修正
   useEffect(() => {
     if (!userListData || !userListData.data) return;
@@ -76,5 +129,13 @@ export const useListHook = () => {
     setRowCount(userListData.totalCount);
   }, [userListData]);
 
-  return { rowData, rowCount, hasError, isLoading, columns };
+  return {
+    rowData,
+    rowCount,
+    hasError,
+    isLoading,
+    columns,
+    handlePaginationModelChange,
+    handleProcessRowUpdate,
+  };
 };

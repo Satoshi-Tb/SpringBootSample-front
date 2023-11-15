@@ -38,18 +38,6 @@ export const useConditionHook = () => {
   // 検索ボタン押下アクション
   const onValid = (form: FormData) => {
     console.log(form);
-
-    // const conditions: { key: string; value: string }[] = [];
-    // if (form.userId) conditions.push({ key: "userId", value: form.userId });
-    // if (form.userName)
-    //   conditions.push({ key: "userName", value: form.userName });
-    // conditions.push({ key: "page", value: userListPageOffset.toString() });
-    // conditions.push({ key: "size", value: userListRowsPerPage.toString() });
-
-    // const cond =
-    //   conditions.length === 0
-    //     ? ""
-    //     : "?" + conditions.map((item) => `${item.key}=${item.value}`).join("&");
     const cond = buildParam(form);
 
     console.log("submit condition", cond);
