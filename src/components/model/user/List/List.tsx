@@ -20,6 +20,7 @@ export const List = () => {
       <DataGrid
         columns={columns}
         rows={rowData}
+        getRowId={(row) => row.userId}
         disableRowSelectionOnClick
         processRowUpdate={handleProcessRowUpdate}
         onProcessRowUpdateError={(error) => {
