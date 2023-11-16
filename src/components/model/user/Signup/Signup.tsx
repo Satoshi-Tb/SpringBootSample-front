@@ -17,6 +17,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useDepartmentList } from "@/components/usecase/useDepartmentList";
 
 // Zod スキーマ
 const schema = z.object({
@@ -71,20 +72,15 @@ export const Signup = () => {
     handleSubmit,
     control,
     formState: { errors },
-    watch,
     getValues,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
-  // パスワードフィールドの入力監視
-  // 未入力の場合、誕生日フィールドを非活性(watchによる実装)
-  const watchUserId = watch("userId", "");
-
   // ユーザー名フィールド取得
   // 未入力の場合、年齢フィールドを非活性(getValuesによる実装)
   const handleTextAreaAChange = () => {
-    const valueA = getValues("userName");
+    const valueA = getValues("birthday");
     setEnableAge(!!valueA);
   };
 
@@ -97,11 +93,12 @@ export const Signup = () => {
     console.log("Submit Invalid!");
   };
 
-  const { categoryCodeListData, hasError, isLoading } =
+  // 性別コード
+  const { categoryCodeListData: genderList, isLoading: isCategoryLoding } =
     useCategoryCode("gender");
-
-  // if (hasError) return <div>failed to load</div>;
-  // if (isLoading) return <div>loading...</div>;
+  // 部署コード
+  const { departmentListData, isLoading: isDepartmentLoding } =
+    useDepartmentList();
 
   return (
     <>
@@ -147,16 +144,7 @@ export const Signup = () => {
             control={control}
             defaultValue=""
             render={({ field }) => (
-              <TextField
-                {...field}
-                margin="normal"
-                label="ユーザー名"
-                onChange={(e) => {
-                  // react-hook-formの内部状態の更新を確実に行うためコール。
-                  field.onChange(e);
-                  handleTextAreaAChange();
-                }}
-              />
+              <TextField {...field} margin="normal" label="ユーザー名" />
             )}
           />
           {errors.userName?.message && <p>{errors.userName.message}</p>}
@@ -172,8 +160,12 @@ export const Signup = () => {
                 margin="normal"
                 label="誕生日"
                 placeholder="yyyy/MM/dd"
-                disabled={!watchUserId}
                 {...field}
+                onChange={(e) => {
+                  // react-hook-formの内部状態の更新を確実に行うためコール。
+                  field.onChange(e);
+                  handleTextAreaAChange();
+                }}
               />
             )}
           />
@@ -190,7 +182,7 @@ export const Signup = () => {
                 fullWidth
                 margin="normal"
                 label="年齢"
-                disabled={!enableAge}
+                disabled={enableAge}
                 {...field}
               />
             )}
@@ -201,9 +193,14 @@ export const Signup = () => {
           <FormControl component="fieldset">
             <FormLabel component="legend">性別</FormLabel>
             <RadioGroup row name="gender">
-              <FormControlLabel value="1" control={<Radio />} label="男性" />
-              <FormControlLabel value="2" control={<Radio />} label="女性" />
-              <FormControlLabel value="3" control={<Radio />} label="その他" />
+              {genderList?.data.map((item) => (
+                <FormControlLabel
+                  value={item.code}
+                  key={item.code}
+                  control={<Radio />}
+                  label={item.name}
+                />
+              ))}
             </RadioGroup>
           </FormControl>
         </Box>
@@ -216,9 +213,11 @@ export const Signup = () => {
               id="department"
               sx={{ width: "200px" }}
             >
-              <MenuItem value="1">システム管理部</MenuItem>
-              <MenuItem value="2">営業部</MenuItem>
-              <MenuItem value="3">SI事業部</MenuItem>
+              {departmentListData?.data.map((item) => (
+                <MenuItem value={item.departmentId} key={item.departmentId}>
+                  {item.departmentName}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>

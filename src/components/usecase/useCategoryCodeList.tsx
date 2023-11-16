@@ -21,7 +21,7 @@ export const useCategoryCode = (category: string) => {
       `http://localhost:8080/api/code/category/${category}`,
       fetcher
     );
-  console.log("fetch data", data);
+  console.log("useCategoryCode:fetch data", data);
 
   return { categoryCodeListData: data, hasError: error, isLoading, mutate };
 };
