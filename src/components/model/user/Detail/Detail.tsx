@@ -1,5 +1,8 @@
+import { useRouter } from "next/router";
 import React from "react";
 
 export const Detail = () => {
-  return <div>Detail</div>;
+  const router = useRouter();
+  const { userId } = router.query;
+  return <div>Detail {userId}</div>;
 };

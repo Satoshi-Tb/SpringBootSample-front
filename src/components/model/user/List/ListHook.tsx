@@ -5,7 +5,9 @@ import {
   GridColDef,
   GridPaginationModel,
   GridPreProcessEditCellProps,
+  GridRenderCellParams,
 } from "@mui/x-data-grid";
+import Button from "@mui/material/Button";
 import {
   useUserListSelectedPageMutators,
   useUserListPageSizeMutators,
@@ -78,6 +80,21 @@ export const useListHook = () => {
         return row.department.departmentId;
       },
       renderCell: (params) => params.row.department.departmentName,
+    },
+    {
+      field: "detail",
+      headerName: "",
+      width: 100,
+      renderCell: (params: GridRenderCellParams) => (
+        <Button
+          variant="contained"
+          size="small"
+          style={{ marginLeft: 16 }}
+          href={`/user/detail/${params.row.userId}`}
+        >
+          詳細
+        </Button>
+      ),
     },
   ];
 
