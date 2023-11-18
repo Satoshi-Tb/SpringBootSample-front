@@ -1,5 +1,6 @@
 import React from "react";
 import { Typography, Divider, Drawer, List, ListItem } from "@mui/material";
+import Link from "next/link";
 
 export const SideBar = () => {
   return (
@@ -17,7 +18,9 @@ export const SideBar = () => {
       <Divider />
       <List>
         <ListItem>
-          <Typography>メニュー1</Typography>
+          <Typography>
+            <Link href="/user/list">ユーザー一覧</Link>
+          </Typography>
         </ListItem>
         <ListItem>
           <Typography>メニュー2</Typography>
