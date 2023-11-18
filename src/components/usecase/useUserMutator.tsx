@@ -9,6 +9,7 @@ export type UserPutType = {
   age?: number;
   gender?: number;
   departmentId?: number;
+  updateMode: string;
 };
 
 export const useUpdateUser = () => {
