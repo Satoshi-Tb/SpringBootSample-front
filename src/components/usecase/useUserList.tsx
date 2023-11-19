@@ -4,8 +4,8 @@ import type { BasicResponseType } from "@/TypeDef";
 export type UserType = {
   id: string | number;
   userId: string;
-  password?: string;
-  userName?: string;
+  password: string;
+  userName: string;
   birthday?: string;
   age?: number;
   gender: number;
