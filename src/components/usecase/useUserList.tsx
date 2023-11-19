@@ -8,7 +8,7 @@ export type UserType = {
   userName?: string;
   birthday?: string;
   age?: number;
-  gender?: number;
+  gender: number;
   genderName?: string;
   profile?: string;
   department?: {

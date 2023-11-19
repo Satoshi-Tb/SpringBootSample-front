@@ -12,11 +12,23 @@ import {
   Typography,
 } from "@mui/material";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+
+type FormData = {
+  userName: string | undefined;
+  birthday: string | undefined;
+  age: number | undefined;
+  profile: string | undefined;
+  gender: string;
+};
 
 export const Detail = () => {
+  // URLパラメータ取得
   const router = useRouter();
   const { userId } = router.query;
 
+  // ユーザー詳細データ
   const {
     userData,
     hasError: hasUserDataError,
@@ -30,11 +42,52 @@ export const Detail = () => {
     isLoading: isCategoryLoding,
   } = useCategoryCode("gender");
 
+  // フォーム定義
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    setValue,
+  } = useForm<FormData>({
+    defaultValues: {
+      userName: "",
+      birthday: "",
+      age: undefined,
+      gender: "1",
+      profile: "",
+    },
+  });
+
+  // フォーム初期値設定
+  useEffect(() => {
+    if (!userData) return;
+    const user = userData?.data.user;
+    setValue("userName", user.userName);
+    setValue("birthday", user.birthday);
+    setValue("age", user.age);
+    setValue("gender", user.gender.toString());
+    setValue("profile", user.profile);
+  }, [userData]);
+
+  // 更新ボタン押下アクション
+  const onValid = (form: any) => {
+    console.log("submit", form);
+    alert("更新!");
+  };
+
+  const onInvalid = () => {
+    console.log("Submit Invalid!");
+  };
+
   if (hasUserDataError || hasCategoryError) return <div>failed to load</div>;
   if (isUserDataLogind || !userData || isCategoryLoding || !genderList)
     return <div>loading...</div>;
   return (
-    <Box sx={{ marginTop: 2 }}>
+    <Box
+      sx={{ marginTop: 2 }}
+      component="form"
+      onSubmit={handleSubmit(onValid, onInvalid)}
+    >
       <Grid container spacing={2}>
         <Grid item md={4}>
           <Typography>ユーザID</Typography>
@@ -52,19 +105,44 @@ export const Detail = () => {
           <Typography>ユーザー名</Typography>
         </Grid>
         <Grid item xs={8}>
-          <TextField fullWidth value={userData.data.user.userName}></TextField>
+          <Controller
+            name="userName"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                value={userData.data.user.userName}
+              />
+            )}
+          />
+          {errors.userName?.message && <p>{errors.userName.message}</p>}
         </Grid>
         <Grid item xs={4}>
           <Typography>誕生日</Typography>
         </Grid>
         <Grid item xs={8}>
-          <TextField value={userData.data.user.birthday}></TextField>
+          <Controller
+            name="birthday"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField {...field} placeholder="yyyy/MM/dd" />
+            )}
+          />
+          {errors.birthday?.message && <p>{errors.birthday.message}</p>}
         </Grid>
         <Grid item xs={4}>
           <Typography>年齢</Typography>
         </Grid>
         <Grid item xs={8}>
-          <TextField value={userData.data.user.age}></TextField>
+          <Controller
+            name="age"
+            control={control}
+            defaultValue={undefined}
+            render={({ field }) => <TextField {...field} />}
+          />
         </Grid>
         <Grid item xs={4}>
           <Typography>性別</Typography>
@@ -78,7 +156,7 @@ export const Detail = () => {
                   key={item.code}
                   control={<Radio />}
                   label={item.name}
-                  checked={userData.data.user.gender?.toString() === item.code}
+                  checked={userData.data.user.gender.toString() === item.code}
                 />
               ))}
             </RadioGroup>
@@ -105,13 +183,7 @@ export const Detail = () => {
         </Grid>
         <Grid item xs={12}>
           <Box display="flex" flexDirection="row" justifyContent="center">
-            <Button
-              variant="contained"
-              sx={{ marginRight: 1 }}
-              onClick={() => {
-                alert("更新!");
-              }}
-            >
+            <Button variant="contained" sx={{ marginRight: 1 }} type="submit">
               更新
             </Button>
             <Button
