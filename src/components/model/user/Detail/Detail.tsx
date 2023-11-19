@@ -140,6 +140,9 @@ export const Detail = () => {
                 placeholder="yyyy/MM/dd"
                 error={!!errors.birthday}
                 helperText={errors.birthday?.message}
+                InputProps={{
+                  readOnly: true,
+                }}
               />
             )}
           />
