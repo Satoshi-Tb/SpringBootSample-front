@@ -25,10 +25,10 @@ const schema = z.object({
   password: z.string(),
   userName: z.string().min(1, "入力必須です"),
   birthday: z.string().optional(),
-  age: z.coerce
-    .number()
-    .nonnegative("数値は0以上である必要があります")
-    .optional(),
+  age: z.preprocess(
+    (val) => (val ? Number(val) : null),
+    z.number().nonnegative("数値は0以上である必要があります").nullable()
+  ),
   profile: z.string().optional(),
   gender: z.string(),
 });
@@ -88,7 +88,7 @@ export const Detail = () => {
     setValue("password", user.password);
     setValue("userName", user.userName);
     setValue("birthday", user.birthday);
-    setValue("age", user.age);
+    setValue("age", user.age ?? null);
     setValue("gender", user.gender.toString());
     setValue("profile", user.profile);
   }, [userData]);
@@ -102,7 +102,7 @@ export const Detail = () => {
         userId: form.userId,
         userName: form.userName,
         password: form.password,
-        age: form.age ? form.age : null,
+        age: form.age,
         gender: parseInt(form.gender),
         profile: form.profile,
         updateMode: "replace",

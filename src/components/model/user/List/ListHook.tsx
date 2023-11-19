@@ -117,7 +117,7 @@ export const useListHook = () => {
         userId: newRow.userId,
         userName: newRow.userName,
         password: newRow.password,
-        age: newRow.age,
+        age: newRow.age ?? null,
         gender: newRow.gender,
         updateMode: "append",
       });
