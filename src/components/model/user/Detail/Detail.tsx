@@ -1,16 +1,38 @@
+import { useCategoryCode } from "@/components/usecase/useCategoryCodeList";
 import { useUserDetail } from "@/components/usecase/useUserDetail";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  Radio,
+  RadioGroup,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useRouter } from "next/router";
 
 export const Detail = () => {
   const router = useRouter();
   const { userId } = router.query;
 
-  const { userData, hasError, isLoading } = useUserDetail(
-    (userId as string) || undefined
-  );
-  if (hasError) return <div>failed to load</div>;
-  if (isLoading || !userData) return <div>loading...</div>;
+  const {
+    userData,
+    hasError: hasUserDataError,
+    isLoading: isUserDataLogind,
+  } = useUserDetail((userId as string) || undefined);
+
+  // 性別コード
+  const {
+    categoryCodeListData: genderList,
+    hasError: hasCategoryError,
+    isLoading: isCategoryLoding,
+  } = useCategoryCode("gender");
+
+  if (hasUserDataError || hasCategoryError) return <div>failed to load</div>;
+  if (isUserDataLogind || !userData || isCategoryLoding || !genderList)
+    return <div>loading...</div>;
   return (
     <Box sx={{ marginTop: 2 }}>
       <Grid container spacing={2}>
@@ -30,25 +52,37 @@ export const Detail = () => {
           <Typography>ユーザー名</Typography>
         </Grid>
         <Grid item xs={8}>
-          <Typography>{userData.data.user.userName}</Typography>
+          <TextField fullWidth value={userData.data.user.userName}></TextField>
         </Grid>
         <Grid item xs={4}>
           <Typography>誕生日</Typography>
         </Grid>
         <Grid item xs={8}>
-          <Typography>{userData.data.user.birthday}</Typography>
+          <TextField value={userData.data.user.birthday}></TextField>
         </Grid>
         <Grid item xs={4}>
           <Typography>年齢</Typography>
         </Grid>
         <Grid item xs={8}>
-          <Typography>{userData.data.user.age}</Typography>
+          <TextField value={userData.data.user.age}></TextField>
         </Grid>
         <Grid item xs={4}>
           <Typography>性別</Typography>
         </Grid>
         <Grid item xs={8}>
-          <Typography>{userData.data.user.genderName}</Typography>
+          <FormControl>
+            <RadioGroup aria-labelledby="gender-group" row name="gender">
+              {genderList?.data.map((item) => (
+                <FormControlLabel
+                  value={item.code}
+                  key={item.code}
+                  control={<Radio />}
+                  label={item.name}
+                  checked={userData.data.user.gender?.toString() === item.code}
+                />
+              ))}
+            </RadioGroup>
+          </FormControl>
         </Grid>
         <Grid item xs={4}>
           <Typography>部署名</Typography>
@@ -62,7 +96,12 @@ export const Detail = () => {
           <Typography>プロフィール</Typography>
         </Grid>
         <Grid item xs={8}>
-          <Typography>{userData.data.user.profile}</Typography>
+          <TextField
+            fullWidth
+            multiline
+            value={userData.data.user.profile}
+            rows={3}
+          />
         </Grid>
         <Grid item xs={12}>
           <Box display="flex" flexDirection="row" justifyContent="center">
