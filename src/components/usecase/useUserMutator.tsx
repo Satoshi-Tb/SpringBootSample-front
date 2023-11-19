@@ -3,13 +3,14 @@ import useSWRMutation from "swr/mutation";
 export type UserPutType = {
   id: string | number;
   userId: string;
-  password?: string;
-  userName?: string;
+  password: string;
+  userName: string;
   birthday?: string;
-  age?: number;
-  gender?: number;
+  age?: number | null;
+  gender: number;
+  profile?: string;
   departmentId?: number;
-  updateMode: string;
+  updateMode: "append" | "replace";
 };
 
 export const useUpdateUser = () => {

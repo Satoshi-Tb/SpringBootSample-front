@@ -117,7 +117,9 @@ export const useListHook = () => {
         userId: newRow.userId,
         userName: newRow.userName,
         password: newRow.password,
-        updateMode: "replace",
+        age: newRow.age,
+        gender: newRow.gender,
+        updateMode: "append",
       });
       console.log("更新結果", result);
       console.log("更新データ", data);

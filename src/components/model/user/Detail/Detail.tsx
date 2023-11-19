@@ -1,5 +1,7 @@
 import { useCategoryCode } from "@/components/usecase/useCategoryCodeList";
+import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useUserDetail } from "@/components/usecase/useUserDetail";
+import { useUpdateUser } from "@/components/usecase/useUserMutator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
@@ -19,6 +21,8 @@ import { z } from "zod";
 
 // Zod スキーマ
 const schema = z.object({
+  userId: z.string(),
+  password: z.string(),
   userName: z.string().min(1, "入力必須です"),
   birthday: z.string().optional(),
   age: z.coerce
@@ -36,12 +40,18 @@ export const Detail = () => {
   const router = useRouter();
   const { userId } = router.query;
 
-  // ユーザー詳細データ
+  // ユーザー詳細データ取得
   const {
     userData,
     hasError: hasUserDataError,
     isLoading: isUserDataLogind,
   } = useUserDetail((userId as string) || undefined);
+
+  // 更新処理
+  const { trigger: updateUser, error, data } = useUpdateUser();
+
+  //再読込
+  const { mutate } = useSWRMutator();
 
   // 性別コード
   const {
@@ -56,9 +66,12 @@ export const Detail = () => {
     control,
     formState: { errors },
     setValue,
+    register,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
+      userId: "",
+      password: "",
       userName: "",
       birthday: "",
       age: undefined,
@@ -71,6 +84,8 @@ export const Detail = () => {
   useEffect(() => {
     if (!userData) return;
     const user = userData.data.user;
+    setValue("userId", user.userId);
+    setValue("password", user.password);
     setValue("userName", user.userName);
     setValue("birthday", user.birthday);
     setValue("age", user.age);
@@ -79,9 +94,29 @@ export const Detail = () => {
   }, [userData]);
 
   // 更新ボタン押下アクション
-  const onValid = (form: any) => {
+  const onValid = async (form: FormData) => {
     console.log("submit", form);
-    alert("更新!");
+    try {
+      const result = await updateUser({
+        id: form.userId,
+        userId: form.userId,
+        userName: form.userName,
+        password: form.password,
+        age: form.age ? form.age : null,
+        gender: parseInt(form.gender),
+        profile: form.profile,
+        updateMode: "replace",
+      });
+      console.log("更新結果", result);
+
+      // 更新後データ再読込
+      const key = `http://localhost:8080/api/user/detail/${form.userId}`;
+      mutate(key);
+      alert("更新!");
+    } catch (e) {
+      console.log(e);
+      alert("エラー!");
+    }
   };
 
   const onInvalid = () => {
@@ -229,6 +264,8 @@ export const Detail = () => {
           </Box>
         </Grid>
       </Grid>
+      <input type="hidden" {...register("userId")} />
+      <input type="hidden" {...register("password")} />
     </Box>
   );
 };
