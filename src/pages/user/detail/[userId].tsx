@@ -1,8 +1,8 @@
 import React from "react";
-import Detail from "@/components/model/user/Detail";
+import { DetailPage } from "@/components/page/user/DetailPage";
 
 const detail = () => {
-  return <Detail />;
+  return <DetailPage />;
 };
 
 export default detail;

@@ -1,8 +1,13 @@
+import { useUserDetail } from "@/components/usecase/useUserDetail";
 import { useRouter } from "next/router";
-import React from "react";
 
 export const Detail = () => {
   const router = useRouter();
   const { userId } = router.query;
-  return <div>Detail {userId}</div>;
+
+  const { userData, hasError, isLoading } = useUserDetail(
+    (userId as string) || undefined
+  );
+
+  return <div>詳細</div>;
 };
