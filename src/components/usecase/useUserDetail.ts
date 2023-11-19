@@ -3,7 +3,7 @@ import type { BasicResponseType } from "@/TypeDef";
 import { UserType } from "./useUserList";
 
 export type UserDetailResponseType = {
-  data: UserType;
+  data: { user: UserType };
 } & BasicResponseType;
 
 export const useUserDetail = (userId: string | undefined) => {
