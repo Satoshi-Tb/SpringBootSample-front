@@ -10,6 +10,7 @@ export type UserType = {
   age?: number;
   gender?: number;
   genderName?: string;
+  profile?: string;
   department?: {
     departmentId?: number;
     departmentName?: string;

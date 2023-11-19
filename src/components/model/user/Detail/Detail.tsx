@@ -58,6 +58,12 @@ export const Detail = () => {
             {userData.data.user.department?.departmentName}
           </Typography>
         </Grid>
+        <Grid item xs={4}>
+          <Typography>プロフィール</Typography>
+        </Grid>
+        <Grid item xs={8}>
+          <Typography>{userData.data.user.profile}</Typography>
+        </Grid>
         <Grid item xs={12}>
           <Box display="flex" flexDirection="row" justifyContent="center">
             <Button
