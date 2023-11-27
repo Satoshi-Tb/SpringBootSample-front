@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import type { BasicResponseType } from "@/TypeDef";
+import envConfig from "@/utils/envConfig";
 
 export type UserType = {
   id: string | number;
@@ -35,12 +36,8 @@ export const useUserList = (condition?: string) => {
   const fetcher = (input: RequestInfo | URL, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
 
-  // const { data, error, isLoading, mutate } = useSWR<UserListResponseType>(
-  //   `http://localhost:8080/api/user/get/list-pager${condition}`,
-  //   fetcher
-  // );
   const { data, error, isLoading, mutate } = useSWR<UserListResponseType>(
-    `http://localhost:3000/api/user/get/list-pager${condition}`,
+    `${envConfig.apiUrl}/api/user/get/list-pager${condition}`,
     fetcher
   );
   console.log("fetch data", data);
