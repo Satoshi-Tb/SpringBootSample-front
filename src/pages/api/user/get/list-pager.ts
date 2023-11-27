@@ -95,10 +95,33 @@ const dummyUsers: UserType[] = [
 ];
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  //console.log(req.query);
+
+  const cond: {
+    userId?: string;
+    userName?: string;
+    page?: string;
+    size?: string;
+  } = req.query;
+
+  const filteredData = dummyUsers.filter(
+    (user) =>
+      (!cond.userId || user.userId.includes(cond.userId)) &&
+      (!cond.userName || user.userName.includes(cond.userName))
+  );
+
+  const pageData =
+    cond.page && cond.size
+      ? filteredData.slice(
+          Number.parseInt(cond.page) * Number.parseInt(cond.size),
+          (Number.parseInt(cond.page) + 1) * Number.parseInt(cond.size)
+        )
+      : filteredData;
+
   const userListResponseType = {
     data: {
-      userList: dummyUsers,
-      resultNum: dummyUsers.length,
+      userList: pageData,
+      resultNum: filteredData.length,
     },
   };
 
