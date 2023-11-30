@@ -15,26 +15,6 @@ import {
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useUpdateUser } from "@/components/usecase/useUserMutator";
 
-// // サンプルグリッドデータ
-// const sampleData = [
-//   {
-//     id: 1,
-//     userId: "system@co.jp",
-//     userName: "システム管理者",
-//     birthday: "2000/01/01",
-//     age: 21,
-//     gender: "男性",
-//   },
-//   {
-//     id: 2,
-//     userId: "user@co.jp",
-//     userName: "ユーザー1",
-//     birthday: "2000/01/01",
-//     age: 21,
-//     gender: "女性",
-//   },
-// ];
-
 export const useListHook = () => {
   // 画面データ
   const [rowData, setRowData] = useState<UserType[]>([]);
