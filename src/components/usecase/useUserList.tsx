@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import type { BasicResponseType } from "@/TypeDef";
+import type { BasicResponseType, SearchCondition } from "@/TypeDef";
 import envConfig from "@/utils/envConfig";
 
 export type UserType = {
@@ -31,13 +31,25 @@ export type UserListResponseType = {
   };
 } & BasicResponseType;
 
-export const useUserList = (condition?: string) => {
+const buildParam = (condition: SearchCondition) => {
+  return condition
+    ? "?" +
+        Object.entries(condition)
+          .filter(([key, value]) => value !== "")
+          .map(([key, value]) => `${key}=${value}`)
+          .join("&")
+    : "";
+};
+
+export const useUserList = (condition?: SearchCondition) => {
   // データ取得処理
   const fetcher = (input: RequestInfo | URL, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
 
   const { data, error, isLoading, mutate } = useSWR<UserListResponseType>(
-    `${envConfig.apiUrl}/api/user/get/list-pager${condition}`,
+    condition
+      ? `${envConfig.apiUrl}/api/user/get/list-pager${buildParam(condition)}`
+      : null,
     fetcher
   );
   console.log("fetch data", data);

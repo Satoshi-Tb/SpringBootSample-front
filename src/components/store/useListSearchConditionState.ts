@@ -1,9 +1,10 @@
+import { SearchCondition } from "@/TypeDef";
 import React from "react";
 import { useRecoilValue, useSetRecoilState, atom } from "recoil";
 
-const listSearchConditionState = atom<string>({
+const listSearchConditionState = atom<SearchCondition>({
   key: "listSearchConditionState",
-  default: "",
+  default: { userId: "", userName: "", page: 0, size: 5 },
 });
 
 export const useListSearchConditionState = () => {
@@ -14,7 +15,7 @@ export const useListSearchConditionMutators = () => {
   const setState = useSetRecoilState(listSearchConditionState);
 
   const setListSearchCondition = React.useCallback(
-    (condition: string) => setState(condition),
+    (condition: SearchCondition) => setState(condition),
     [setState]
   );
 

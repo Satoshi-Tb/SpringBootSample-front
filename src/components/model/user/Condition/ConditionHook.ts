@@ -22,26 +22,15 @@ export const useConditionHook = () => {
   const userListPageOffset = useUserListSelectedPage();
   const userListRowsPerPage = useUserListPageSizeState();
 
-  const buildParam = (form: { userId?: string; userName?: string }) => {
-    const conditions: { key: string; value: string }[] = [];
-    if (form?.userId) conditions.push({ key: "userId", value: form.userId });
-    if (form?.userName)
-      conditions.push({ key: "userName", value: form.userName });
-    conditions.push({ key: "page", value: userListPageOffset.toString() });
-    conditions.push({ key: "size", value: userListRowsPerPage.toString() });
-
-    return conditions.length === 0
-      ? ""
-      : "?" + conditions.map((item) => `${item.key}=${item.value}`).join("&");
-  };
-
   // 検索ボタン押下アクション
   const onValid = (form: FormData) => {
-    console.log(form);
-    const cond = buildParam(form);
-
-    console.log("submit condition", cond);
-    setListSearchCondition(cond);
+    console.log("form", form);
+    setListSearchCondition({
+      userId: form.userId,
+      userName: form.userName,
+      page: userListPageOffset,
+      size: userListRowsPerPage,
+    });
   };
 
   /** フォーム定義 */
@@ -51,13 +40,13 @@ export const useConditionHook = () => {
 
   // 初期検索条件の構築。これが必要なはず
   useEffect(() => {
-    const cond = buildParam({
+    setListSearchCondition({
       userId: getValues("userId"),
       userName: getValues("userName"),
+      page: userListPageOffset,
+      size: userListRowsPerPage,
     });
-    console.log("condition init", cond);
-    setListSearchCondition(cond);
-  }, [buildParam, setListSearchCondition]);
+  }, [getValues, userListPageOffset, userListRowsPerPage]);
 
   return { handleSubmit, onValid, control };
 };
