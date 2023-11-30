@@ -1,6 +1,6 @@
 export type SearchCondition = {
   userId?: string;
-  userName?: String;
+  userName?: string;
   page: number;
   size: number;
 };

@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { UserType, useUserList } from "@/components/usecase/useUserList";
+import {
+  UserType,
+  useUserList,
+  useUserListPost,
+} from "@/components/usecase/useUserList";
 import { useListSearchConditionState } from "@/components/store/useListSearchConditionState";
 import {
   GridColDef,
@@ -29,7 +33,8 @@ export const useListHook = () => {
   //再読込
   const { mutate } = useSWRMutator();
   // データ取得処理
-  const { userListData, hasError, isLoading } = useUserList(condition);
+  //const { userListData, hasError, isLoading } = useUserList(condition);
+  const { userListData, hasError, isLoading } = useUserListPost(condition);
   // 更新処理
   const { trigger: updateUser, error, data } = useUpdateUser();
 

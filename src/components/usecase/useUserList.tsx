@@ -56,3 +56,36 @@ export const useUserList = (condition?: SearchCondition) => {
 
   return { userListData: data, hasError: error, isLoading, mutate };
 };
+
+/**
+ * POSTによる検索処理
+ * @param condition
+ * @returns
+ */
+export const useUserListPost = (condition?: SearchCondition) => {
+  // データ取得処理
+  const fetcher = async ([url, condition]: [
+    url: string | null,
+    condition: SearchCondition | undefined
+  ]) => {
+    const res = await fetch(url!, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(condition),
+    });
+    return res.json();
+  };
+
+  const { data, error, isLoading, mutate } = useSWR(
+    [
+      condition ? `${envConfig.apiUrl}/api/user/get/list-pager` : null,
+      condition,
+    ],
+    fetcher
+  );
+  console.log("fetch data", data);
+
+  return { userListData: data, hasError: error, isLoading, mutate };
+};
