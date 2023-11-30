@@ -34,7 +34,7 @@ const dummyUsers: UserType[] = [
   },
   {
     id: "3",
-    userId: "user03",
+    userId: "system03",
     password: "password01",
     userName: "User 3",
     birthday: "1990-01-01",
@@ -79,7 +79,7 @@ const dummyUsers: UserType[] = [
   },
   {
     id: "6",
-    userId: "user06",
+    userId: "system06",
     password: "password01",
     userName: "User 6",
     birthday: "1990-01-01",
@@ -95,35 +95,44 @@ const dummyUsers: UserType[] = [
 ];
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  //console.log(req.query);
+  console.log(req.method);
 
-  const cond: {
-    userId?: string;
-    userName?: string;
-    page?: string;
-    size?: string;
-  } = req.query;
+  switch (req.method) {
+    case "GET":
+      const cond: {
+        userId?: string;
+        userName?: string;
+        page?: string;
+        size?: string;
+      } = req.query;
 
-  const filteredData = dummyUsers.filter(
-    (user) =>
-      (!cond.userId || user.userId.includes(cond.userId)) &&
-      (!cond.userName || user.userName.includes(cond.userName))
-  );
+      const filteredData = dummyUsers.filter(
+        (user) =>
+          (!cond.userId || user.userId.includes(cond.userId)) &&
+          (!cond.userName || user.userName.includes(cond.userName))
+      );
 
-  const pageData =
-    cond.page && cond.size
-      ? filteredData.slice(
-          Number.parseInt(cond.page) * Number.parseInt(cond.size),
-          (Number.parseInt(cond.page) + 1) * Number.parseInt(cond.size)
-        )
-      : filteredData;
+      const pageData =
+        cond.page && cond.size
+          ? filteredData.slice(
+              Number.parseInt(cond.page) * Number.parseInt(cond.size),
+              (Number.parseInt(cond.page) + 1) * Number.parseInt(cond.size)
+            )
+          : filteredData;
 
-  const userListResponseType = {
-    data: {
-      userList: pageData,
-      resultNum: filteredData.length,
-    },
-  };
+      const userListResponseType = {
+        data: {
+          userList: pageData,
+          resultNum: filteredData.length,
+        },
+      };
 
-  res.status(200).json(userListResponseType);
+      res.status(200).json(userListResponseType);
+
+      break;
+
+    default:
+      res.status(500);
+      break;
+  }
 }
