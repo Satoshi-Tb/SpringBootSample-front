@@ -14,7 +14,15 @@ export const List = () => {
     handleProcessRowUpdate,
   } = useListHook();
 
-  if (hasError) return <div>failed to load</div>;
+  if (hasError)
+    return (
+      <>
+        <div>failed to load</div>
+        <div>
+          <p>{hasError.message}</p>
+        </div>
+      </>
+    );
   return (
     <Box>
       <DataGrid

@@ -18,6 +18,7 @@ import {
 } from "@/components/store/useUserListPaginationState";
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useUpdateUser } from "@/components/usecase/useUserMutator";
+import envConfig from "@/utils/envConfig";
 
 export const useListHook = () => {
   // 画面データ
@@ -111,7 +112,8 @@ export const useListHook = () => {
 
       // 更新後データ再読込
       console.log("condition", condition);
-      const key = `http://localhost:8080/api/user/get/list-pager${condition}`;
+      //const key = `${envConfig.apiUrl}/api/user/get/list-pager${condition}`;
+      const key = [`${envConfig.apiUrl}/api/user/get/list-pager`, condition]; // POST版の場合のkey指定
       mutate(key);
 
       // DB更新が成功した場合、新しい行データを返してグリッドにコミットする
@@ -124,7 +126,9 @@ export const useListHook = () => {
   };
 
   useEffect(() => {
-    if (!userListData || !userListData.data.userList) return;
+    console.log("useEffect:userListData", userListData);
+    console.log("useEffect:hasError", hasError);
+    if (hasError || !userListData || !userListData.data.userList) return;
     setRowData(userListData.data.userList);
     setRowCount(userListData.data.resultNum);
   }, [userListData]);

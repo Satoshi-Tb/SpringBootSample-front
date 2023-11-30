@@ -41,6 +41,9 @@ const buildParam = (condition: SearchCondition) => {
     : "";
 };
 
+/**
+ * GETによる検索処理
+ */
 export const useUserList = (condition?: SearchCondition) => {
   // データ取得処理
   const fetcher = (input: RequestInfo | URL, init?: RequestInit | undefined) =>
@@ -68,6 +71,8 @@ export const useUserListPost = (condition?: SearchCondition) => {
     url: string | null,
     condition: SearchCondition | undefined
   ]) => {
+    // 発生したエラーは、useSWRのerror変数にセットされる
+    // throw new Error("error test");
     const res = await fetch(url!, {
       method: "POST",
       headers: {
@@ -75,9 +80,15 @@ export const useUserListPost = (condition?: SearchCondition) => {
       },
       body: JSON.stringify(condition),
     });
+    console.log("useUserListPost success");
     return res.json();
   };
 
+  // keyを[url, token1, token2, ...]形式で指定する。キャッシュのkeyは配列要素の組み合わせとなる
+  // tokenに検索条件を指定することで、post処理でも検索条件ごとにキャッシュを有効にできる
+  // fetcher関数にはkeyに指定した配列がそのまま引数として渡る
+  // urlにnullを指定すると、フェッチ処理キャンセル（のはず）
+  // 詳細：https://swr.vercel.app/ja/docs/arguments
   const { data, error, isLoading, mutate } = useSWR(
     [
       condition ? `${envConfig.apiUrl}/api/user/get/list-pager` : null,
