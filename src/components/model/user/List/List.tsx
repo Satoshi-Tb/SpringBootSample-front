@@ -42,6 +42,8 @@ export const List = () => {
         onPaginationModelChange={handlePaginationModelChange}
         rowCount={rowCount}
         paginationMode="server"
+        checkboxSelection
+        keepNonExistentRowsSelected
       />
     </Box>
   );
