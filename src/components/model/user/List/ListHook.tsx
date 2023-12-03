@@ -10,6 +10,7 @@ import {
   GridPaginationModel,
   GridPreProcessEditCellProps,
   GridRenderCellParams,
+  GridRowSelectionModel,
 } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import {
@@ -19,6 +20,7 @@ import {
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useUpdateUser } from "@/components/usecase/useUserMutator";
 import envConfig from "@/utils/envConfig";
+import { useUserListSelectedRowIdsMutator } from "@/components/store/useUserListRowSelectionState";
 
 export const useListHook = () => {
   // 画面データ
@@ -29,6 +31,9 @@ export const useListHook = () => {
   const { setUserListSelectedPage } = useUserListSelectedPageMutators();
   // ページサイズ
   const { setUserListPageSize } = useUserListPageSizeMutators();
+  // 選択行IDリスト
+  const { setUserListSelectedRowIds } = useUserListSelectedRowIdsMutator();
+
   // 検索条件
   const condition = useListSearchConditionState();
   //再読込
@@ -125,6 +130,22 @@ export const useListHook = () => {
     }
   };
 
+  const handleRowSelectionModel = (
+    newSelectionModel: GridRowSelectionModel
+  ) => {
+    console.log("selectedRowIds:", newSelectionModel);
+    setUserListSelectedRowIds(newSelectionModel);
+    // 選択行データを取得。
+    // この方法はサーバーページネーションの場合、正しく動作しない
+    // サーバーページネーションの場合、rowDataは1ページ分しか保持していない。
+    // データ追跡する場合、rowidを条件にバックエンドからデータ取得する必要がある
+    const selectedRows = rowData.filter((row) =>
+      newSelectionModel.includes(row.userId)
+    );
+
+    console.log("selectedRows:", selectedRows);
+  };
+
   useEffect(() => {
     console.log("useEffect:userListData", userListData);
     console.log("useEffect:hasError", hasError);
@@ -141,5 +162,6 @@ export const useListHook = () => {
     columns,
     handlePaginationModelChange,
     handleProcessRowUpdate,
+    handleRowSelectionModel,
   };
 };

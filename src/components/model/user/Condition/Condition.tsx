@@ -6,7 +6,8 @@ import { useListSearchConditionState } from "@/components/store/useListSearchCon
 
 export const Condition = () => {
   // フォーム定義、アクション
-  const { handleSubmit, onValid, control } = useConditionHook();
+  const { handleSubmit, onValid, control, handleBulkDelete } =
+    useConditionHook();
 
   // 再読込処理用
   const condition = useListSearchConditionState();
@@ -54,6 +55,14 @@ export const Condition = () => {
           }}
         >
           再読込
+        </Button>
+        <Button
+          type="button"
+          variant="contained"
+          sx={{ margin: "2px" }}
+          onClick={handleBulkDelete}
+        >
+          一括削除
         </Button>
       </Box>
     </Box>

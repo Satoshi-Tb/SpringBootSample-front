@@ -12,6 +12,7 @@ export const List = () => {
     columns,
     handlePaginationModelChange,
     handleProcessRowUpdate,
+    handleRowSelectionModel,
   } = useListHook();
 
   if (hasError)
@@ -44,6 +45,7 @@ export const List = () => {
         paginationMode="server"
         checkboxSelection
         keepNonExistentRowsSelected
+        onRowSelectionModelChange={handleRowSelectionModel}
       />
     </Box>
   );

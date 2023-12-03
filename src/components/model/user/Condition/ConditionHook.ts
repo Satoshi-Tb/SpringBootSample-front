@@ -7,6 +7,7 @@ import {
   useUserListPageSizeState,
 } from "@/components/store/useUserListPaginationState";
 import { useEffect } from "react";
+import { useUserListSelectedRowIds } from "@/components/store/useUserListRowSelectionState";
 
 // Zod スキーマ
 const schema = z.object({
@@ -21,6 +22,7 @@ export const useConditionHook = () => {
   const { setListSearchCondition } = useListSearchConditionMutators();
   const userListPageOffset = useUserListSelectedPage();
   const userListRowsPerPage = useUserListPageSizeState();
+  const selectedRowIds = useUserListSelectedRowIds();
 
   // 検索ボタン押下アクション
   const onValid = (form: FormData) => {
@@ -38,6 +40,11 @@ export const useConditionHook = () => {
     resolver: zodResolver(schema),
   });
 
+  // 一括削除押下
+  const handleBulkDelete = () => {
+    console.log("Condition>handleBulkDelete: selectedRowIds", selectedRowIds);
+  };
+
   // 初期検索条件の構築。これが必要なはず
   useEffect(() => {
     setListSearchCondition({
@@ -48,5 +55,5 @@ export const useConditionHook = () => {
     });
   }, [getValues, userListPageOffset, userListRowsPerPage]);
 
-  return { handleSubmit, onValid, control };
+  return { handleSubmit, onValid, control, handleBulkDelete };
 };
