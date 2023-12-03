@@ -1,13 +1,19 @@
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useListSearchConditionMutators } from "@/components/store/useListSearchConditionState";
+import {
+  useListSearchConditionMutators,
+  useListSearchConditionState,
+} from "@/components/store/useListSearchConditionState";
 import {
   useUserListSelectedPage,
   useUserListPageSizeState,
 } from "@/components/store/useUserListPaginationState";
 import { useEffect } from "react";
 import { useUserListSelectedRowIds } from "@/components/store/useUserListRowSelectionState";
+import { useDeleteUser } from "@/components/usecase/useUserMutator";
+import envConfig from "@/utils/envConfig";
+import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 
 // Zod スキーマ
 const schema = z.object({
@@ -23,6 +29,13 @@ export const useConditionHook = () => {
   const userListPageOffset = useUserListSelectedPage();
   const userListRowsPerPage = useUserListPageSizeState();
   const selectedRowIds = useUserListSelectedRowIds();
+
+  // 一括削除処理
+  const { trigger: deleteUser } = useDeleteUser();
+  // 検索条件
+  const condition = useListSearchConditionState();
+  //再読込
+  const { mutate } = useSWRMutator();
 
   // 検索ボタン押下アクション
   const onValid = (form: FormData) => {
@@ -41,8 +54,18 @@ export const useConditionHook = () => {
   });
 
   // 一括削除押下
-  const handleBulkDelete = () => {
+  const handleBulkDelete = async () => {
     console.log("Condition>handleBulkDelete: selectedRowIds", selectedRowIds);
+    try {
+      const userIds = selectedRowIds.map((id) => id.toString());
+      await deleteUser({ userIdList: userIds });
+
+      // 更新後データ再読込
+      const key = [`${envConfig.apiUrl}/api/user/get/list-pager`, condition]; // POST版の場合のkey指定
+      mutate(key);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   // 初期検索条件の構築。これが必要なはず
