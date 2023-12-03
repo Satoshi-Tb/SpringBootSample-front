@@ -68,12 +68,12 @@ export const useUserList = (condition?: SearchCondition) => {
 export const useUserListPost = (condition?: SearchCondition) => {
   // データ取得処理
   const fetcher = async ([url, condition]: [
-    url: string | null,
-    condition: SearchCondition | undefined
+    url: string,
+    condition: SearchCondition
   ]) => {
     // 発生したエラーは、useSWRのerror変数にセットされる
     // throw new Error("error test");
-    const res = await fetch(url!, {
+    const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -90,13 +90,13 @@ export const useUserListPost = (condition?: SearchCondition) => {
   // urlにnullを指定すると、フェッチ処理キャンセル（のはず）
   // 詳細：https://swr.vercel.app/ja/docs/arguments
   const { data, error, isLoading, mutate } = useSWR(
-    [
-      condition ? `${envConfig.apiUrl}/api/user/get/list-pager` : null,
-      condition,
-    ],
+    condition
+      ? [`${envConfig.apiUrl}/api/user/get/list-pager`, condition]
+      : null,
     fetcher
   );
-  console.log("fetch data", data);
+  console.log("useUserListPost>fetch condition", condition);
+  console.log("useUserListPost>fetch data", data);
 
   return { userListData: data, hasError: error, isLoading, mutate };
 };
