@@ -31,7 +31,7 @@ export const useConditionHook = () => {
   const selectedRowIds = useUserListSelectedRowIds();
 
   // 一括削除処理
-  const { trigger: deleteUser } = useDeleteUser();
+  const { trigger: deleteUser, error: deleteError } = useDeleteUser();
   // 検索条件
   const condition = useListSearchConditionState();
   //再読込
@@ -64,7 +64,7 @@ export const useConditionHook = () => {
       const key = [`${envConfig.apiUrl}/api/user/get/list-pager`, condition]; // POST版の場合のkey指定
       mutate(key);
     } catch (e) {
-      console.log(e);
+      console.log("handleBulkDelete err:", e);
     }
   };
 
@@ -78,5 +78,5 @@ export const useConditionHook = () => {
     });
   }, [getValues, userListPageOffset, userListRowsPerPage]);
 
-  return { handleSubmit, onValid, control, handleBulkDelete };
+  return { handleSubmit, onValid, control, handleBulkDelete, deleteError };
 };

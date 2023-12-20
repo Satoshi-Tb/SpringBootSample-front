@@ -6,7 +6,7 @@ import { useListSearchConditionState } from "@/components/store/useListSearchCon
 
 export const Condition = () => {
   // フォーム定義、アクション
-  const { handleSubmit, onValid, control, handleBulkDelete } =
+  const { handleSubmit, onValid, control, handleBulkDelete, deleteError } =
     useConditionHook();
 
   // 再読込処理用
@@ -23,6 +23,7 @@ export const Condition = () => {
       onSubmit={handleSubmit(onValid)}
       display="flex"
     >
+      {deleteError && <p>エラーが発生しました: {deleteError.message}</p>}
       <Controller
         name="userId"
         control={control}

@@ -42,13 +42,19 @@ export const useDeleteUser = () => {
   // 追加の引数は第二引数の `arg` プロパティとして渡されます
   const deleteUser = async (url: string, { arg }: { arg: UserDeleteType }) => {
     console.log("useDeleteUser>trigger", arg);
-    await fetch(url, {
+    const res = await fetch(url, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(arg),
     });
+
+    if (res.status !== 200) {
+      throw "useDeleteUser error";
+    }
+
+    return res.json();
   };
 
   return useSWRMutation(`${envConfig.apiUrl}/api/user/delete`, deleteUser);
