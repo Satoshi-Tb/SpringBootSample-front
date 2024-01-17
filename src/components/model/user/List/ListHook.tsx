@@ -21,6 +21,7 @@ import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useUpdateUser } from "@/components/usecase/useUserMutator";
 import envConfig from "@/utils/envConfig";
 import { useUserListSelectedRowIdsMutator } from "@/components/store/useUserListRowSelectionState";
+import { Link } from "@mui/material";
 
 export const useListHook = () => {
   // 画面データ
@@ -46,7 +47,16 @@ export const useListHook = () => {
 
   // グリッドのカラム定義
   const columns: GridColDef[] = [
-    { field: "userId", headerName: "ユーザーID", width: 150 },
+    {
+      field: "userId",
+      headerName: "ユーザーID",
+      width: 150,
+      renderCell: (params: GridRenderCellParams<any, Date>) => (
+        <Link href={`/user/detail/${params.row.userId}`}>
+          {params.row.userId}
+        </Link>
+      ),
+    },
     {
       field: "userName",
       headerName: "ユーザー名",
