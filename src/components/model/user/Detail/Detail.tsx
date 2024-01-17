@@ -266,15 +266,17 @@ export const Detail = () => {
             </Button>
             <IconButton
               onClick={() => {
-                alert("before!");
+                router.push(`/user/detail/${userData.data.beforeUserId}`);
               }}
+              disabled={!userData.data.beforeUserId}
             >
               <NavigateBeforeIcon />
             </IconButton>
             <IconButton
               onClick={() => {
-                alert("next");
+                router.push(`/user/detail/${userData.data.nextUserId}`);
               }}
+              disabled={!userData.data.nextUserId}
             >
               <NavigateNextIcon />
             </IconButton>
