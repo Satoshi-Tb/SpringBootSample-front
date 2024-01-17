@@ -9,6 +9,7 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
+  IconButton,
   Radio,
   RadioGroup,
   TextField,
@@ -18,6 +19,8 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 
 // Zod スキーマ
 const schema = z.object({
@@ -261,6 +264,22 @@ export const Detail = () => {
             >
               削除
             </Button>
+            <IconButton
+              onClick={() => {
+                router.push(`/user/detail/${userData.data.beforeUserId}`);
+              }}
+              disabled={!userData.data.beforeUserId}
+            >
+              <NavigateBeforeIcon />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                router.push(`/user/detail/${userData.data.nextUserId}`);
+              }}
+              disabled={!userData.data.nextUserId}
+            >
+              <NavigateNextIcon />
+            </IconButton>
           </Box>
         </Grid>
       </Grid>
