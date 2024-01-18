@@ -14,6 +14,7 @@ import { useUserListSelectedRowIds } from "@/components/store/useUserListRowSele
 import { useDeleteUser } from "@/components/usecase/useUserMutator";
 import envConfig from "@/utils/envConfig";
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
+import { useRouter } from "next/router";
 
 // Zod スキーマ
 const schema = z.object({
@@ -29,6 +30,10 @@ export const useConditionHook = () => {
   const userListPageOffset = useUserListSelectedPage();
   const userListRowsPerPage = useUserListPageSizeState();
   const selectedRowIds = useUserListSelectedRowIds();
+  const showDetailButtonEnabled = selectedRowIds.length === 0;
+
+  // URLパラメータ取得
+  const router = useRouter();
 
   // 一括削除処理
   const { trigger: deleteUser, error: deleteError } = useDeleteUser();
@@ -68,6 +73,11 @@ export const useConditionHook = () => {
     }
   };
 
+  // 詳細ボタン押下
+  const handleOnClickDetail = () => {
+    router.push(`/user/detail/${selectedRowIds[0]}`);
+  };
+
   // 初期検索条件の構築。これが必要なはず
   useEffect(() => {
     setListSearchCondition({
@@ -78,5 +88,13 @@ export const useConditionHook = () => {
     });
   }, [getValues, userListPageOffset, userListRowsPerPage]);
 
-  return { handleSubmit, onValid, control, handleBulkDelete, deleteError };
+  return {
+    handleSubmit,
+    onValid,
+    control,
+    showDetailButtonEnabled,
+    handleBulkDelete,
+    handleOnClickDetail,
+    deleteError,
+  };
 };
