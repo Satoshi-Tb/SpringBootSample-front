@@ -9,3 +9,5 @@ export type BasicResponseType = {
   code: string;
   errors: [{ [key: string]: string }];
 };
+
+export type PagingModeType = "allRows" | "selectedRows";

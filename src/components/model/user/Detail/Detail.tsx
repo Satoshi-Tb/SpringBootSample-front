@@ -16,11 +16,13 @@ import {
   Typography,
 } from "@mui/material";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import { useUserListSelectedRowIds } from "@/components/store/useUserListRowSelectionState";
+import { PagingModeType } from "@/TypeDef";
 
 // Zod スキーマ
 const schema = z.object({
@@ -39,9 +41,19 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export const Detail = () => {
+  // 前のユーザーID
+  const [beforeUserId, setBeforeUseId] = useState<string | undefined>(
+    undefined
+  );
+  // 次のユーザーID
+  const [nextUserId, setNextUseId] = useState<string | undefined>(undefined);
+
   // URLパラメータ取得
   const router = useRouter();
-  const { userId } = router.query;
+  const { userId, pagingMode } = router.query;
+
+  // 選択IDリスト
+  const selectedRowIds = useUserListSelectedRowIds();
 
   // ユーザー詳細データ取得
   const {
@@ -86,6 +98,7 @@ export const Detail = () => {
   // フォーム初期値設定
   useEffect(() => {
     if (!userData) return;
+    const mode = pagingMode as PagingModeType;
     const user = userData.data.user;
     setValue("userId", user.userId);
     setValue("password", user.password);
@@ -94,7 +107,35 @@ export const Detail = () => {
     setValue("age", user.age ?? null);
     setValue("gender", user.gender.toString());
     setValue("profile", user.profile);
-  }, [userData]);
+
+    // const idx = selectedRowIds.findIndex((val) => {
+    //   console.log("val vs userId", val, user.userId);
+    //   return val === user.userId;
+    // });
+    // TODO 課題：ページ切替で選択行状態が解除されるため、うまく前後IDをとれない
+    const idx = selectedRowIds.indexOf(user.userId);
+    console.log("useEffect@selectedRowIds", selectedRowIds);
+    console.log("useEffect@userId", user.userId);
+    console.log("useEffect@idx", idx);
+
+    setBeforeUseId(
+      mode === "allRows"
+        ? userData.data.beforeUserId
+        : idx !== -1 && idx > 0
+        ? (selectedRowIds[idx - 1] as string)
+        : undefined
+    );
+    setNextUseId(
+      mode === "allRows"
+        ? userData.data.nextUserId
+        : idx !== -1 && idx + 1 < selectedRowIds.length
+        ? (selectedRowIds[idx + 1] as string)
+        : undefined
+    );
+  }, [userData, selectedRowIds, pagingMode]);
+  console.log("Detail beforeUserId", beforeUserId);
+  console.log("Detail nextUserId", nextUserId);
+  console.log("Detail selectedRowIds", selectedRowIds);
 
   // 更新ボタン押下アクション
   const onValid = async (form: FormData) => {
@@ -266,17 +307,21 @@ export const Detail = () => {
             </Button>
             <IconButton
               onClick={() => {
-                router.push(`/user/detail/${userData.data.beforeUserId}`);
+                router.push(
+                  `/user/detail/${beforeUserId}?pagingMode=${pagingMode}`
+                );
               }}
-              disabled={!userData.data.beforeUserId}
+              disabled={!beforeUserId}
             >
               <NavigateBeforeIcon />
             </IconButton>
             <IconButton
               onClick={() => {
-                router.push(`/user/detail/${userData.data.nextUserId}`);
+                router.push(
+                  `/user/detail/${nextUserId}?pagingMode=${pagingMode}`
+                );
               }}
-              disabled={!userData.data.nextUserId}
+              disabled={!nextUserId}
             >
               <NavigateNextIcon />
             </IconButton>

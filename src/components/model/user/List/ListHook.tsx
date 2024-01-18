@@ -52,7 +52,7 @@ export const useListHook = () => {
       headerName: "ユーザーID",
       width: 150,
       renderCell: (params: GridRenderCellParams<any, Date>) => (
-        <Link href={`/user/detail/${params.row.userId}`}>
+        <Link href={`/user/detail/${params.row.userId}?pagingMode=allRows`}>
           {params.row.userId}
         </Link>
       ),

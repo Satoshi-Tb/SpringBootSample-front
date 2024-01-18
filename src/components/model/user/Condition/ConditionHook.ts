@@ -75,7 +75,7 @@ export const useConditionHook = () => {
 
   // 詳細ボタン押下
   const handleOnClickDetail = () => {
-    router.push(`/user/detail/${selectedRowIds[0]}`);
+    router.push(`/user/detail/${selectedRowIds[0]}?pagingMode=selectedRows`);
   };
 
   // 初期検索条件の構築。これが必要なはず
