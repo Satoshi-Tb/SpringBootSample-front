@@ -1,6 +1,7 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useListHook } from "./ListHook";
+import { useSampleAuthState } from "@/components/store/useSampleAuthState";
 
 export const List = () => {
   // 照会
@@ -15,6 +16,8 @@ export const List = () => {
     handleRowSelectionModel,
   } = useListHook();
 
+  const auth = useSampleAuthState();
+
   if (hasError)
     return (
       <>
@@ -26,6 +29,7 @@ export const List = () => {
     );
   return (
     <Box>
+      <Typography>{auth}</Typography>
       <DataGrid
         columns={columns}
         rows={rowData}
