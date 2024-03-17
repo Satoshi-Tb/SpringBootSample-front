@@ -16,8 +16,6 @@ export const List = () => {
     handleRowSelectionModel,
   } = useListHook();
 
-  const auth = useSampleAuthState();
-
   if (hasError)
     return (
       <>
@@ -29,7 +27,6 @@ export const List = () => {
     );
   return (
     <Box>
-      <Typography>{auth}</Typography>
       <DataGrid
         columns={columns}
         rows={rowData}

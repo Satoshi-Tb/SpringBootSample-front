@@ -10,6 +10,6 @@ const list = () => {
 
 // 外側のコンポーネントから適用される。
 // ただし、useEffectは内側から実施されているように見える。
-const WrappedList = withLogger(withLoading(withSampleAuth(list)));
+const WrappedList = withLogger(withLoading(list));
 
 export default WrappedList;

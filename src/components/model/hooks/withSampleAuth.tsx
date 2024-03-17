@@ -3,6 +3,7 @@ import { useSampleAuthMutators } from "@/components/store/useSampleAuthState";
 import { ComponentType, useEffect } from "react";
 
 // HOC sample
+// Recoil利用するため、Recoil Root配下での使用必要
 export const withSampleAuth =
   <P extends {}>(WrappedComponent: ComponentType<P>) =>
   (props: P) => {
