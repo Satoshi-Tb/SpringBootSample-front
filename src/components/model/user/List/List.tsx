@@ -1,6 +1,7 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useListHook } from "./ListHook";
+import { useSampleAuthState } from "@/components/store/useSampleAuthState";
 
 export const List = () => {
   // 照会
@@ -25,7 +26,7 @@ export const List = () => {
       </>
     );
   return (
-    <Box>
+    <Box sx={{ height: 400 }}>
       <DataGrid
         columns={columns}
         rows={rowData}
