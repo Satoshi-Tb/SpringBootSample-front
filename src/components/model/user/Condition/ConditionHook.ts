@@ -78,6 +78,31 @@ export const useConditionHook = () => {
     router.push(`/user/detail/${selectedRowIds[0]}?pagingMode=selectedRows`);
   };
 
+  // Excel DLボタン
+  const handleExcelDownload = async () => {
+    const response = await fetch(
+      `${envConfig.apiUrl}/api/download/excel/sample`
+    );
+
+    if (!response.ok) {
+      console.log("エラー発生");
+      return;
+    }
+    const blob = await response.blob(); // レスポンスをBlobとして取得
+
+    // ファイルダウンロードのためのURLを作成
+    const url = window.URL.createObjectURL(new Blob([blob]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "download.xlsx"); // ダウンロードするファイルの名前
+    document.body.appendChild(link);
+    link.click();
+
+    // 後処理
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  };
+
   // 初期検索条件の構築。これが必要なはず
   useEffect(() => {
     setListSearchCondition({
@@ -95,6 +120,7 @@ export const useConditionHook = () => {
     showDetailButtonEnabled,
     handleBulkDelete,
     handleOnClickDetail,
+    handleExcelDownload,
     deleteError,
   };
 };

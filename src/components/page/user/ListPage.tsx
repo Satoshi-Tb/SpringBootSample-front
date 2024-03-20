@@ -6,7 +6,7 @@ import { Condition } from "@/components/model/user/Condition";
 export const ListPage = () => {
   return (
     <BaseLayout>
-      <Container maxWidth="md">
+      <Container sx={{ width: 1200 }}>
         <Paper>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             ユーザー一覧
