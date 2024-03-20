@@ -1,4 +1,7 @@
 export const downloadExcel = (excelData: Blob, filename: string) => {
+  console.log(
+    new Date().toLocaleString() + " Excelダウンロード開始:" + filename
+  );
   // ファイルダウンロードのためのURLを作成
   const url = window.URL.createObjectURL(excelData);
   try {
@@ -11,6 +14,9 @@ export const downloadExcel = (excelData: Blob, filename: string) => {
     // 後処理
     link.remove();
   } finally {
+    console.log(
+      new Date().toLocaleString() + " Excelダウンロード完了:" + filename
+    );
     // リンク使用後にオブジェクトを解放
     window.URL.revokeObjectURL(url);
   }

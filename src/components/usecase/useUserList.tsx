@@ -93,8 +93,8 @@ export const useUserListPost = (condition?: SearchCondition) => {
     condition
       ? [`${envConfig.apiUrl}/api/user/get/list-pager`, condition]
       : null,
-    fetcher,
-    { refreshInterval: 5000 }
+    fetcher
+    //{ refreshInterval: 5000 }
   );
   console.log("useUserListPost>fetch condition", condition);
   console.log("useUserListPost>fetch data", data);

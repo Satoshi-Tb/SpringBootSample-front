@@ -89,8 +89,17 @@ export const useConditionHook = () => {
 
   // Excel DLボタン
   const handleBigExcelDownload = async () => {
+    console.log(
+      new Date().toLocaleString() + " Excelダウンロードボタン押下開始"
+    );
+    console.log(new Date().toLocaleString() + " Excelデータ取得開始");
     const excelData = await getBigDataExcel();
+    console.log(new Date().toLocaleString() + " Excelデータ取得完了");
+
     downloadExcel(excelData, "bigdata-sample.xlsx");
+    console.log(
+      new Date().toLocaleString() + " Excelダウンロードボタン押下完了"
+    );
   };
   // 初期検索条件の構築。これが必要なはず
   useEffect(() => {
