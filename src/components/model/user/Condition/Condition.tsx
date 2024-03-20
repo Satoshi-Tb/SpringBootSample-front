@@ -15,6 +15,7 @@ export const Condition = () => {
     handleBulkDelete,
     handleOnClickDetail,
     handleExcelDownload,
+    handleBigExcelDownload,
     deleteError,
   } = useConditionHook();
 
@@ -86,6 +87,14 @@ export const Condition = () => {
         <IconButton onClick={handleExcelDownload}>
           <RiFileExcel2Line />
         </IconButton>
+        <Button
+          type="button"
+          variant="contained"
+          sx={{ margin: "2px" }}
+          onClick={handleBigExcelDownload}
+        >
+          巨大Excel
+        </Button>
       </Box>
     </Box>
   );

@@ -17,6 +17,7 @@ import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useRouter } from "next/router";
 import { getUserListExcel } from "@/components/repository/getUserListExcel";
 import { downloadExcel } from "@/utils/downloadExcel";
+import { getBigDataExcel } from "@/components/repository/getBigDataExcel";
 
 // Zod スキーマ
 const schema = z.object({
@@ -86,6 +87,11 @@ export const useConditionHook = () => {
     downloadExcel(excelData, "userlist-sample.xlsx");
   };
 
+  // Excel DLボタン
+  const handleBigExcelDownload = async () => {
+    const excelData = await getBigDataExcel();
+    downloadExcel(excelData, "bigdata-sample.xlsx");
+  };
   // 初期検索条件の構築。これが必要なはず
   useEffect(() => {
     setListSearchCondition({
@@ -104,6 +110,7 @@ export const useConditionHook = () => {
     handleBulkDelete,
     handleOnClickDetail,
     handleExcelDownload,
+    handleBigExcelDownload,
     deleteError,
   };
 };
