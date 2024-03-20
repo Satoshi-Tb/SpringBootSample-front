@@ -81,7 +81,7 @@ export const useConditionHook = () => {
   // Excel DLボタン
   const handleExcelDownload = async () => {
     const response = await fetch(
-      `${envConfig.apiUrl}/api/download/excel/sample`
+      `${envConfig.apiUrl}/api/download/excel/userlist`
     );
 
     if (!response.ok) {
