@@ -15,6 +15,8 @@ import { useDeleteUser } from "@/components/usecase/useUserMutator";
 import envConfig from "@/utils/envConfig";
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useRouter } from "next/router";
+import { getUserListExcel } from "@/components/repository/getUserListExcel";
+import { downloadExcel } from "@/utils/downloadExcel";
 
 // Zod スキーマ
 const schema = z.object({
@@ -80,27 +82,8 @@ export const useConditionHook = () => {
 
   // Excel DLボタン
   const handleExcelDownload = async () => {
-    const response = await fetch(
-      `${envConfig.apiUrl}/api/download/excel/userlist`
-    );
-
-    if (!response.ok) {
-      console.log("エラー発生");
-      return;
-    }
-    const blob = await response.blob(); // レスポンスをBlobとして取得
-
-    // ファイルダウンロードのためのURLを作成
-    const url = window.URL.createObjectURL(new Blob([blob]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "download.xlsx"); // ダウンロードするファイルの名前
-    document.body.appendChild(link);
-    link.click();
-
-    // 後処理
-    link.remove();
-    window.URL.revokeObjectURL(url);
+    const excelData = await getUserListExcel();
+    downloadExcel(excelData, "userlist-sample.xlsx");
   };
 
   // 初期検索条件の構築。これが必要なはず
