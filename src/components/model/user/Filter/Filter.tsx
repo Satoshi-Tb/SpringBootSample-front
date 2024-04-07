@@ -16,6 +16,12 @@ const Filter = () => {
   const selectedFilterList = useSelectedFilterListState();
   const { setSelectedFilterList } = useSelectedFilterListMutator();
 
+  const {
+    userFilterData: depFilterData,
+    hasError: depHasError,
+    isLoading: depLoading,
+  } = useUserFilter("department", condition);
+
   const { userFilterData, hasError, isLoading } = useUserFilter(
     "gender",
     condition
@@ -39,22 +45,35 @@ const Filter = () => {
         フィルタ
       </Typography>
       <SimpleTreeView onItemSelectionToggle={handleItemSelectionToggle}>
-        <TreeItem itemId="userId" label="ユーザーID"></TreeItem>
-
-        <TreeItem itemId="department" label="性別">
-          {hasError ? (
+        <TreeItem itemId="department" label="部署">
+          {depHasError ? (
             <TreeItem itemId="department.error" label="エラー"></TreeItem>
-          ) : isLoading ? (
+          ) : depLoading ? (
             <TreeItem
               itemId="department.loading"
               label="ローディング"
             ></TreeItem>
           ) : (
+            depFilterData?.data.map((item, idx) => (
+              <TreeItem
+                key={idx}
+                itemId={`department.${item.filterValue}`}
+                label={`${item.filterLabel} (${item.count})`}
+              ></TreeItem>
+            ))
+          )}
+        </TreeItem>
+        <TreeItem itemId="gender" label="性別">
+          {hasError ? (
+            <TreeItem itemId="gender.error" label="エラー"></TreeItem>
+          ) : isLoading ? (
+            <TreeItem itemId="gender.loading" label="ローディング"></TreeItem>
+          ) : (
             userFilterData?.data.map((item, idx) => (
               <TreeItem
                 key={idx}
-                itemId={`department${idx}`}
-                label={`${item.filterName} (${item.count})`}
+                itemId={`gender.${item.filterValue}`}
+                label={`${item.filterLabel} (${item.count})`}
               ></TreeItem>
             ))
           )}

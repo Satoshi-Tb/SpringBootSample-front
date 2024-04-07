@@ -11,23 +11,59 @@ const doSearach = (
   filter: string,
   cond: SearchCondition
 ): FilterItemResponseType => {
-  console.log("doSearch", cond);
+  console.log("doSearch:filter", filter);
+  console.log("doSearch:cond", cond);
+
   const filteredData = dummyUsers.filter(
     (user) =>
       (!cond.userId || user.userId.includes(cond.userId)) &&
       (!cond.userName || user.userName.includes(cond.userName))
   );
 
-  // userNameでグルーピングし、その出現回数をカウント
-  const filerItems = filteredData.reduce((acc, { genderName }) => {
-    const item = acc.find((item) => item.filterName === genderName);
-    if (item) {
-      item.count++;
-    } else {
-      acc.push({ filterName: genderName ?? "", count: 1 });
-    }
-    return acc;
-  }, [] as FilterItem[]);
+  let filerItems: FilterItem[] = [];
+
+  switch (filter) {
+    case "gender":
+      // userNameでグルーピングし、その出現回数をカウント
+      filerItems = filteredData.reduce((acc, { gender, genderName }) => {
+        const item = acc.find((item) => item.filterValue === gender.toString());
+        if (item) {
+          item.count++;
+        } else {
+          acc.push({
+            filterValue: gender.toString(),
+            filterLabel: genderName,
+            count: 1,
+          });
+        }
+        return acc;
+      }, [] as FilterItem[]);
+
+      break;
+
+    case "department":
+      filerItems = filteredData.reduce((acc, { department }) => {
+        const item = acc.find(
+          (item) =>
+            item.filterValue === department?.departmentId?.toString() ?? ""
+        );
+        if (item) {
+          item.count++;
+        } else {
+          acc.push({
+            filterValue: department?.departmentId?.toString() ?? "",
+            filterLabel: department?.departmentName,
+            count: 1,
+          });
+        }
+        return acc;
+      }, [] as FilterItem[]);
+
+      break;
+
+    default:
+      break;
+  }
 
   return {
     code: "0000",
@@ -42,7 +78,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   console.log("query", req.query);
   console.log("body", req.body);
   console.log("router", router);
-  const filter = "test";
+  const filter = req.query.filterItem as string;
 
   switch (req.method) {
     case "GET":
