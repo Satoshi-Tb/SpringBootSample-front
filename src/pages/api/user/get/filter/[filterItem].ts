@@ -19,7 +19,8 @@ const doSearach = (
       (!cond.userId || user.userId.includes(cond.userId)) &&
       (!cond.userName || user.userName.includes(cond.userName)) &&
       (!cond.gender || user.gender === cond.gender) &&
-      (!cond.departmentId || user.department === cond.departmentId)
+      (!cond.departmentId ||
+        user.department?.departmentId === cond.departmentId)
   );
 
   let filerItems: FilterItem[] = [];
