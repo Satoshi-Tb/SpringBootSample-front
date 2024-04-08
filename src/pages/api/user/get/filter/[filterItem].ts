@@ -17,7 +17,9 @@ const doSearach = (
   const filteredData = dummyUsers.filter(
     (user) =>
       (!cond.userId || user.userId.includes(cond.userId)) &&
-      (!cond.userName || user.userName.includes(cond.userName))
+      (!cond.userName || user.userName.includes(cond.userName)) &&
+      (!cond.gender || user.gender === cond.gender) &&
+      (!cond.departmentId || user.department === cond.departmentId)
   );
 
   let filerItems: FilterItem[] = [];
@@ -41,7 +43,7 @@ const doSearach = (
 
       break;
 
-    case "department":
+    case "departmentId":
       filerItems = filteredData.reduce((acc, { department }) => {
         const item = acc.find(
           (item) =>
@@ -74,10 +76,10 @@ const doSearach = (
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const router = useRouter;
-  console.log("method", req.method);
-  console.log("query", req.query);
-  console.log("body", req.body);
-  console.log("router", router);
+  // console.log("method", req.method);
+  // console.log("query", req.query);
+  // console.log("body", req.body);
+  // console.log("router", router);
   const filter = req.query.filterItem as string;
 
   switch (req.method) {
@@ -85,6 +87,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       const cond: {
         userId?: string;
         userName?: string;
+        gender?: string;
+        departmentId?: string;
         page?: string;
         size?: string;
       } = req.query;
@@ -93,6 +97,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         doSearach(filter, {
           userId: cond.userId,
           userName: cond.userName,
+          gender: cond.gender ? Number.parseInt(cond.gender) : undefined,
+          departmentId: cond.departmentId
+            ? Number.parseInt(cond.departmentId)
+            : undefined,
           page: cond.page ? Number.parseInt(cond.page) : 0,
           size: cond.size ? Number.parseInt(cond.size) : 0,
         })
@@ -104,6 +112,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         doSearach(filter, {
           userId: req.body.userId,
           userName: req.body.userName,
+          gender: req.body.gender
+            ? Number.parseInt(req.body.gender)
+            : undefined,
+          departmentId: req.body.departmentId
+            ? Number.parseInt(req.body.departmentId)
+            : undefined,
           page: req.body.page ? req.body.page : 0,
           size: req.body.size ? req.body.size : 0,
         })

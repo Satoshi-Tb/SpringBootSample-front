@@ -23,7 +23,7 @@ const Filter = () => {
         フィルタ
       </Typography>
       <SimpleTreeView onItemSelectionToggle={handleItemSelectionToggle}>
-        <FilterItem filterName="department" filterLabel="部署" />
+        <FilterItem filterName="departmentId" filterLabel="部署" />
         <FilterItem filterName="gender" filterLabel="性別" />
       </SimpleTreeView>
     </>
