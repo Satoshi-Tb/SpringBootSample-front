@@ -4,8 +4,25 @@ import {
   useListSearchConditionState,
 } from "@/components/store/useListSearchConditionState";
 import { useUserFilter } from "@/components/usecase/useUserFilter";
+import { Box, SvgIconProps, Typography } from "@mui/material";
 import { TreeItem } from "@mui/x-tree-view";
 import React, { useState } from "react";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+
+type CustomLabelProps = {
+  icon: React.ElementType<SvgIconProps>;
+  labelText: string;
+};
+
+const CustomLabel: React.FC<CustomLabelProps> = ({ icon: Icon, labelText }) => {
+  return (
+    <Box display="flex" alignItems="center" gap={1}>
+      <Icon />
+      <Typography variant="body1">{labelText}</Typography>
+    </Box>
+  );
+};
 
 type Props = {
   filterName: FilterNameTYpe;
@@ -36,7 +53,12 @@ export const FilterItem = ({ filterName, filterLabel }: Props) => {
           <TreeItem
             key={idx}
             itemId={`${filterName}.${item.filterValue}`}
-            label={`${item.filterLabel} (${item.count})`}
+            label={
+              <CustomLabel
+                icon={filterOn ? CheckBoxIcon : CheckBoxOutlineBlankIcon}
+                labelText={`${item.filterLabel} (${item.count})`}
+              />
+            }
             onClick={() => {
               //alert("click " + filterName);
 
