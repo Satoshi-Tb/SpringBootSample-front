@@ -13,7 +13,7 @@ export const dummyUsers: UserType[] = [
     profile: "Profile of User One",
     department: {
       departmentId: 1,
-      departmentName: "Development",
+      departmentName: "開発部",
     },
   },
   {
@@ -27,8 +27,8 @@ export const dummyUsers: UserType[] = [
     genderName: "女性",
     profile: "Profile of User One",
     department: {
-      departmentId: 1,
-      departmentName: "Development",
+      departmentId: 2,
+      departmentName: "営業部",
     },
   },
   {
@@ -43,7 +43,7 @@ export const dummyUsers: UserType[] = [
     profile: "Profile of User One",
     department: {
       departmentId: 1,
-      departmentName: "Development",
+      departmentName: "開発部",
     },
   },
   {
@@ -57,8 +57,8 @@ export const dummyUsers: UserType[] = [
     genderName: "男性",
     profile: "Profile of User One",
     department: {
-      departmentId: 1,
-      departmentName: "Development",
+      departmentId: 2,
+      departmentName: "営業部",
     },
   },
   {
@@ -72,8 +72,8 @@ export const dummyUsers: UserType[] = [
     genderName: "男性",
     profile: "Profile of User One",
     department: {
-      departmentId: 1,
-      departmentName: "Development",
+      departmentId: 2,
+      departmentName: "営業部",
     },
   },
   {
@@ -88,7 +88,7 @@ export const dummyUsers: UserType[] = [
     profile: "Profile of User One",
     department: {
       departmentId: 1,
-      departmentName: "Development",
+      departmentName: "開発部",
     },
   },
   {
@@ -101,7 +101,7 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user7",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 1, departmentName: "開発部" },
   },
   {
     id: "8",
@@ -113,7 +113,7 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user8",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 1, departmentName: "開発部" },
   },
   {
     id: "9",
@@ -125,7 +125,7 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user9",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 2, departmentName: "営業部" },
   },
   {
     id: "10",
@@ -137,7 +137,7 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user10",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 1, departmentName: "開発部" },
   },
   {
     id: "11",
@@ -149,7 +149,7 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user11",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 1, departmentName: "開発部" },
   },
   {
     id: "12",
@@ -161,7 +161,7 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user12",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 1, departmentName: "開発部" },
   },
   {
     id: "13",
@@ -173,7 +173,7 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user13",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 1, departmentName: "開発部" },
   },
   {
     id: "14",
@@ -185,7 +185,7 @@ export const dummyUsers: UserType[] = [
     gender: 1,
     genderName: "男性",
     profile: "Profile of user user14",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 3, departmentName: "管理本部" },
   },
   {
     id: "15",
@@ -197,7 +197,7 @@ export const dummyUsers: UserType[] = [
     gender: 1,
     genderName: "男性",
     profile: "Profile of user user15",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 1, departmentName: "開発部" },
   },
   {
     id: "16",
@@ -209,7 +209,7 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user16",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 3, departmentName: "管理本部" },
   },
   {
     id: "17",
@@ -221,7 +221,7 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user17",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 1, departmentName: "開発部" },
   },
   {
     id: "18",
@@ -233,7 +233,7 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user18",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 3, departmentName: "管理本部" },
   },
   {
     id: "19",
@@ -245,7 +245,7 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user19",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 3, departmentName: "管理本部" },
   },
   {
     id: "20",
@@ -257,7 +257,7 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user20",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 1, departmentName: "開発部" },
   },
   {
     id: "21",
@@ -269,7 +269,7 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user21",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 2, departmentName: "営業部" },
   },
   {
     id: "22",
@@ -281,7 +281,7 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user22",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 1, departmentName: "開発部" },
   },
   {
     id: "23",
@@ -293,7 +293,7 @@ export const dummyUsers: UserType[] = [
     gender: 1,
     genderName: "男性",
     profile: "Profile of user user23",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 1, departmentName: "開発部" },
   },
   {
     id: "24",
@@ -305,7 +305,7 @@ export const dummyUsers: UserType[] = [
     gender: 1,
     genderName: "男性",
     profile: "Profile of user user24",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 1, departmentName: "開発部" },
   },
   {
     id: "25",
@@ -317,7 +317,7 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user25",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 2, departmentName: "営業部" },
   },
   {
     id: "26",
@@ -329,6 +329,6 @@ export const dummyUsers: UserType[] = [
     gender: 2,
     genderName: "女性",
     profile: "Profile of user user26",
-    department: { departmentId: 1, departmentName: "Development" },
+    department: { departmentId: 1, departmentName: "開発部" },
   },
 ];

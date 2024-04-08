@@ -49,6 +49,7 @@ export const useConditionHook = () => {
   const onValid = (form: FormData) => {
     console.log("form", form);
     setListSearchCondition({
+      ...condition,
       userId: form.userId,
       userName: form.userName,
       page: userListPageOffset,
@@ -104,6 +105,7 @@ export const useConditionHook = () => {
   // 初期検索条件の構築。これが必要なはず
   useEffect(() => {
     setListSearchCondition({
+      ...condition,
       userId: getValues("userId"),
       userName: getValues("userName"),
       page: userListPageOffset,
