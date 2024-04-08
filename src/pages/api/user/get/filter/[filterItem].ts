@@ -1,11 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { BasicResponseType, SearchCondition } from "@/TypeDef";
+import { BasicResponseType, FilterItem, SearchCondition } from "@/TypeDef";
 import { dummyUsers } from "@/utils/dummy/userdata";
 import { useRouter } from "next/router";
-import {
-  FilterItem,
-  FilterItemResponseType,
-} from "@/components/usecase/useUserFilter";
+import { FilterItemResponseType } from "@/components/usecase/useUserFilter";
 
 const doSearach = (
   filter: string,

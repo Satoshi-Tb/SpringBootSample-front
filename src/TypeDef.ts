@@ -7,6 +7,12 @@ export type SearchCondition = {
   size: number;
 };
 
+export type FilterItem = {
+  filterValue: string;
+  filterLabel?: string;
+  count: number;
+};
+
 export type BasicResponseType = {
   code: string;
   errors: [{ [key: string]: string }];

@@ -1,16 +1,11 @@
 import useSWR from "swr";
 import type {
   BasicResponseType,
+  FilterItem,
   FilterNameTYpe,
   SearchCondition,
 } from "@/TypeDef";
 import envConfig from "@/utils/envConfig";
-
-export type FilterItem = {
-  filterValue: string;
-  filterLabel?: string;
-  count: number;
-};
 
 export type FilterItemResponseType = {
   data: FilterItem[];
