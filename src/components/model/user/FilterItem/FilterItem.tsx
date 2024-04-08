@@ -69,15 +69,11 @@ export const FilterItem = ({ filterName, filterLabel }: Props) => {
               switch (filterName) {
                 case "departmentId":
                 case "gender":
-                  newCond[filterName] = toggleFilter
-                    ? Number(item.filterValue)
-                    : undefined;
+                  newCond[filterName] = toggleFilter ? item.filterValue : "";
                   break;
                 case "userId":
                 case "userName":
-                  newCond[filterName] = toggleFilter
-                    ? item.filterValue
-                    : undefined;
+                  newCond[filterName] = toggleFilter ? item.filterValue : "";
                   break;
                 default:
                   break;

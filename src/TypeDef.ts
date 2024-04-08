@@ -1,8 +1,9 @@
+// GETかつ値無し（NULL）を取り扱う場合、文字列型の方が都合がよい
 export type SearchCondition = {
   userId?: string;
   userName?: string;
-  gender?: number;
-  departmentId?: number;
+  gender?: string;
+  departmentId?: string;
   page: number;
   size: number;
 };

@@ -15,9 +15,9 @@ const doSearach = (
     (user) =>
       (!cond.userId || user.userId.includes(cond.userId)) &&
       (!cond.userName || user.userName.includes(cond.userName)) &&
-      (!cond.gender || user.gender === cond.gender) &&
+      (!cond.gender || user.gender === Number.parseInt(cond.gender)) &&
       (!cond.departmentId ||
-        user.department?.departmentId === cond.departmentId)
+        user.department?.departmentId === Number.parseInt(cond.departmentId))
   );
 
   let filerItems: FilterItem[] = [];
@@ -95,10 +95,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         doSearach(filter, {
           userId: cond.userId,
           userName: cond.userName,
-          gender: cond.gender ? Number.parseInt(cond.gender) : undefined,
-          departmentId: cond.departmentId
-            ? Number.parseInt(cond.departmentId)
-            : undefined,
+          gender: cond.gender,
+          departmentId: cond.departmentId,
           page: cond.page ? Number.parseInt(cond.page) : 0,
           size: cond.size ? Number.parseInt(cond.size) : 0,
         })
@@ -110,12 +108,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         doSearach(filter, {
           userId: req.body.userId,
           userName: req.body.userName,
-          gender: req.body.gender
-            ? Number.parseInt(req.body.gender)
-            : undefined,
-          departmentId: req.body.departmentId
-            ? Number.parseInt(req.body.departmentId)
-            : undefined,
+          gender: req.body.gender,
+          departmentId: req.body.departmentId,
           page: req.body.page ? req.body.page : 0,
           size: req.body.size ? req.body.size : 0,
         })
