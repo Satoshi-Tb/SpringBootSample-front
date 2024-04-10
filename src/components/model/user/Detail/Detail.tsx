@@ -46,6 +46,19 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
+const replaceSymbols = (input: string) => {
+  // 正規表現を使用して_以外の半角記号、半角スペースを''に置換
+  // _のASCIIコードは5F
+
+  // \x21-\x2F : ! から / まで
+  // \x3A-\x40 : : から @ まで
+  // \x5B-\x5E : [ から ^ まで
+  // \x5F      : _
+  // \x60      : `
+  // \x7B-\x7E : { から ~ まで
+  return input.replace(/[ \x21-\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7E]/g, "");
+};
+
 export const Detail = () => {
   // 前のユーザーID
   const [beforeUserId, setBeforeUseId] = useState<string | undefined>(
@@ -147,6 +160,8 @@ export const Detail = () => {
   const onValid = async (form: FormData) => {
     console.log("submit", form);
     try {
+      const replacedProfile = replaceSymbols(form.profile ?? "");
+      console.log("submit replace", replacedProfile);
       const result = await updateUser({
         id: form.userId,
         userId: form.userId,
@@ -154,7 +169,7 @@ export const Detail = () => {
         password: form.password,
         age: form.age,
         gender: parseInt(form.gender),
-        profile: form.profile,
+        profile: replacedProfile,
         updateMode: "replace",
       });
       console.log("更新結果", result);
