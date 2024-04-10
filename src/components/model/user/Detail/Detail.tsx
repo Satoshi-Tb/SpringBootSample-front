@@ -28,7 +28,13 @@ import { PagingModeType } from "@/TypeDef";
 const schema = z.object({
   userId: z.string(),
   password: z.string(),
-  userName: z.string().min(1, "入力必須です"),
+  userName: z
+    .string()
+    .min(1, "入力必須です")
+    .refine((v) => v.length <= 50, { message: "50文字以内" })
+    .refine((v) => !/[!-\/:-@\[-`{-~]/.test(v), {
+      message: "記号・半角スペースを含めないでください",
+    }),
   birthday: z.string().optional(),
   age: z.preprocess(
     (val) => (val ? Number(val) : null),
