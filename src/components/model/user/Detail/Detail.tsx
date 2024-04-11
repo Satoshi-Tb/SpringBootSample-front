@@ -29,6 +29,7 @@ import envConfig from "@/utils/envConfig";
 import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
 import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
+import styled from "styled-components";
 
 // Zod スキーマ
 const schema = z.object({
@@ -366,14 +367,14 @@ export const Detail = () => {
     </Box>
   );
 };
+// スタイルドコンポーネントの定義
+const StyledToggleButton = styled(ToggleButton)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const SimpleToggleButton = () => {
-  // スタイル定義
-  const buttonStyle = {
-    display: "flex",
-    flexDirection: "column", // アイコンとテキストを縦に並べる
-    alignItems: "center", // 中央揃え
-  };
   const [alignment, setAlignment] = useState("left");
   return (
     <ToggleButtonGroup
@@ -387,18 +388,18 @@ const SimpleToggleButton = () => {
       }}
       aria-label="text alignment"
     >
-      <ToggleButton value="left" aria-label="left aligned" sx={buttonStyle}>
+      <StyledToggleButton value="left" aria-label="left aligned">
         <FormatAlignLeftIcon />
         <Typography variant="body2">Left</Typography>
-      </ToggleButton>
-      <ToggleButton value="center" aria-label="centered" sx={buttonStyle}>
+      </StyledToggleButton>
+      <StyledToggleButton value="center" aria-label="centered">
         <FormatAlignCenterIcon />
         <Typography variant="body2">Center</Typography>
-      </ToggleButton>
-      <ToggleButton value="right" aria-label="right aligned" sx={buttonStyle}>
+      </StyledToggleButton>
+      <StyledToggleButton value="right" aria-label="right aligned">
         <FormatAlignRightIcon />
         <Typography variant="body2">Right</Typography>
-      </ToggleButton>
+      </StyledToggleButton>
     </ToggleButtonGroup>
   );
 };
