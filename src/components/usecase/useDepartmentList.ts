@@ -1,5 +1,6 @@
 import type { BasicResponseType } from "@/TypeDef";
 import useSWR from "swr";
+import envConfig from "@/utils/envConfig";
 
 export type DepartmentType = {
   departmentId: number;
@@ -16,7 +17,7 @@ export const useDepartmentList = () => {
     fetch(input, init).then((res) => res.json());
 
   const { data, error, isLoading, mutate } = useSWR<DepartmentListResponseTYpe>(
-    `http://localhost:8080/api/department/all`,
+    `${envConfig.apiUrl}/api/department/all`,
     fetcher
   );
   console.log("useDepartmentList:fetch data", data);

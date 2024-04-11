@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import type { BasicResponseType } from "@/TypeDef";
+import envConfig from "@/utils/envConfig";
 
 export type CodeType = {
   category: string;
@@ -18,7 +19,7 @@ export const useCategoryCode = (category: string) => {
 
   const { data, error, isLoading, mutate } =
     useSWR<CategoryCodeListResponseType>(
-      `http://localhost:8080/api/code/category/${category}`,
+      `${envConfig.apiUrl}/api/code/category/${category}`,
       fetcher
     );
   console.log("useCategoryCode:fetch data", data);

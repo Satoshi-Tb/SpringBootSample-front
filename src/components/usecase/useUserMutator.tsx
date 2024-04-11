@@ -1,5 +1,5 @@
-import envConfig from "@/utils/envConfig";
 import useSWRMutation from "swr/mutation";
+import envConfig from "@/utils/envConfig";
 
 export type UserPutType = {
   id: string | number;
@@ -33,7 +33,7 @@ export const useUpdateUser = () => {
     });
   };
 
-  return useSWRMutation(`http://localhost:8080/api/user/update`, updateUser);
+  return useSWRMutation(`${envConfig.apiUrl}/api/user/update`, updateUser);
 };
 
 // ユーザー情報削除

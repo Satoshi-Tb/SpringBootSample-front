@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import type { BasicResponseType } from "@/TypeDef";
 import { UserType } from "./useUserList";
+import envConfig from "@/utils/envConfig";
 
 export type UserDetailResponseType = {
   data: { user: UserType; nextUserId?: string; beforeUserId?: string };
@@ -12,7 +13,7 @@ export const useUserDetail = (userId: string | undefined) => {
     fetch(input, init).then((res) => res.json());
 
   const key = userId
-    ? `http://localhost:8080/api/user/detail/${userId}`
+    ? `${envConfig.apiUrl}/api/user/detail/${userId}`
     : undefined;
   const { data, error, isLoading, mutate } = useSWR<UserDetailResponseType>(
     key,

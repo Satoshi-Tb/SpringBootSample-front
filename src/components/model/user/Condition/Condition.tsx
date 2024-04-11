@@ -4,6 +4,7 @@ import { useConditionHook } from "./ConditionHook";
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useListSearchConditionState } from "@/components/store/useListSearchConditionState";
 import { RiFileExcel2Line } from "react-icons/ri";
+import envConfig from "@/utils/envConfig";
 
 export const Condition = () => {
   // フォーム定義、アクション
@@ -60,7 +61,7 @@ export const Condition = () => {
           sx={{ margin: "2px" }}
           onClick={() => {
             // 最新データ強制読み込み
-            const key = `http://localhost:8080/api/user/get/list${condition}`;
+            const key = `${envConfig.apiUrl}/api/user/get/list${condition}`;
             mutate(key);
             console.log("reload! key:", key);
           }}

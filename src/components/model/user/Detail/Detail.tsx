@@ -23,6 +23,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { useUserListSelectedRowIds } from "@/components/store/useUserListRowSelectionState";
 import { PagingModeType } from "@/TypeDef";
+import envConfig from "@/utils/envConfig";
 
 // Zod スキーマ
 const schema = z.object({
@@ -175,7 +176,7 @@ export const Detail = () => {
       console.log("更新結果", result);
 
       // 更新後データ再読込
-      const key = `http://localhost:8080/api/user/detail/${form.userId}`;
+      const key = `${envConfig.apiUrl}/api/user/detail/${form.userId}`;
       mutate(key);
       alert("更新!");
     } catch (e) {
