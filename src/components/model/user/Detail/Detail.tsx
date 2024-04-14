@@ -24,7 +24,7 @@ import { z } from "zod";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { useUserListSelectedRowIds } from "@/components/store/useUserListRowSelectionState";
-import { PagingModeType } from "@/TypeDef";
+import { FontSizeType, PagingModeType } from "@/TypeDef";
 import envConfig from "@/utils/envConfig";
 import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
@@ -34,6 +34,10 @@ import styled from "styled-components";
 import FactCheckSharpIcon from "@mui/icons-material/FactCheckSharp";
 import InventorySharpIcon from "@mui/icons-material/InventorySharp";
 import ContentPasteSearchIcon from "@mui/icons-material/ContentPasteSearch";
+import {
+  useFontSizeMutators,
+  useFontSizeState,
+} from "@/components/store/useFontSizeState";
 
 // Zod スキーマ
 const schema = z.object({
@@ -70,8 +74,6 @@ const replaceSymbols = (input: string) => {
   return input.replace(/[ \x21-\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7E]/g, "");
 };
 
-type FontSizeType = "small" | "medium" | "large";
-
 export const Detail = () => {
   // 前のユーザーID
   const [beforeUserId, setBeforeUseId] = useState<string | undefined>(
@@ -85,13 +87,7 @@ export const Detail = () => {
   const { userId, pagingMode } = router.query;
 
   // フォントサイズ設定
-  const [fontSize, setFontSize] = useState<FontSizeType>("medium");
-  const handleSizeChange = (event: any, newSize: any) => {
-    if (newSize !== null) {
-      // ToggleButtonGroupが全て解除されるのを防ぐ
-      setFontSize(newSize as FontSizeType);
-    }
-  };
+  const fontSize = useFontSizeState();
 
   // 選択IDリスト
   const selectedRowIds = useUserListSelectedRowIds();
@@ -335,15 +331,6 @@ export const Detail = () => {
           />
         </Grid>
         <Grid item xs={4}>
-          <Typography>文字サイズ</Typography>
-        </Grid>
-        <Grid item xs={8}>
-          <FontSizeToggleButton
-            fontSize={fontSize}
-            handleFontSizeChange={handleSizeChange}
-          />
-        </Grid>
-        <Grid item xs={4}>
           <Typography>トグルボタンサンプル</Typography>
         </Grid>
         <Grid item xs={8}>
@@ -454,36 +441,5 @@ const SimpleToggleButton = ({ fontSize }: SimpleToggleButtonProps) => {
         </Typography>
       </StyledToggleButton>
     </ToggleButtonGroup>
-  );
-};
-
-type FontSizeToggleButtonProps = {
-  fontSize: string;
-  handleFontSizeChange: (event: any, newSize: any) => void;
-};
-
-const FontSizeToggleButton = ({
-  fontSize,
-  handleFontSizeChange,
-}: FontSizeToggleButtonProps) => {
-  return (
-    <>
-      <ToggleButtonGroup
-        value={fontSize}
-        exclusive
-        onChange={handleFontSizeChange}
-        aria-label="text size"
-      >
-        <ToggleButton value="small" aria-label="small">
-          小
-        </ToggleButton>
-        <ToggleButton value="medium" aria-label="medium">
-          中
-        </ToggleButton>
-        <ToggleButton value="large" aria-label="large">
-          大
-        </ToggleButton>
-      </ToggleButtonGroup>
-    </>
   );
 };

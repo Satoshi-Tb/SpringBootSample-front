@@ -22,3 +22,5 @@ export type BasicResponseType = {
 export type PagingModeType = "allRows" | "selectedRows";
 
 export type FilterNameTYpe = keyof Omit<SearchCondition, "page" | "size">;
+
+export type FontSizeType = "small" | "medium" | "large";
