@@ -8,10 +8,14 @@ import { useUserListSelectedRowIds } from "@/components/store/useUserListRowSele
 import { PagingModeType } from "@/TypeDef";
 import envConfig from "@/utils/envConfig";
 import { useFontSizeState } from "@/components/store/useFontSizeState";
-import { DetailFormData, useDetailForm } from "./DetailForm";
+import {
+  DetailFormData,
+  createInvalidSymbolRegex,
+  useDetailForm,
+} from "./DetailForm";
 
 const replaceSymbols = (input: string) => {
-  return input.replace(/[!\"#$%&'()*+,-.\/:;<=>?@[\]^_`{|}~]/g, "");
+  return input.replace(createInvalidSymbolRegex("g"), "");
 };
 
 export const useDetailHooks = () => {

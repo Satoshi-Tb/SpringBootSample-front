@@ -2,6 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+export const createInvalidSymbolRegex = (
+  opt: string | undefined = undefined
+) => {
+  return new RegExp(/[!\"#$%&'()*+,-.\/:;<=>?@[\]^_`{|}~]/, opt);
+};
+
 // Zod スキーマ
 const schema = z.object({
   userId: z.string(),
@@ -10,7 +16,7 @@ const schema = z.object({
     .string()
     .min(1, "入力必須です")
     .refine((v) => v.length <= 50, { message: "50文字以内" })
-    .refine((v) => !/[!\"#$%&'()*+,-.\/:;<=>?@[\]^_`{|}~]/.test(v), {
+    .refine((v) => !createInvalidSymbolRegex().test(v), {
       message: "記号を含めないでください",
     }),
   birthday: z.string().optional(),
