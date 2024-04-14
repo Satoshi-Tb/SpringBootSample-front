@@ -11,16 +11,7 @@ import { useFontSizeState } from "@/components/store/useFontSizeState";
 import { DetailFormData, useDetailForm } from "./DetailForm";
 
 const replaceSymbols = (input: string) => {
-  // 正規表現を使用して_以外の半角記号、半角スペースを''に置換
-  // _のASCIIコードは5F
-
-  // \x21-\x2F : ! から / まで
-  // \x3A-\x40 : : から @ まで
-  // \x5B-\x5E : [ から ^ まで
-  // \x5F      : _
-  // \x60      : `
-  // \x7B-\x7E : { から ~ まで
-  return input.replace(/[ \x21-\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7E]/g, "");
+  return input.replace(/[!\"#$%&'()*+,-.\/:;<=>?@[\]^_`{|}~]/g, "");
 };
 
 export const useDetailHooks = () => {

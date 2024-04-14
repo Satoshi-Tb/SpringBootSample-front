@@ -10,8 +10,8 @@ const schema = z.object({
     .string()
     .min(1, "入力必須です")
     .refine((v) => v.length <= 50, { message: "50文字以内" })
-    .refine((v) => !/[!-\/:-@\[-`{-~]/.test(v), {
-      message: "記号・半角スペースを含めないでください",
+    .refine((v) => !/[!\"#$%&'()*+,-.\/:;<=>?@[\]^_`{|}~]/.test(v), {
+      message: "記号を含めないでください",
     }),
   birthday: z.string().optional(),
   age: z.preprocess(
