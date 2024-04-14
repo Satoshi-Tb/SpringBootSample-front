@@ -29,7 +29,11 @@ import envConfig from "@/utils/envConfig";
 import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
 import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
+import { RiFileExcel2Line } from "react-icons/ri";
 import styled from "styled-components";
+import FactCheckSharpIcon from "@mui/icons-material/FactCheckSharp";
+import InventorySharpIcon from "@mui/icons-material/InventorySharp";
+import ContentPasteSearchIcon from "@mui/icons-material/ContentPasteSearch";
 
 // Zod スキーマ
 const schema = z.object({
@@ -66,6 +70,8 @@ const replaceSymbols = (input: string) => {
   return input.replace(/[ \x21-\x2F\x3A-\x40\x5B-\x5E\x60\x7B-\x7E]/g, "");
 };
 
+type FontSizeType = "small" | "medium" | "large";
+
 export const Detail = () => {
   // 前のユーザーID
   const [beforeUserId, setBeforeUseId] = useState<string | undefined>(
@@ -77,6 +83,15 @@ export const Detail = () => {
   // URLパラメータ取得
   const router = useRouter();
   const { userId, pagingMode } = router.query;
+
+  // フォントサイズ設定
+  const [fontSize, setFontSize] = useState<FontSizeType>("medium");
+  const handleSizeChange = (event: any, newSize: any) => {
+    if (newSize !== null) {
+      // ToggleButtonGroupが全て解除されるのを防ぐ
+      setFontSize(newSize as FontSizeType);
+    }
+  };
 
   // 選択IDリスト
   const selectedRowIds = useUserListSelectedRowIds();
@@ -320,10 +335,19 @@ export const Detail = () => {
           />
         </Grid>
         <Grid item xs={4}>
+          <Typography>文字サイズ</Typography>
+        </Grid>
+        <Grid item xs={8}>
+          <FontSizeToggleButton
+            fontSize={fontSize}
+            handleFontSizeChange={handleSizeChange}
+          />
+        </Grid>
+        <Grid item xs={4}>
           <Typography>トグルボタンサンプル</Typography>
         </Grid>
         <Grid item xs={8}>
-          <SimpleToggleButton />
+          <SimpleToggleButton fontSize={fontSize} />
         </Grid>
         <Grid item xs={12}>
           <Box display="flex" flexDirection="row" justifyContent="center">
@@ -372,9 +396,26 @@ const StyledToggleButton = styled(ToggleButton)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  .MuiTypography-root {
+    font-size: ${(props) => {
+      switch (props.size) {
+        case "small":
+          return "0.75em";
+        case "medium":
+          return "1em";
+        case "large":
+          return "1.25em";
+        default:
+          return "1em"; // デフォルトのフォントサイズ
+      }
+    }};
+  }
 `;
 
-const SimpleToggleButton = () => {
+type SimpleToggleButtonProps = {
+  fontSize: FontSizeType;
+};
+const SimpleToggleButton = ({ fontSize }: SimpleToggleButtonProps) => {
   const [alignment, setAlignment] = useState("left");
   return (
     <ToggleButtonGroup
@@ -388,18 +429,61 @@ const SimpleToggleButton = () => {
       }}
       aria-label="text alignment"
     >
-      <StyledToggleButton value="left" aria-label="left aligned">
-        <FormatAlignLeftIcon />
-        <Typography variant="body2">Left</Typography>
+      <StyledToggleButton
+        value="left"
+        aria-label="left aligned"
+        size={fontSize}
+      >
+        <ContentPasteSearchIcon fontSize={fontSize} />
+        <Typography variant="body2">外部評価</Typography>
       </StyledToggleButton>
-      <StyledToggleButton value="center" aria-label="centered">
-        <FormatAlignCenterIcon />
-        <Typography variant="body2">Center</Typography>
+      <StyledToggleButton value="center" aria-label="centered" size={fontSize}>
+        <FactCheckSharpIcon fontSize={fontSize} />
+        <Typography variant="body2" fontSize="1em">
+          外部評価
+        </Typography>
       </StyledToggleButton>
-      <StyledToggleButton value="right" aria-label="right aligned">
-        <FormatAlignRightIcon />
-        <Typography variant="body2">Right</Typography>
+      <StyledToggleButton
+        value="right"
+        aria-label="right aligned"
+        size={fontSize}
+      >
+        <InventorySharpIcon fontSize={fontSize} />
+        <Typography variant="body2" fontSize="1em">
+          外部評価
+        </Typography>
       </StyledToggleButton>
     </ToggleButtonGroup>
+  );
+};
+
+type FontSizeToggleButtonProps = {
+  fontSize: string;
+  handleFontSizeChange: (event: any, newSize: any) => void;
+};
+
+const FontSizeToggleButton = ({
+  fontSize,
+  handleFontSizeChange,
+}: FontSizeToggleButtonProps) => {
+  return (
+    <>
+      <ToggleButtonGroup
+        value={fontSize}
+        exclusive
+        onChange={handleFontSizeChange}
+        aria-label="text size"
+      >
+        <ToggleButton value="small" aria-label="small">
+          小
+        </ToggleButton>
+        <ToggleButton value="medium" aria-label="medium">
+          中
+        </ToggleButton>
+        <ToggleButton value="large" aria-label="large">
+          大
+        </ToggleButton>
+      </ToggleButtonGroup>
+    </>
   );
 };
