@@ -2,37 +2,13 @@ import { useCategoryCode } from "@/components/usecase/useCategoryCodeList";
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useUserDetail } from "@/components/usecase/useUserDetail";
 import { useUpdateUser } from "@/components/usecase/useUserMutator";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { useUserListSelectedRowIds } from "@/components/store/useUserListRowSelectionState";
 import { PagingModeType } from "@/TypeDef";
 import envConfig from "@/utils/envConfig";
 import { useFontSizeState } from "@/components/store/useFontSizeState";
-
-// Zod スキーマ
-const schema = z.object({
-  userId: z.string(),
-  password: z.string(),
-  userName: z
-    .string()
-    .min(1, "入力必須です")
-    .refine((v) => v.length <= 50, { message: "50文字以内" })
-    .refine((v) => !/[!-\/:-@\[-`{-~]/.test(v), {
-      message: "記号・半角スペースを含めないでください",
-    }),
-  birthday: z.string().optional(),
-  age: z.preprocess(
-    (val) => (val ? Number(val) : null),
-    z.number().nonnegative("数値は0以上である必要があります").nullable()
-  ),
-  profile: z.string().optional(),
-  gender: z.string(),
-});
-
-type FormData = z.infer<typeof schema>;
+import { DetailFormData, useDetailForm } from "./DetailForm";
 
 const replaceSymbols = (input: string) => {
   // 正規表現を使用して_以外の半角記号、半角スペースを''に置換
@@ -90,24 +66,7 @@ export const useDetailHooks = () => {
   const { mutate } = useSWRMutator();
 
   // フォーム定義
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-    setValue,
-    register,
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      userId: "",
-      password: "",
-      userName: "",
-      birthday: "",
-      age: undefined,
-      gender: "1",
-      profile: "",
-    },
-  });
+  const { handleSubmit, control, errors, register, setValue } = useDetailForm();
 
   // フォーム初期値設定
   useEffect(() => {
@@ -149,7 +108,7 @@ export const useDetailHooks = () => {
   }, [userData, selectedRowIds, pagingMode]);
 
   // 更新ボタン押下アクション
-  const onValid = async (form: FormData) => {
+  const onValid = async (form: DetailFormData) => {
     console.log("submit", form);
     try {
       const replacedProfile = replaceSymbols(form.profile ?? "");
