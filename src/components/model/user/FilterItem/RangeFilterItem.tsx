@@ -1,4 +1,4 @@
-import { FilterNameTYpe } from "@/TypeDef";
+import { FilterItem, FilterNameTYpe } from "@/TypeDef";
 import {
   useListSearchConditionMutators,
   useListSearchConditionState,
@@ -29,7 +29,7 @@ type Props = {
   filterLabel: string;
 };
 
-export const FilterItem = ({ filterName, filterLabel }: Props) => {
+export const RangeFilterItem = ({ filterName, filterLabel }: Props) => {
   const [filterOn, setFilterOn] = useState<boolean>(false);
   const condition = useListSearchConditionState();
   const { setListSearchCondition } = useListSearchConditionMutators();
@@ -52,7 +52,7 @@ export const FilterItem = ({ filterName, filterLabel }: Props) => {
         userFilterData?.data.map((item, idx) => (
           <TreeItem
             key={idx}
-            itemId={`${filterName}.${item.filterValue}`}
+            itemId={`${filterName}.${item.filterRangeValue!.from}`}
             label={
               <CustomLabel
                 icon={filterOn ? CheckBoxIcon : CheckBoxOutlineBlankIcon}
@@ -67,18 +67,22 @@ export const FilterItem = ({ filterName, filterLabel }: Props) => {
               setFilterOn(toggleFilter);
               const newCond = { ...condition };
               switch (filterName) {
-                case "departmentId":
-                case "gender":
-                  newCond[filterName] = toggleFilter ? item.filterValue : "";
+                case "age":
+                  if (toggleFilter) {
+                    newCond.ageFrom = item.filterRangeValue!.from;
+                    newCond.ageTo = item.filterRangeValue!.to;
+                  } else {
+                    delete newCond.ageFrom;
+                    delete newCond.ageTo;
+                  }
+
                   break;
-                case "userId":
-                case "userName":
-                  newCond[filterName] = toggleFilter ? item.filterValue : "";
-                  break;
+
                 default:
                   break;
               }
-              //              console.log("new condition:", newCond);
+
+              console.log("new condition:", newCond);
               setListSearchCondition(newCond);
             }}
           ></TreeItem>

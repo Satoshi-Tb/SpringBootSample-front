@@ -40,7 +40,7 @@ export const useUserFilter = (
       : null,
     fetcher
   );
-  console.log("fetch data", data);
+  // console.log("fetch data", data);
 
   return { userFilterData: data, hasError: error, isLoading };
 };

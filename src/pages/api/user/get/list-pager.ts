@@ -14,7 +14,11 @@ const doSearach = (cond: SearchCondition): UserListResponseType => {
       (!cond.userName || user.userName.includes(cond.userName)) &&
       (!cond.gender || user.gender === Number.parseInt(cond.gender)) &&
       (!cond.departmentId ||
-        user.department?.departmentId === Number.parseInt(cond.departmentId))
+        user.department?.departmentId === Number.parseInt(cond.departmentId)) &&
+      (!cond.ageFrom ||
+        !cond.ageTo ||
+        !user.age ||
+        (user.age >= cond.ageFrom && user.age <= cond.ageTo))
   );
 
   const pageData = filteredData.slice(
@@ -44,6 +48,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         userName?: string;
         gender?: string;
         departmentId?: string;
+        ageFrom?: string;
+        ageTo?: string;
+
         page?: string;
         size?: string;
       } = req.query;
@@ -54,6 +61,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           userName: cond.userName,
           gender: cond.gender ?? "",
           departmentId: cond.departmentId,
+          ageFrom: cond.ageFrom ? Number.parseInt(cond.ageFrom) : undefined,
+          ageTo: cond.ageTo ? Number.parseInt(cond.ageTo) : undefined,
           page: cond.page ? Number.parseInt(cond.page) : 0,
           size: cond.size ? Number.parseInt(cond.size) : 0,
         })
@@ -67,6 +76,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           userName: req.body.userName,
           gender: req.body.gender,
           departmentId: req.body.departmentId,
+          ageFrom: req.body.ageFrom,
+          ageTo: req.body.ageTo,
           page: req.body.page ? req.body.page : 0,
           size: req.body.size ? req.body.size : 0,
         })

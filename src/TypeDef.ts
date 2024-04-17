@@ -4,12 +4,15 @@ export type SearchCondition = {
   userName?: string;
   gender?: string;
   departmentId?: string;
+  ageFrom?: number;
+  ageTo?: number;
   page: number;
   size: number;
 };
 
 export type FilterItem = {
-  filterValue: string;
+  filterValue?: string;
+  filterRangeValue?: { from: any; to: any };
   filterLabel?: string;
   count: number;
 };
@@ -21,6 +24,8 @@ export type BasicResponseType = {
 
 export type PagingModeType = "allRows" | "selectedRows";
 
-export type FilterNameTYpe = keyof Omit<SearchCondition, "page" | "size">;
+export type FilterNameTYpe =
+  | keyof Omit<SearchCondition, "page" | "size">
+  | "age";
 
 export type FontSizeType = "small" | "medium" | "large";
