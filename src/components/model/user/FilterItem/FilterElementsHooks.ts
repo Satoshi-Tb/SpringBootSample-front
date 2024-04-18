@@ -15,7 +15,9 @@ export const useFilterElementsHooks = ({ filterItemName }: Props) => {
   const condition = useListSearchConditionState();
 
   const createItemId = (filter: FilterItem) =>
-    `${filterItemName}.${filter.filterValue}`;
+    filterItemName === "age"
+      ? `${filterItemName}.${filter.filterRangeValue?.from}`
+      : `${filterItemName}.${filter.filterValue}`;
 
   const onFilterClick = (filter: FilterItem) => {
     const toggleFilter = !filterOn;
@@ -30,6 +32,15 @@ export const useFilterElementsHooks = ({ filterItemName }: Props) => {
       case "userId":
       case "userName":
         newCond[filterItemName] = toggleFilter ? filter.filterValue : "";
+        break;
+      case "age":
+        if (toggleFilter) {
+          newCond.ageFrom = filter.filterRangeValue!.from;
+          newCond.ageTo = filter.filterRangeValue!.to;
+        } else {
+          delete newCond.ageFrom;
+          delete newCond.ageTo;
+        }
         break;
       default:
         break;

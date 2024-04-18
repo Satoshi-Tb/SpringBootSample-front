@@ -1,7 +1,6 @@
 import { Typography } from "@mui/material";
 import { SimpleTreeView, TreeItem } from "@mui/x-tree-view";
 import React, { useState } from "react";
-import { RangeFilterItem } from "../FilterItem/RangeFilterItem";
 import { FilterItem } from "../FilterItem/FilterItem";
 
 const Filter = () => {
@@ -32,7 +31,7 @@ const Filter = () => {
         <FilterItem filterItemName="departmentId" filterLabel="部署" />
         <FilterItem filterItemName="gender" filterLabel="性別" />
         <FilterItem filterItemName="userName" filterLabel="ユーザー名" />
-        <RangeFilterItem filterName="age" filterLabel="年齢" />
+        <FilterItem filterItemName="age" filterLabel="年齢" />
       </SimpleTreeView>
     </>
   );
