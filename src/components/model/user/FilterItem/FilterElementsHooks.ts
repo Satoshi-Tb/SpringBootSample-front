@@ -14,6 +14,9 @@ export const useFilterElementsHooks = ({ filterItemName }: Props) => {
   const { setListSearchCondition } = useListSearchConditionMutators();
   const condition = useListSearchConditionState();
 
+  const createItemId = (filter: FilterItem) =>
+    `${filterItemName}.${filter.filterValue}`;
+
   const onFilterClick = (filter: FilterItem) => {
     const toggleFilter = !filterOn;
 
@@ -33,5 +36,5 @@ export const useFilterElementsHooks = ({ filterItemName }: Props) => {
     }
     setListSearchCondition(newCond);
   };
-  return { onFilterClick, filterOn };
+  return { onFilterClick, filterOn, createItemId };
 };

@@ -30,7 +30,7 @@ export const FilterElements = ({
   filterElementList,
   filterItemName,
 }: Props) => {
-  const { onFilterClick, filterOn } = useFilterElementsHooks({
+  const { onFilterClick, filterOn, createItemId } = useFilterElementsHooks({
     filterItemName,
   });
 
@@ -38,7 +38,7 @@ export const FilterElements = ({
   return filterElementList.map((item, idx) => (
     <TreeItem
       key={idx}
-      itemId={`${filterItemName}.${item.filterValue}`}
+      itemId={createItemId(item)}
       label={
         <CustomLabel
           icon={filterOn ? CheckBoxIcon : CheckBoxOutlineBlankIcon}

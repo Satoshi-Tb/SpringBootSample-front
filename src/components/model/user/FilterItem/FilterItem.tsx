@@ -5,20 +5,6 @@ import React from "react";
 import { FilterElements } from "./FilterElements";
 import { useFilterItemHooks } from "./FilterItemHooks";
 
-type CustomLabelProps = {
-  icon: React.ElementType<SvgIconProps>;
-  labelText: string;
-};
-
-const CustomLabel: React.FC<CustomLabelProps> = ({ icon: Icon, labelText }) => {
-  return (
-    <Box display="flex" alignItems="center" gap={1}>
-      <Icon />
-      <Typography variant="body1">{labelText}</Typography>
-    </Box>
-  );
-};
-
 type Props = {
   filterItemName: FilterNameTYpe;
   filterLabel: string;
