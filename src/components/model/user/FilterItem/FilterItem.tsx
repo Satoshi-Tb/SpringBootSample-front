@@ -1,14 +1,9 @@
 import { FilterNameTYpe } from "@/TypeDef";
-import {
-  useListSearchConditionMutators,
-  useListSearchConditionState,
-} from "@/components/store/useListSearchConditionState";
-import { useUserFilter } from "@/components/usecase/useUserFilter";
 import { Box, SvgIconProps, Typography } from "@mui/material";
 import { TreeItem } from "@mui/x-tree-view";
-import React, { useState } from "react";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import React from "react";
+import { FilterElements } from "./FilterElements";
+import { useFilterItemHooks } from "./FilterItemHooks";
 
 type CustomLabelProps = {
   icon: React.ElementType<SvgIconProps>;
@@ -25,64 +20,31 @@ const CustomLabel: React.FC<CustomLabelProps> = ({ icon: Icon, labelText }) => {
 };
 
 type Props = {
-  filterName: FilterNameTYpe;
+  filterItemName: FilterNameTYpe;
   filterLabel: string;
 };
 
-export const FilterItem = ({ filterName, filterLabel }: Props) => {
-  const [filterOn, setFilterOn] = useState<boolean>(false);
-  const condition = useListSearchConditionState();
-  const { setListSearchCondition } = useListSearchConditionMutators();
+export const FilterItem = ({ filterItemName, filterLabel }: Props) => {
+  const { userFilterData, hasError, isLoading } = useFilterItemHooks({
+    filterItemName,
+  });
 
-  const { userFilterData, hasError, isLoading } = useUserFilter(
-    filterName,
-    condition
-  );
+  console.log(`FilterItem ${filterItemName}`, userFilterData);
 
   return (
-    <TreeItem itemId={filterName} label={filterLabel}>
+    <TreeItem itemId={filterItemName} label={filterLabel}>
       {hasError ? (
-        <TreeItem itemId={`${filterName}.error`} label="エラー"></TreeItem>
+        <TreeItem itemId={`${filterItemName}.error`} label="エラー"></TreeItem>
       ) : isLoading ? (
         <TreeItem
-          itemId={`${filterName}.loading`}
+          itemId={`${filterItemName}.loading`}
           label="ローディング"
         ></TreeItem>
       ) : (
-        userFilterData?.data.map((item, idx) => (
-          <TreeItem
-            key={idx}
-            itemId={`${filterName}.${item.filterValue}`}
-            label={
-              <CustomLabel
-                icon={filterOn ? CheckBoxIcon : CheckBoxOutlineBlankIcon}
-                labelText={`${item.filterLabel} (${item.count})`}
-              />
-            }
-            onClick={() => {
-              //alert("click " + filterName);
-
-              const toggleFilter = !filterOn;
-
-              setFilterOn(toggleFilter);
-              const newCond = { ...condition };
-              switch (filterName) {
-                case "departmentId":
-                case "gender":
-                  newCond[filterName] = toggleFilter ? item.filterValue : "";
-                  break;
-                case "userId":
-                case "userName":
-                  newCond[filterName] = toggleFilter ? item.filterValue : "";
-                  break;
-                default:
-                  break;
-              }
-              //              console.log("new condition:", newCond);
-              setListSearchCondition(newCond);
-            }}
-          ></TreeItem>
-        ))
+        <FilterElements
+          filterElementList={userFilterData?.data || []}
+          filterItemName={filterItemName}
+        />
       )}
     </TreeItem>
   );
