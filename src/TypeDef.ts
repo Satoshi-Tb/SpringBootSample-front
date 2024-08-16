@@ -17,6 +17,22 @@ export type FilterItem = {
   count: number;
 };
 
+// name
+// 社員名
+// [
+//   {}
+// ]
+export type FilterElement = {
+  name: string;
+  label: string;
+  count: number;
+};
+export type ItemFilter = {
+  filterName: string;
+  filterLable: string;
+  filterElements: FilterItem[];
+};
+
 export type BasicResponseType = {
   code: string;
   errors: [{ [key: string]: string }];
