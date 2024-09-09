@@ -45,3 +45,8 @@ export type FilterNameTYpe =
   | "age";
 
 export type FontSizeType = "small" | "medium" | "large";
+
+export type HighlightSetting = {
+  keyword: string;
+  color: string;
+};
