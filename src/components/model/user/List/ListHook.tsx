@@ -22,6 +22,8 @@ import { useUpdateUser } from "@/components/usecase/useUserMutator";
 import envConfig from "@/utils/envConfig";
 import { useUserListSelectedRowIdsMutator } from "@/components/store/useUserListRowSelectionState";
 import { Link } from "@mui/material";
+import HighlightKeywords from "@/components/ui/highlight";
+import { useHighlightSettingsState } from "@/components/store/useHighlightSettingsState";
 
 export const useListHook = () => {
   // 画面データ
@@ -34,6 +36,8 @@ export const useListHook = () => {
   const { setUserListPageSize } = useUserListPageSizeMutators();
   // 選択行IDリスト
   const { setUserListSelectedRowIds } = useUserListSelectedRowIdsMutator();
+  // ハイライト設定
+  const highlightSettings = useHighlightSettingsState();
 
   // 検索条件
   const condition = useListSearchConditionState();
@@ -65,6 +69,11 @@ export const useListHook = () => {
       preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
         const hasError = params.props.value.length === 0;
         return { ...params.props, error: hasError };
+      },
+      renderCell: (params) => {
+        return (
+          <HighlightKeywords text={params.value} settings={highlightSettings} />
+        );
       },
     },
     { field: "birthday", headerName: "誕生日", width: 130 },
