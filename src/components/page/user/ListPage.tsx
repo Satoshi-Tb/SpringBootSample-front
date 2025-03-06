@@ -17,9 +17,9 @@ export const ListPage = () => {
       <Container
         sx={{ width: 1000, flexDirection: "row", display: "flex", padding: 2 }}
       >
-        <Paper sx={{ marginRight: 1, minWidth: 300 }}>
+        {/* <Paper sx={{ marginRight: 1, minWidth: 300 }}>
           <Filter />
-        </Paper>
+        </Paper> */}
         <Paper>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             ユーザー一覧
