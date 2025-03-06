@@ -24,6 +24,7 @@ import { useUserListSelectedRowIdsMutator } from "@/components/store/useUserList
 import { Link } from "@mui/material";
 import HighlightKeywords from "@/components/ui/highlight";
 import { useHighlightSettingsState } from "@/components/store/useHighlightSettingsState";
+import { useRealTimeUpdateState } from "@/components/store/useRealTimeUpdateState";
 
 export const useListHook = () => {
   // 画面データ
@@ -38,6 +39,8 @@ export const useListHook = () => {
   const { setUserListSelectedRowIds } = useUserListSelectedRowIdsMutator();
   // ハイライト設定
   const highlightSettings = useHighlightSettingsState();
+
+  const realTimeUpdate = useRealTimeUpdateState();
 
   // 検索条件
   const condition = useListSearchConditionState();
@@ -154,9 +157,12 @@ export const useListHook = () => {
 
       // 更新後データ再読込
       console.log("condition", condition);
-      //const key = `${envConfig.apiUrl}/api/user/get/list-pager${condition}`;
-      const key = [`${envConfig.apiUrl}/api/user/get/list-pager`, condition]; // POST版の場合のkey指定
-      mutate(key);
+
+      if (realTimeUpdate) {
+        //const key = `${envConfig.apiUrl}/api/user/get/list-pager${condition}`; // GET版の場合のkey指定
+        const key = [`${envConfig.apiUrl}/api/user/get/list-pager`, condition]; // POST版の場合のkey指定
+        mutate(key);
+      }
 
       // DB更新が成功した場合、新しい行データを返してグリッドにコミットする
       return newRow;

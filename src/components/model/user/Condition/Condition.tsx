@@ -1,10 +1,18 @@
-import { TextField, Box, Button, IconButton } from "@mui/material";
+import {
+  TextField,
+  Box,
+  Button,
+  IconButton,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
 import { Controller } from "react-hook-form";
 import { useConditionHook } from "./ConditionHook";
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useListSearchConditionState } from "@/components/store/useListSearchConditionState";
 import { RiFileExcel2Line } from "react-icons/ri";
 import envConfig from "@/utils/envConfig";
+import { useState } from "react";
 
 export const Condition = () => {
   // フォーム定義、アクション
@@ -18,6 +26,8 @@ export const Condition = () => {
     handleExcelDownload,
     handleBigExcelDownload,
     deleteError,
+    realTimeUpdate,
+    setRealTimeUpdate,
   } = useConditionHook();
 
   // 再読込処理用
@@ -96,6 +106,15 @@ export const Condition = () => {
         >
           巨大Excel
         </Button>
+        <FormControlLabel
+          label="リアルタイム更新"
+          control={
+            <Checkbox
+              checked={realTimeUpdate}
+              onChange={(e) => setRealTimeUpdate(e.target.checked)}
+            />
+          }
+        />
       </Box>
     </Box>
   );

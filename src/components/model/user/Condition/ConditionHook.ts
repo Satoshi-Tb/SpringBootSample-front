@@ -9,7 +9,7 @@ import {
   useUserListSelectedPage,
   useUserListPageSizeState,
 } from "@/components/store/useUserListPaginationState";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useUserListSelectedRowIds } from "@/components/store/useUserListRowSelectionState";
 import { useDeleteUser } from "@/components/usecase/useUserMutator";
 import envConfig from "@/utils/envConfig";
@@ -18,6 +18,10 @@ import { useRouter } from "next/router";
 import { getUserListExcel } from "@/components/repository/getUserListExcel";
 import { downloadExcel } from "@/utils/downloadExcel";
 import { getBigDataExcel } from "@/components/repository/getBigDataExcel";
+import {
+  useRealTimeUpdateMutators,
+  useRealTimeUpdateState,
+} from "@/components/store/useRealTimeUpdateState";
 
 // Zod スキーマ
 const schema = z.object({
@@ -34,6 +38,9 @@ export const useConditionHook = () => {
   const userListRowsPerPage = useUserListPageSizeState();
   const selectedRowIds = useUserListSelectedRowIds();
   const showDetailButtonEnabled = selectedRowIds.length === 0;
+
+  const realTimeUpdate = useRealTimeUpdateState();
+  const { setRealTimeUpdate } = useRealTimeUpdateMutators();
 
   // URLパラメータ取得
   const router = useRouter();
@@ -123,5 +130,7 @@ export const useConditionHook = () => {
     handleExcelDownload,
     handleBigExcelDownload,
     deleteError,
+    realTimeUpdate,
+    setRealTimeUpdate,
   };
 };
