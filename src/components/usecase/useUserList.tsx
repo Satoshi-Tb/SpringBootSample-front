@@ -1,6 +1,8 @@
 import useSWR from "swr";
 import type { BasicResponseType, SearchCondition } from "@/TypeDef";
 import envConfig from "@/utils/envConfig";
+import { use } from "react";
+import { useRealTimeUpdateState } from "../store/useRealTimeUpdateState";
 
 export type UserType = {
   id: string | number;
@@ -66,6 +68,8 @@ export const useUserList = (condition?: SearchCondition) => {
  * @returns
  */
 export const useUserListPost = (condition?: SearchCondition) => {
+  const realTimeUpdate = useRealTimeUpdateState();
+
   // データ取得処理
   const fetcher = async ([url, condition]: [
     url: string,
@@ -93,8 +97,8 @@ export const useUserListPost = (condition?: SearchCondition) => {
     condition
       ? [`${envConfig.apiUrl}/api/user/get/list-pager`, condition]
       : null,
-    fetcher
-    //{ refreshInterval: 5000 }
+    fetcher,
+    { revalidateOnFocus: realTimeUpdate }
   );
   console.log("useUserListPost>fetch condition", condition);
   console.log("useUserListPost>fetch data", data);

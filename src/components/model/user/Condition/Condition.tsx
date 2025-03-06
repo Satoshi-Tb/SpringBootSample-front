@@ -71,7 +71,10 @@ export const Condition = () => {
           sx={{ margin: "2px" }}
           onClick={() => {
             // 最新データ強制読み込み
-            const key = `${envConfig.apiUrl}/api/user/get/list${condition}`;
+            const key = [
+              `${envConfig.apiUrl}/api/user/get/list-pager`,
+              condition,
+            ];
             mutate(key);
             console.log("reload! key:", key);
           }}
@@ -111,7 +114,17 @@ export const Condition = () => {
           control={
             <Checkbox
               checked={realTimeUpdate}
-              onChange={(e) => setRealTimeUpdate(e.target.checked)}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  // リアルタイム有効にした時点の、最新データ強制読み込み
+                  const key = [
+                    `${envConfig.apiUrl}/api/user/get/list-pager`,
+                    condition,
+                  ];
+                  mutate(key);
+                }
+                setRealTimeUpdate(e.target.checked);
+              }}
             />
           }
         />
