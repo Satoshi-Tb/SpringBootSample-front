@@ -76,7 +76,25 @@ export const useListHook = () => {
         );
       },
     },
-    { field: "birthday", headerName: "誕生日", width: 130 },
+    { field: "updUserId", headerName: "更新者", width: 150 },
+    {
+      field: "updDate",
+      headerName: "更新日",
+      width: 180,
+      type: "dateTime",
+      valueGetter: (params) => {
+        return params.value ? new Date(params.value) : null;
+      },
+    },
+    {
+      field: "birthday",
+      headerName: "誕生日",
+      width: 130,
+      type: "date",
+      valueGetter: (params) => {
+        return params.value ? new Date(params.value) : null;
+      },
+    },
     { field: "age", headerName: "年齢", width: 100 },
     { field: "genderName", headerName: "性別", width: 100 },
     {
