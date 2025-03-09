@@ -6,6 +6,7 @@ import {
   Checkbox,
   FormControlLabel,
   Typography,
+  Link,
 } from "@mui/material";
 import { Controller } from "react-hook-form";
 import { useConditionHook } from "./ConditionHook";
@@ -81,18 +82,12 @@ export const Condition = () => {
         />
       </Box>
 
-      <Box
-        display="flex"
-        alignContent="center"
-        justifyContent="space-around"
-        margin={2}
-      >
-        <Button type="submit" variant="contained" sx={{ margin: "2px" }}>
+      <Box display="flex" sx={{ m: "5px" }} gap={1} alignItems="center">
+        <Button type="submit" variant="contained">
           検索
         </Button>
         <Button
           variant="contained"
-          sx={{ margin: "2px" }}
           onClick={() => {
             // 最新データ強制読み込み
             const key = [
@@ -105,18 +100,12 @@ export const Condition = () => {
         >
           再読込
         </Button>
-        <Button
-          type="button"
-          variant="contained"
-          sx={{ margin: "2px" }}
-          onClick={handleBulkDelete}
-        >
+        <Button type="button" variant="contained" onClick={handleBulkDelete}>
           一括削除
         </Button>
         <Button
           type="button"
           variant="contained"
-          sx={{ margin: "2px" }}
           onClick={handleOnClickDetail}
           disabled={showDetailButtonEnabled}
         >
@@ -128,11 +117,17 @@ export const Condition = () => {
         <Button
           type="button"
           variant="contained"
-          sx={{ margin: "2px" }}
           onClick={handleBigExcelDownload}
         >
           巨大Excel
         </Button>
+        <Link
+          href="https://v5.mui.com/material-ui/all-components/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <Button variant="contained">MaterialUI</Button>
+        </Link>
         <FormControlLabel
           label="リアルタイム更新"
           control={
