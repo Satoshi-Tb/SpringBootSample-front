@@ -1,4 +1,4 @@
-import { Paper, Typography, Divider, Container } from "@mui/material";
+import { Paper, Typography, Divider, Container, Box } from "@mui/material";
 import { BaseLayout } from "@/components/model/layout";
 import { List } from "@/components/model/user/List";
 import { Condition } from "@/components/model/user/Condition";
@@ -14,24 +14,21 @@ export type UserType = {
 export const ListPage = () => {
   return (
     <BaseLayout>
-      <Container
-        sx={{ width: 1000, flexDirection: "row", display: "flex", padding: 2 }}
-      >
-        {/* <Paper sx={{ marginRight: 1, minWidth: 300 }}>
-          <Filter />
-        </Paper> */}
-        <Paper>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+      <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Paper sx={{ m: 1, width: "80%" }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, borderBottom: "2px solid" }}
+          >
             ユーザー一覧
           </Typography>
-          <Divider />
           {/* 検索条件 */}
           <Condition />
-          <Divider />
           {/* 検索結果 */}
           <List />
         </Paper>
-      </Container>
+      </Box>
     </BaseLayout>
   );
 };

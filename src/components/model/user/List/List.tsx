@@ -26,7 +26,7 @@ export const List = () => {
       </>
     );
   return (
-    <Box sx={{ height: 400 }}>
+    <Box sx={{ height: "600" }}>
       <DataGrid
         columns={columns}
         rows={rowData}

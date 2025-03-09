@@ -93,7 +93,7 @@ export const useUserListPost = (condition?: SearchCondition) => {
   // fetcher関数にはkeyに指定した配列がそのまま引数として渡る
   // urlにnullを指定すると、フェッチ処理キャンセル（のはず）
   // 詳細：https://swr.vercel.app/ja/docs/arguments
-  const { data, error, isLoading, mutate } = useSWR(
+  const { data, error, isLoading } = useSWR(
     condition
       ? [`${envConfig.apiUrl}/api/user/get/list-pager`, condition]
       : null,
@@ -103,5 +103,5 @@ export const useUserListPost = (condition?: SearchCondition) => {
   console.log("useUserListPost>fetch condition", condition);
   console.log("useUserListPost>fetch data", data);
 
-  return { userListData: data, hasError: error, isLoading, mutate };
+  return { userListData: data, hasError: error, isLoading };
 };

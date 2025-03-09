@@ -5,6 +5,7 @@ import {
   IconButton,
   Checkbox,
   FormControlLabel,
+  Typography,
 } from "@mui/material";
 import { Controller } from "react-hook-form";
 import { useConditionHook } from "./ConditionHook";
@@ -38,25 +39,48 @@ export const Condition = () => {
     <Box
       component="form"
       sx={{
-        "& .MuiTextField-root": { m: 1, width: "25ch" },
+        width: "100%",
       }}
       autoComplete="off"
       onSubmit={handleSubmit(onValid)}
       display="flex"
+      flexDirection="row"
     >
       {deleteError && <p>エラーが発生しました: {deleteError.message}</p>}
-      <Controller
-        name="userId"
-        control={control}
-        defaultValue=""
-        render={({ field }) => <TextField label="ユーザーID" {...field} />}
-      />
-      <Controller
-        name="userName"
-        control={control}
-        defaultValue=""
-        render={({ field }) => <TextField label="ユーザー名" {...field} />}
-      />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          m: "0 5px",
+        }}
+      >
+        <Typography variant="body2">ユーザーID</Typography>
+        <Controller
+          name="userId"
+          control={control}
+          defaultValue=""
+          render={({ field }) => <TextField hiddenLabel {...field} />}
+        />
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          m: "0 5px",
+        }}
+      >
+        <Typography variant="body2">ユーザー名</Typography>
+        <Controller
+          name="userName"
+          control={control}
+          defaultValue=""
+          render={({ field }) => <TextField hiddenLabel {...field} />}
+        />
+      </Box>
+
       <Box
         display="flex"
         alignContent="center"
