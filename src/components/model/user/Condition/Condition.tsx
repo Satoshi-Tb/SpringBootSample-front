@@ -121,13 +121,12 @@ export const Condition = () => {
         >
           巨大Excel
         </Button>
-        <Link
-          href="https://v5.mui.com/material-ui/all-components/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <Button variant="contained">MaterialUI</Button>
-        </Link>
+        <ExternalLinkButton href="https://v5.mui.com/material-ui/all-components/">
+          Material UI V5
+        </ExternalLinkButton>
+        <ExternalLinkButton href="https://v5.mui.com/x/react-data-grid/">
+          MUI-X DataGrid V5
+        </ExternalLinkButton>
         <FormControlLabel
           label="リアルタイム更新"
           control={
@@ -149,5 +148,26 @@ export const Condition = () => {
         />
       </Box>
     </Box>
+  );
+};
+
+type ExternalLinkButtonProps = {
+  href: string;
+  children: React.ReactNode;
+};
+
+const ExternalLinkButton: React.FC<ExternalLinkButtonProps> = ({
+  href,
+  children,
+}) => {
+  return (
+    <Link
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      underline="none"
+    >
+      <Button variant="contained">{children}</Button>
+    </Link>
   );
 };
