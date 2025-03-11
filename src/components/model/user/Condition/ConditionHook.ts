@@ -121,7 +121,13 @@ export const useConditionHook = () => {
       page: userListPageOffset,
       size: userListRowsPerPage,
     });
-  }, [getValues, userListPageOffset, userListRowsPerPage]);
+  }, [
+    getValues,
+    userListPageOffset,
+    userListRowsPerPage,
+    condition,
+    setListSearchCondition,
+  ]);
 
   return {
     handleSubmit,
