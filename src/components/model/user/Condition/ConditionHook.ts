@@ -22,6 +22,7 @@ import {
   useRealTimeUpdateMutators,
   useRealTimeUpdateState,
 } from "@/components/store/useRealTimeUpdateState";
+import { useUserListExcel } from "@/components/usecase/useUserList";
 
 // Zod スキーマ
 const schema = z.object({
@@ -39,6 +40,8 @@ export const useConditionHook = () => {
   const selectedRowIds = useUserListSelectedRowIds();
   const showDetailButtonEnabled = selectedRowIds.length === 0;
   const bulkDeleteButtonEnabled = selectedRowIds.length >= 1;
+
+  const { trigger: getExcel } = useUserListExcel();
 
   const realTimeUpdate = useRealTimeUpdateState();
   const { setRealTimeUpdate } = useRealTimeUpdateMutators();
@@ -92,10 +95,14 @@ export const useConditionHook = () => {
 
   // Excel DLボタン
   const handleExcelDownload = async () => {
-    console.log("selectedRowIds", selectedRowIds);
-
-    const excelData = await getUserListExcel();
-    downloadExcel(excelData, "userlist-sample.xlsx");
+    // const excelData = await getUserListExcel();
+    // downloadExcel(excelData, "userlist-sample.xlsx");
+    try {
+      const excelData = await getExcel(condition);
+      downloadExcel(excelData, "userlist-sample.xlsx");
+    } catch (e) {
+      console.log("handleExcelDownload err:", e);
+    }
   };
 
   // Excel DLボタン
@@ -121,13 +128,7 @@ export const useConditionHook = () => {
       page: userListPageOffset,
       size: userListRowsPerPage,
     });
-  }, [
-    getValues,
-    userListPageOffset,
-    userListRowsPerPage,
-    condition,
-    setListSearchCondition,
-  ]);
+  }, [getValues, userListPageOffset, userListRowsPerPage]);
 
   return {
     handleSubmit,

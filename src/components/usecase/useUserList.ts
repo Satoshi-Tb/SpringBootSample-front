@@ -3,6 +3,7 @@ import type { BasicResponseType, SearchCondition } from "@/TypeDef";
 import envConfig from "@/utils/envConfig";
 import { use } from "react";
 import { useRealTimeUpdateState } from "../store/useRealTimeUpdateState";
+import useSWRMutation from "swr/mutation";
 
 export type UserType = {
   id: string | number;
@@ -104,4 +105,24 @@ export const useUserListPost = (condition?: SearchCondition) => {
   console.log("useUserListPost>fetch data", data);
 
   return { userListData: data, hasError: error, isLoading };
+};
+
+/**
+ * Excel出力
+ */
+export const useUserListExcel = () => {
+  // データ取得処理
+  const fetcher = async (url: string, { arg }: { arg: SearchCondition }) =>
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(arg),
+    }).then((res) => res.blob());
+
+  return useSWRMutation(
+    `${envConfig.apiUrl}/api/download/excel/userlist2`,
+    fetcher
+  );
 };
