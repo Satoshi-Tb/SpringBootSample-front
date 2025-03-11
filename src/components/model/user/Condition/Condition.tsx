@@ -30,6 +30,7 @@ export const Condition = () => {
     deleteError,
     realTimeUpdate,
     setRealTimeUpdate,
+    bulkDeleteButtonEnabled,
   } = useConditionHook();
 
   // 再読込処理用
@@ -89,7 +90,12 @@ export const Condition = () => {
         >
           再読込
         </Button>
-        <Button type="button" variant="contained" onClick={handleBulkDelete}>
+        <Button
+          type="button"
+          variant="contained"
+          onClick={handleBulkDelete}
+          disabled={!bulkDeleteButtonEnabled}
+        >
           一括削除
         </Button>
         <Button

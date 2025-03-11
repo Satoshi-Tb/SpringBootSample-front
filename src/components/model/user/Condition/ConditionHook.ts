@@ -38,6 +38,7 @@ export const useConditionHook = () => {
   const userListRowsPerPage = useUserListPageSizeState();
   const selectedRowIds = useUserListSelectedRowIds();
   const showDetailButtonEnabled = selectedRowIds.length === 0;
+  const bulkDeleteButtonEnabled = selectedRowIds.length >= 1;
 
   const realTimeUpdate = useRealTimeUpdateState();
   const { setRealTimeUpdate } = useRealTimeUpdateMutators();
@@ -91,6 +92,8 @@ export const useConditionHook = () => {
 
   // Excel DLボタン
   const handleExcelDownload = async () => {
+    console.log("selectedRowIds", selectedRowIds);
+
     const excelData = await getUserListExcel();
     downloadExcel(excelData, "userlist-sample.xlsx");
   };
@@ -132,5 +135,6 @@ export const useConditionHook = () => {
     deleteError,
     realTimeUpdate,
     setRealTimeUpdate,
+    bulkDeleteButtonEnabled,
   };
 };
