@@ -15,7 +15,7 @@ export const ListPage = () => {
   return (
     <BaseLayout>
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Paper sx={{ m: 1, width: "80%" }}>
+        <Paper sx={{ m: 1, width: "90%" }}>
           <Typography
             variant="h6"
             component="div"

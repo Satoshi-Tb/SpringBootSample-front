@@ -48,14 +48,7 @@ export const Condition = () => {
       flexDirection="row"
     >
       {deleteError && <p>エラーが発生しました: {deleteError.message}</p>}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          m: "0 5px",
-        }}
-      >
+      <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
         <Typography variant="body2">ユーザーID</Typography>
         <Controller
           name="userId"
@@ -63,16 +56,7 @@ export const Condition = () => {
           defaultValue=""
           render={({ field }) => <TextField hiddenLabel {...field} />}
         />
-      </Box>
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          m: "0 5px",
-        }}
-      >
         <Typography variant="body2">ユーザー名</Typography>
         <Controller
           name="userName"
@@ -80,12 +64,17 @@ export const Condition = () => {
           defaultValue=""
           render={({ field }) => <TextField hiddenLabel {...field} />}
         />
-      </Box>
-
-      <Box display="flex" sx={{ m: "5px" }} gap={1} alignItems="center">
         <Button type="submit" variant="contained">
           検索
         </Button>
+      </Box>
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        sx={{ m: "5px" }}
+        gap={1}
+        alignItems="center"
+      >
         <Button
           variant="contained"
           onClick={() => {
