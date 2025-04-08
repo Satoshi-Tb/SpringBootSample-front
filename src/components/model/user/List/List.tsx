@@ -1,7 +1,15 @@
-import { Box, Typography } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { Box, Button, Typography } from "@mui/material";
+import {
+  DataGrid,
+  GridRowSelectionModel,
+  GridSlotsComponentsProps,
+  GridToolbar,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+} from "@mui/x-data-grid";
 import { useListHook } from "./ListHook";
-import { useSampleAuthState } from "@/components/store/useSampleAuthState";
+import { useUserListSelectedRowIds } from "@/components/store/useUserListRowSelectionState";
 
 export const List = () => {
   // 照会
@@ -14,6 +22,8 @@ export const List = () => {
     handlePaginationModelChange,
     handleProcessRowUpdate,
     handleRowSelectionModel,
+    handleExcelDownload,
+    selectedRowIds,
   } = useListHook();
 
   if (hasError)
@@ -47,7 +57,45 @@ export const List = () => {
         checkboxSelection
         keepNonExistentRowsSelected
         onRowSelectionModelChange={handleRowSelectionModel}
+        slots={{
+          toolbar: CustomToolbar,
+        }}
+        slotProps={{
+          toolbar: {
+            selectedRowIds,
+            handleExcelDownload,
+          },
+        }}
       />
     </Box>
+  );
+};
+
+// ツールバープロパティの拡張定義
+declare module "@mui/x-data-grid" {
+  interface ToolbarPropsOverrides {
+    selectedRowIds: GridRowSelectionModel;
+    handleExcelDownload: () => void;
+    // 必要に応じて他のプロパティも追加
+  }
+}
+
+const CustomToolbar = ({
+  selectedRowIds,
+  handleExcelDownload,
+}: NonNullable<GridSlotsComponentsProps["toolbar"]>) => {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <Button
+        type="button"
+        variant="contained"
+        onClick={handleExcelDownload}
+        disabled={!selectedRowIds || selectedRowIds.length === 0}
+      >
+        Excelダウンロード
+      </Button>
+    </GridToolbarContainer>
   );
 };

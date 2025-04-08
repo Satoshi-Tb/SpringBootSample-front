@@ -20,7 +20,10 @@ import {
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useUpdateUser } from "@/components/usecase/useUserMutator";
 import envConfig from "@/utils/envConfig";
-import { useUserListSelectedRowIdsMutator } from "@/components/store/useUserListRowSelectionState";
+import {
+  useUserListSelectedRowIds,
+  useUserListSelectedRowIdsMutator,
+} from "@/components/store/useUserListRowSelectionState";
 import { Link } from "@mui/material";
 import HighlightKeywords from "@/components/ui/highlight";
 import { useHighlightSettingsState } from "@/components/store/useHighlightSettingsState";
@@ -37,6 +40,7 @@ export const useListHook = () => {
   const { setUserListPageSize } = useUserListPageSizeMutators();
   // 選択行IDリスト
   const { setUserListSelectedRowIds } = useUserListSelectedRowIdsMutator();
+  const selectedRowIds = useUserListSelectedRowIds();
   // ハイライト設定
   const highlightSettings = useHighlightSettingsState();
 
@@ -189,6 +193,11 @@ export const useListHook = () => {
     console.log("selectedRows:", selectedRows);
   };
 
+  // Excelダウンロード
+  const handleExcelDownload = () => {
+    console.log("Excelダウンロードボタン押下", { selectedRowIds });
+  };
+
   useEffect(() => {
     console.log("useEffect:userListData", userListData);
     console.log("useEffect:hasError", hasError);
@@ -206,5 +215,7 @@ export const useListHook = () => {
     handlePaginationModelChange,
     handleProcessRowUpdate,
     handleRowSelectionModel,
+    handleExcelDownload,
+    selectedRowIds,
   };
 };
