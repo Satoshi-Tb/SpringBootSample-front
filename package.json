@@ -17,6 +17,7 @@
     "@mui/x-data-grid": "^6.17.0",
     "@mui/x-tree-view": "^7.1.0",
     "html-react-parser": "^5.1.15",
+    "lucide-react": "^0.487.0",
     "next": "14.0.0",
     "react": "^18",
     "react-dom": "^18",
