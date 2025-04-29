@@ -16,7 +16,7 @@ export default async function handler(
   switch (req.method) {
     case "GET":
       if (filteredData?.userId === "user01") {
-        await wait(5000);
+        await wait(3000);
       }
 
       res.status(200).json({

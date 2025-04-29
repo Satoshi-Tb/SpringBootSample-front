@@ -44,7 +44,7 @@ export const Login = () => {
             onChange={handleUsernameChange}
             error={Boolean(errors.username)}
             helperText={
-              errors.username || "ユーザー名は8文字以上で入力してください"
+              errors.username || "ユーザー名は4文字以上で入力してください"
             }
           />
 
