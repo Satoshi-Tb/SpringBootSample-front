@@ -22,8 +22,9 @@ const schema = z.object({
   birthday: z.string().optional(),
   age: z.preprocess(
     (val) => (val ? Number(val) : null),
-    z.number().nonnegative("数値は0以上である必要があります").nullable()
+    z.number().nonnegative("0以上の数値を指定してください").nullable()
   ),
+  department: z.string().min(1, "入力必須です"), // 選択リストの型。valueに対する設定のため、string型になる
   profile: z.string().optional(),
   gender: z.string(),
 });
@@ -38,7 +39,10 @@ export const useDetailForm = () => {
     formState: { errors },
     setValue,
     register,
+    reset,
   } = useForm<DetailFormData>({
+    mode: "onSubmit", // submit時にバリデーションを行う
+    reValidateMode: "onChange", // 入力時に再バリデーションを行う
     resolver: zodResolver(schema),
     defaultValues: {
       userId: "",
@@ -46,10 +50,11 @@ export const useDetailForm = () => {
       userName: "",
       birthday: "",
       age: undefined,
+      department: "",
       gender: "1",
       profile: "",
     },
   });
 
-  return { handleSubmit, control, errors, register, setValue };
+  return { handleSubmit, control, errors, register, setValue, reset };
 };

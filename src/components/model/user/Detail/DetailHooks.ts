@@ -36,6 +36,13 @@ export const useDetailHooks = () => {
   // 次のユーザーID
   const [nextUserId, setNextUseId] = useState<string | undefined>(undefined);
 
+  // 部署リスト
+  const departments = [
+    { value: "1", label: "開発部" },
+    { value: "2", label: "営業部" },
+    { value: "3", label: "システム部" },
+  ];
+
   // ユーザー詳細データ取得
   const {
     userData,
@@ -61,10 +68,12 @@ export const useDetailHooks = () => {
   const { mutate } = useSWRMutator();
 
   // フォーム定義
-  const { handleSubmit, control, errors, register, setValue } = useDetailForm();
+  const { handleSubmit, control, errors, register, setValue, reset } =
+    useDetailForm();
 
   // フォーム初期値設定
   useEffect(() => {
+    reset();
     if (!userData) return;
     const mode = pagingMode as PagingModeType;
     const user = userData.data.user;
@@ -75,6 +84,7 @@ export const useDetailHooks = () => {
     setValue("age", user.age ?? null);
     setValue("gender", user.gender.toString());
     setValue("profile", user.profile);
+    setValue("department", user.department?.departmentId?.toString() ?? "");
 
     // const idx = selectedRowIds.findIndex((val) => {
     //   console.log("val vs userId", val, user.userId);
@@ -130,8 +140,8 @@ export const useDetailHooks = () => {
     }
   };
 
-  const onInvalid = () => {
-    console.log("Submit Invalid!");
+  const onInvalid = (errors: any) => {
+    console.log("Submit Invalid!", { errors });
   };
 
   return {
@@ -149,5 +159,6 @@ export const useDetailHooks = () => {
     pagingMode,
     nextUserId,
     beforeUserId,
+    departments,
   };
 };

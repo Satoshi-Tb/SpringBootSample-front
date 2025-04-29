@@ -2,10 +2,14 @@ import {
   Box,
   Button,
   FormControlLabel,
+  FormHelperText,
   Grid,
   IconButton,
+  MenuItem,
   Radio,
   RadioGroup,
+  Select,
+  Stack,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
@@ -41,6 +45,7 @@ export const Detail = () => {
     pagingMode,
     nextUserId,
     beforeUserId,
+    departments,
   } = useDetailHooks();
 
   if (hasFetchError) return <div>failed to load</div>;
@@ -143,9 +148,30 @@ export const Detail = () => {
           <Typography>部署名</Typography>
         </Grid>
         <Grid item xs={8}>
-          <Typography>
-            {userData!.data.user.department?.departmentName}
-          </Typography>
+          <Controller
+            name="department"
+            control={control}
+            render={({ field }) => {
+              console.log("department", { field });
+              return (
+                <Stack direction="column" alignItems="left" width="150px">
+                  <Select {...field} sx={{ width: "100%" }}>
+                    <MenuItem value="">選択なし</MenuItem>
+                    {departments.map((item, idx) => (
+                      <MenuItem key={`${idx}-${item.value}`} value={item.value}>
+                        {item.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.department?.message && (
+                    <FormHelperText color="red">
+                      {errors.department?.message}
+                    </FormHelperText>
+                  )}
+                </Stack>
+              );
+            }}
+          />
         </Grid>
         <Grid item xs={4}>
           <Typography>プロフィール</Typography>
