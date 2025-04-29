@@ -18,6 +18,7 @@ import {
 } from "./DetailForm";
 import dayjs from "dayjs";
 import { calculateAge } from "@/utils/utility";
+import { SelectChangeEvent } from "@mui/material";
 
 const replaceSymbols = (input: string) => {
   return input.replace(createInvalidSymbolRegex("g"), "");
@@ -41,11 +42,15 @@ export const useDetailHooks = () => {
   // 次のユーザーID
   const [nextUserId, setNextUseId] = useState<string | undefined>(undefined);
 
+  // 更新ボタンの活性制御
+  const [updateButtonEnabled, setUpdateButtonEnabled] = useState(false);
+
   // 部署リスト
   const departments = [
     { value: "1", label: "開発部" },
     { value: "2", label: "営業部" },
     { value: "3", label: "システム部" },
+    { value: "9", label: "外注" },
   ];
 
   // ユーザー詳細データ取得
@@ -152,6 +157,15 @@ export const useDetailHooks = () => {
     console.log("Submit Invalid!", { errors });
   };
 
+  // 部署選択変更イベント
+  const handleChangeDivision = (event: SelectChangeEvent<string>) => {
+    if (event.target.value === "9") {
+      setUpdateButtonEnabled(false);
+    } else {
+      setUpdateButtonEnabled(true);
+    }
+  };
+
   return {
     handleSubmit,
     onValid,
@@ -169,5 +183,7 @@ export const useDetailHooks = () => {
     beforeUserId,
     departments,
     birthday: watch("birthday"),
+    updateButtonEnabled,
+    handleChangeDivision,
   };
 };

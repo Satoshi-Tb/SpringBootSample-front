@@ -10,6 +10,7 @@ import {
   Radio,
   RadioGroup,
   Select,
+  SelectChangeEvent,
   Stack,
   TextField,
   ToggleButton,
@@ -51,6 +52,8 @@ export const Detail = () => {
     beforeUserId,
     departments,
     birthday,
+    updateButtonEnabled,
+    handleChangeDivision,
   } = useDetailHooks();
 
   if (hasFetchError) return <div>failed to load</div>;
@@ -163,7 +166,14 @@ export const Detail = () => {
             control={control}
             render={({ field }) => (
               <Stack direction="column" alignItems="left" width="150px">
-                <Select {...field} sx={{ width: "100%" }}>
+                <Select
+                  {...field}
+                  onChange={(event: SelectChangeEvent<string>) => {
+                    field.onChange(event);
+                    handleChangeDivision(event);
+                  }}
+                  sx={{ width: "100%" }}
+                >
                   <MenuItem value="">選択なし</MenuItem>
                   {departments.map((item, idx) => (
                     <MenuItem key={`${idx}-${item.value}`} value={item.value}>
@@ -207,7 +217,12 @@ export const Detail = () => {
         </Grid>
         <Grid item xs={12}>
           <Box display="flex" flexDirection="row" justifyContent="center">
-            <Button variant="contained" sx={{ marginRight: 1 }} type="submit">
+            <Button
+              variant="contained"
+              sx={{ marginRight: 1 }}
+              type="submit"
+              disabled={!updateButtonEnabled}
+            >
               更新
             </Button>
             <Button
