@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  FormControl,
   FormControlLabel,
   FormHelperText,
   Grid,
@@ -15,6 +16,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { Controller } from "react-hook-form";
@@ -26,6 +28,8 @@ import FactCheckSharpIcon from "@mui/icons-material/FactCheckSharp";
 import InventorySharpIcon from "@mui/icons-material/InventorySharp";
 import ContentPasteSearchIcon from "@mui/icons-material/ContentPasteSearch";
 import { useDetailHooks } from "./DetailHooks";
+import { calculateAge } from "@/utils/utility";
+import dayjs, { Dayjs } from "dayjs";
 
 export const Detail = () => {
   const router = useRouter();
@@ -46,6 +50,7 @@ export const Detail = () => {
     nextUserId,
     beforeUserId,
     departments,
+    birthday,
   } = useDetailHooks();
 
   if (hasFetchError) return <div>failed to load</div>;
@@ -70,7 +75,9 @@ export const Detail = () => {
           <Typography>{userData!.data.user.password}</Typography>
         </Grid>
         <Grid item xs={4}>
-          <Typography>ユーザー名</Typography>
+          <Typography>
+            ユーザー名<span style={{ color: "red" }}>*</span>
+          </Typography>
         </Grid>
         <Grid item xs={8}>
           <Controller
@@ -87,41 +94,42 @@ export const Detail = () => {
           />
         </Grid>
         <Grid item xs={4}>
-          <Typography>誕生日</Typography>
+          <Typography>
+            誕生日<span style={{ color: "red" }}>*</span>
+          </Typography>
         </Grid>
         <Grid item xs={8}>
-          <Controller
-            name="birthday"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                placeholder="yyyy/MM/dd"
-                error={!!errors.birthday}
-                helperText={errors.birthday?.message}
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            )}
-          />
+          <FormControl error={!!errors.birthday} fullWidth>
+            <Controller
+              name="birthday"
+              control={control}
+              render={({ field }) => (
+                <DatePicker
+                  value={field.value ? dayjs(field.value) : null}
+                  inputFormat="YYYY/MM/DD"
+                  onChange={(value: Dayjs | null) => {
+                    console.log("誕生日フィールド変更", { value });
+                    field.onChange(value ? value.toDate() : null);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      helperText={errors.birthday?.message as string}
+                      fullWidth
+                      error={!!errors.birthday}
+                    />
+                  )}
+                  disableFuture
+                />
+              )}
+            />
+          </FormControl>
         </Grid>
         <Grid item xs={4}>
           <Typography>年齢</Typography>
         </Grid>
         <Grid item xs={8}>
-          <Controller
-            name="age"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                type="number"
-                error={!!errors.age}
-                helperText={errors.age?.message}
-              />
-            )}
-          />
+          <Typography>{calculateAge(birthday)} 歳</Typography>
         </Grid>
         <Grid item xs={4}>
           <Typography>性別</Typography>
@@ -145,32 +153,31 @@ export const Detail = () => {
           />
         </Grid>
         <Grid item xs={4}>
-          <Typography>部署名</Typography>
+          <Typography>
+            部署名<span style={{ color: "red" }}>*</span>
+          </Typography>
         </Grid>
         <Grid item xs={8}>
           <Controller
             name="department"
             control={control}
-            render={({ field }) => {
-              console.log("department", { field });
-              return (
-                <Stack direction="column" alignItems="left" width="150px">
-                  <Select {...field} sx={{ width: "100%" }}>
-                    <MenuItem value="">選択なし</MenuItem>
-                    {departments.map((item, idx) => (
-                      <MenuItem key={`${idx}-${item.value}`} value={item.value}>
-                        {item.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {errors.department?.message && (
-                    <FormHelperText color="red">
-                      {errors.department?.message}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              );
-            }}
+            render={({ field }) => (
+              <Stack direction="column" alignItems="left" width="150px">
+                <Select {...field} sx={{ width: "100%" }}>
+                  <MenuItem value="">選択なし</MenuItem>
+                  {departments.map((item, idx) => (
+                    <MenuItem key={`${idx}-${item.value}`} value={item.value}>
+                      {item.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {errors.department?.message && (
+                  <FormHelperText color="red">
+                    {errors.department?.message}
+                  </FormHelperText>
+                )}
+              </Stack>
+            )}
           />
         </Grid>
         <Grid item xs={4}>

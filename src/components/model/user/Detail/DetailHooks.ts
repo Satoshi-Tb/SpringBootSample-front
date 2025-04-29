@@ -1,7 +1,10 @@
 import { useCategoryCode } from "@/components/usecase/useCategoryCodeList";
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useUserDetail } from "@/components/usecase/useUserDetail";
-import { useUpdateUser } from "@/components/usecase/useUserMutator";
+import {
+  UserPutType,
+  useUpdateUser,
+} from "@/components/usecase/useUserMutator";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useUserListSelectedRowIds } from "@/components/store/useUserListRowSelectionState";
@@ -13,6 +16,8 @@ import {
   createInvalidSymbolRegex,
   useDetailForm,
 } from "./DetailForm";
+import dayjs from "dayjs";
+import { calculateAge } from "@/utils/utility";
 
 const replaceSymbols = (input: string) => {
   return input.replace(createInvalidSymbolRegex("g"), "");
@@ -68,7 +73,7 @@ export const useDetailHooks = () => {
   const { mutate } = useSWRMutator();
 
   // フォーム定義
-  const { handleSubmit, control, errors, register, setValue, reset } =
+  const { handleSubmit, control, errors, register, setValue, reset, watch } =
     useDetailForm();
 
   // フォーム初期値設定
@@ -80,8 +85,7 @@ export const useDetailHooks = () => {
     setValue("userId", user.userId);
     setValue("password", user.password);
     setValue("userName", user.userName);
-    setValue("birthday", user.birthday);
-    setValue("age", user.age ?? null);
+    setValue("birthday", dayjs(user.birthday).toDate());
     setValue("gender", user.gender.toString());
     setValue("profile", user.profile);
     setValue("department", user.department?.departmentId?.toString() ?? "");
@@ -114,20 +118,24 @@ export const useDetailHooks = () => {
 
   // 更新ボタン押下アクション
   const onValid = async (form: DetailFormData) => {
-    console.log("submit", form);
+    console.log("submit", { form });
     try {
       const replacedProfile = replaceSymbols(form.profile ?? "");
-      console.log("submit replace", replacedProfile);
-      const result = await updateUser({
+
+      const payload: UserPutType = {
         id: form.userId,
         userId: form.userId,
         userName: form.userName,
         password: form.password,
-        age: form.age,
+        birthday: dayjs(form.birthday).format("YYYY-MM-DD"),
+        age: calculateAge(form.birthday),
+        departmentId: Number(form.department),
         gender: parseInt(form.gender),
         profile: replacedProfile,
         updateMode: "replace",
-      });
+      };
+      console.log("更新データ", { payload });
+      const result = await updateUser(payload);
       console.log("更新結果", result);
 
       // 更新後データ再読込
@@ -160,5 +168,6 @@ export const useDetailHooks = () => {
     nextUserId,
     beforeUserId,
     departments,
+    birthday: watch("birthday"),
   };
 };

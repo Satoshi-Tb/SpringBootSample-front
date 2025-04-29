@@ -19,7 +19,10 @@ const schema = z.object({
     .refine((v) => !createInvalidSymbolRegex().test(v), {
       message: "記号を含めないでください",
     }),
-  birthday: z.string().optional(),
+  birthday: z.date({
+    required_error: "誕生日は必須です",
+    invalid_type_error: "有効な日付を入力してください",
+  }),
   age: z.preprocess(
     (val) => (val ? Number(val) : null),
     z.number().nonnegative("0以上の数値を指定してください").nullable()
@@ -40,6 +43,7 @@ export const useDetailForm = () => {
     setValue,
     register,
     reset,
+    watch,
   } = useForm<DetailFormData>({
     mode: "onSubmit", // submit時にバリデーションを行う
     reValidateMode: "onChange", // 入力時に再バリデーションを行う
@@ -48,7 +52,7 @@ export const useDetailForm = () => {
       userId: "",
       password: "",
       userName: "",
-      birthday: "",
+      birthday: undefined,
       age: undefined,
       department: "",
       gender: "1",
@@ -56,5 +60,5 @@ export const useDetailForm = () => {
     },
   });
 
-  return { handleSubmit, control, errors, register, setValue, reset };
+  return { handleSubmit, control, errors, register, setValue, reset, watch };
 };
