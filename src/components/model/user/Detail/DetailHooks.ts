@@ -81,10 +81,11 @@ export const useDetailHooks = () => {
   const { handleSubmit, control, errors, register, setValue, reset, watch } =
     useDetailForm();
 
-  // フォーム初期値設定
+  // 初期表示
   useEffect(() => {
     reset();
     if (!userData) return;
+    // フォーム初期値設定
     const mode = pagingMode as PagingModeType;
     const user = userData.data.user;
     setValue("userId", user.userId);
@@ -95,15 +96,17 @@ export const useDetailHooks = () => {
     setValue("profile", user.profile);
     setValue("department", user.department?.departmentId?.toString() ?? "");
 
+    setUpdateButtonEnabled(user.department?.departmentId !== 9);
+
     // const idx = selectedRowIds.findIndex((val) => {
     //   console.log("val vs userId", val, user.userId);
     //   return val === user.userId;
     // });
     // TODO 課題：ページ切替で選択行状態が解除されるため、うまく前後IDをとれない
     const idx = selectedRowIds.indexOf(user.userId);
-    console.log("useEffect@selectedRowIds", selectedRowIds);
-    console.log("useEffect@userId", user.userId);
-    console.log("useEffect@idx", idx);
+    // console.log("useEffect@selectedRowIds", selectedRowIds);
+    // console.log("useEffect@userId", user.userId);
+    // console.log("useEffect@idx", idx);
 
     setBeforeUseId(
       mode === "allRows"
