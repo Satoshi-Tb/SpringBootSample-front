@@ -4,7 +4,16 @@ import { useRecoilValue, useSetRecoilState, atom } from "recoil";
 
 const listSearchConditionState = atom<SearchCondition>({
   key: "listSearchConditionState",
-  default: { userId: "", userName: "", page: 0, size: 5 },
+  default: {
+    userId: "",
+    userName: "",
+    gender: "",
+    departmentId: "",
+    ageFrom: undefined,
+    ageTo: undefined,
+    page: 0,
+    size: 5,
+  },
 });
 
 export const useListSearchConditionState = () => {

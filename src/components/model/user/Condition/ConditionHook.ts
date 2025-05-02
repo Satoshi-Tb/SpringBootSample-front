@@ -1,6 +1,3 @@
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import {
   useListSearchConditionMutators,
   useListSearchConditionState,
@@ -9,13 +6,12 @@ import {
   useUserListSelectedPage,
   useUserListPageSizeState,
 } from "@/components/store/useUserListPaginationState";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useUserListSelectedRowIds } from "@/components/store/useUserListRowSelectionState";
 import { useDeleteUser } from "@/components/usecase/useUserMutator";
 import envConfig from "@/utils/envConfig";
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useRouter } from "next/router";
-import { getUserListExcel } from "@/components/repository/getUserListExcel";
 import { downloadExcel } from "@/utils/downloadExcel";
 import { getBigDataExcel } from "@/components/repository/getBigDataExcel";
 import {
@@ -23,14 +19,6 @@ import {
   useRealTimeUpdateState,
 } from "@/components/store/useRealTimeUpdateState";
 import { useUserListExcel } from "@/components/usecase/useUserList";
-
-// Zod スキーマ
-const schema = z.object({
-  userId: z.string().optional(),
-  userName: z.string().optional(),
-});
-
-type FormData = z.infer<typeof schema>;
 
 export const useConditionHook = () => {
   // 検索条件のセッター
@@ -55,23 +43,30 @@ export const useConditionHook = () => {
   const condition = useListSearchConditionState();
   //再読込
   const { mutate } = useSWRMutator();
+  // 検索中かどうか
+  const searchActivated = useMemo(() => {
+    return (
+      condition.ageFrom ||
+      condition.ageTo ||
+      condition.departmentId ||
+      condition.gender ||
+      condition.userId ||
+      condition.userName
+    );
+  }, [condition]);
 
-  // 検索ボタン押下アクション
-  const onValid = (form: FormData) => {
-    console.log("form", form);
+  // 検索条件クリア
+  const clearSearchCondition = () =>
     setListSearchCondition({
-      ...condition,
-      userId: form.userId,
-      userName: form.userName,
+      userId: "",
+      userName: "",
+      departmentId: "",
+      gender: "",
+      ageFrom: undefined,
+      ageTo: undefined,
       page: userListPageOffset,
       size: userListRowsPerPage,
     });
-  };
-
-  /** フォーム定義 */
-  const { handleSubmit, control, getValues } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
 
   // 一括削除押下
   const handleBulkDelete = async () => {
@@ -119,21 +114,8 @@ export const useConditionHook = () => {
       new Date().toLocaleString() + " Excelダウンロードボタン押下完了"
     );
   };
-  // 初期検索条件の構築。これが必要なはず
-  useEffect(() => {
-    setListSearchCondition({
-      ...condition,
-      userId: getValues("userId"),
-      userName: getValues("userName"),
-      page: userListPageOffset,
-      size: userListRowsPerPage,
-    });
-  }, [getValues, userListPageOffset, userListRowsPerPage]);
 
   return {
-    handleSubmit,
-    onValid,
-    control,
     showDetailButtonEnabled,
     handleBulkDelete,
     handleOnClickDetail,
@@ -143,5 +125,7 @@ export const useConditionHook = () => {
     realTimeUpdate,
     setRealTimeUpdate,
     bulkDeleteButtonEnabled,
+    searchActivated,
+    clearSearchCondition,
   };
 };
