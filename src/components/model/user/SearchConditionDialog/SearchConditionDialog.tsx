@@ -7,6 +7,9 @@ import {
   TextField,
   Grid,
   Typography,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
 } from "@mui/material";
 import { useSearchConditionDialog } from "./SearchConditionDialogHooks";
 
@@ -22,7 +25,12 @@ export const SearchConditionDialog = ({ open, setOpen }: Props) => {
     handleCancel,
     handleReset,
     handleClose,
+    genderList,
+    gender,
+    handleChangeGender,
   } = useSearchConditionDialog({ setOpen });
+
+  console.log("SearchConditionDialogレンダー", { gender, userName });
 
   return (
     <div>
@@ -70,6 +78,29 @@ export const SearchConditionDialog = ({ open, setOpen }: Props) => {
                 value={userName}
                 onChange={handleChangeUserName}
               />
+            </Grid>
+            <Grid
+              item
+              xs={3}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Typography variant="body1">性別</Typography>
+            </Grid>
+            <Grid item xs={9}>
+              <RadioGroup row value={gender} onChange={handleChangeGender}>
+                {genderList.map((item) => (
+                  <FormControlLabel
+                    value={item.code}
+                    key={item.code}
+                    control={<Radio />}
+                    label={item.name}
+                  />
+                ))}
+              </RadioGroup>
             </Grid>
           </Grid>
         </DialogContent>
