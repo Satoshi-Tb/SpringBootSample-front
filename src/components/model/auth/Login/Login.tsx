@@ -129,7 +129,7 @@ export const Login = () => {
           </Button>
           <Link href="/user/signup" passHref>
             <Typography variant="body2" align="center">
-              サインアップ
+              新規登録はこちら
             </Typography>
           </Link>
         </Box>
