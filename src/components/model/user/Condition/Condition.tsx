@@ -1,27 +1,26 @@
 import {
-  TextField,
   Box,
   Button,
   IconButton,
   Checkbox,
   FormControlLabel,
-  Typography,
   Link,
 } from "@mui/material";
-import { Controller } from "react-hook-form";
 import { useConditionHook } from "./ConditionHook";
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useListSearchConditionState } from "@/components/store/useListSearchConditionState";
 import { RiFileExcel2Line } from "react-icons/ri";
 import envConfig from "@/utils/envConfig";
+import SearchIcon from "@mui/icons-material/Search";
+import SearchOffIcon from "@mui/icons-material/SearchOff";
 import { useState } from "react";
+import { SearchConditionDialog } from "../SearchConditionDialog/SearchConditionDialog";
 
 export const Condition = () => {
+  const [openSearchDialog, setOpenSearchDialog] = useState(false);
+
   // フォーム定義、アクション
   const {
-    handleSubmit,
-    onValid,
-    control,
     showDetailButtonEnabled,
     handleBulkDelete,
     handleOnClickDetail,
@@ -31,6 +30,8 @@ export const Condition = () => {
     realTimeUpdate,
     setRealTimeUpdate,
     bulkDeleteButtonEnabled,
+    searchActivated,
+    clearSearchCondition,
   } = useConditionHook();
 
   // 再読込処理用
@@ -44,31 +45,10 @@ export const Condition = () => {
         width: "100%",
       }}
       autoComplete="off"
-      onSubmit={handleSubmit(onValid)}
       display="flex"
       flexDirection="row"
     >
       {deleteError && <p>エラーが発生しました: {deleteError.message}</p>}
-      <Box display="flex" flexDirection="row" alignItems="center" gap={1}>
-        <Typography variant="body2">ユーザーID</Typography>
-        <Controller
-          name="userId"
-          control={control}
-          defaultValue=""
-          render={({ field }) => <TextField hiddenLabel {...field} />}
-        />
-
-        <Typography variant="body2">ユーザー名</Typography>
-        <Controller
-          name="userName"
-          control={control}
-          defaultValue=""
-          render={({ field }) => <TextField hiddenLabel {...field} />}
-        />
-        <Button type="submit" variant="contained">
-          検索
-        </Button>
-      </Box>
       <Box
         display="flex"
         flexWrap="wrap"
@@ -76,6 +56,18 @@ export const Condition = () => {
         gap={1}
         alignItems="center"
       >
+        <IconButton
+          onClick={() => {
+            setOpenSearchDialog(true);
+          }}
+        >
+          <SearchIcon />
+        </IconButton>
+        {searchActivated && (
+          <IconButton onClick={clearSearchCondition}>
+            <SearchOffIcon />
+          </IconButton>
+        )}
         <Button
           variant="contained"
           onClick={() => {
@@ -142,6 +134,10 @@ export const Condition = () => {
           }
         />
       </Box>
+      <SearchConditionDialog
+        open={openSearchDialog}
+        setOpen={setOpenSearchDialog}
+      />
     </Box>
   );
 };

@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
+import { UserType, useUserListPost } from "@/components/usecase/useUserList";
 import {
-  UserType,
-  useUserList,
-  useUserListPost,
-} from "@/components/usecase/useUserList";
-import { useListSearchConditionState } from "@/components/store/useListSearchConditionState";
+  useListSearchConditionMutators,
+  useListSearchConditionState,
+} from "@/components/store/useListSearchConditionState";
 import {
   GridColDef,
   GridPaginationModel,
@@ -48,6 +47,8 @@ export const useListHook = () => {
 
   // 検索条件
   const condition = useListSearchConditionState();
+  const { setListSearchCondition } = useListSearchConditionMutators();
+
   //再読込
   const { mutate } = useSWRMutator();
   // データ取得処理
@@ -139,6 +140,11 @@ export const useListHook = () => {
   ) => {
     setUserListSelectedPage(newPaginationModel.page);
     setUserListPageSize(newPaginationModel.pageSize);
+    setListSearchCondition({
+      ...condition,
+      page: newPaginationModel.page,
+      size: newPaginationModel.pageSize,
+    });
   };
 
   // セル編集処理
@@ -199,12 +205,10 @@ export const useListHook = () => {
   };
 
   useEffect(() => {
-    console.log("useEffect:userListData", userListData);
-    console.log("useEffect:hasError", hasError);
     if (hasError || !userListData || !userListData.data.userList) return;
     setRowData(userListData.data.userList);
     setRowCount(userListData.data.resultNum);
-  }, [userListData]);
+  }, [hasError, userListData]);
 
   return {
     rowData,
