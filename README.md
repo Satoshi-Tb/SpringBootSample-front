@@ -38,3 +38,21 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Build Docker Image
+
+1. 環境設定ファイルを編集(.env, .env.local など)し、ビルド時のパラメータを設定
+2. ビルドコマンド実施
+
+```
+export $(grep -v '^#' [環境設定ファイル] | xargs)
+docker build \
+  --build-arg NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
+  -t spring-boot-sample-front .
+```
+
+3. コンテナ起動
+
+```
+docker run -p 3000:3000 spring-boot-sample-front
+```
