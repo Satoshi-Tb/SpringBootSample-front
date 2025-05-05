@@ -28,10 +28,10 @@ export const Login = () => {
   return (
     <Container maxWidth="sm">
       <Paper elevation={3} sx={{ p: 4, mt: 8 }}>
-        <Typography component="h1" variant="h5" align="center" gutterBottom>
+        <Typography component="h1" variant="h4" align="center" gutterBottom>
           ログイン
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <Box display={"flex"} flexDirection={"column"} gap={1}>
             <Box
               display={"flex"}
