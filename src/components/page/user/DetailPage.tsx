@@ -6,7 +6,7 @@ export const DetailPage = () => {
   return (
     <BaseLayout>
       <Container maxWidth="md">
-        <Detail />
+        <Detail editMode="update" />
       </Container>
     </BaseLayout>
   );

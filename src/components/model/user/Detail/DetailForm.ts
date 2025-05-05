@@ -10,8 +10,13 @@ export const createInvalidSymbolRegex = (
 
 // Zod スキーマ
 const schema = z.object({
-  userId: z.string(),
-  password: z.string(),
+  userId: z.string().min(4, "ユーザー名は4文字以上である必要があります"),
+  password: z
+    .string()
+    .min(6, "パスワードは6文字以上である必要があります")
+    .regex(/[A-Z]/, "大文字の英字を1文字以上含める必要があります")
+    .regex(/[a-z]/, "小文字の英字を1文字以上含める必要があります")
+    .regex(/[0-9]/, "数字を1文字以上含める必要があります"),
   userName: z
     .string()
     .min(1, "入力必須です")
@@ -20,16 +25,16 @@ const schema = z.object({
       message: "記号を含めないでください",
     }),
   birthday: z.date({
-    required_error: "誕生日は必須です",
+    required_error: "入力必須です",
     invalid_type_error: "有効な日付を入力してください",
   }),
   age: z.preprocess(
     (val) => (val ? Number(val) : null),
     z.number().nonnegative("0以上の数値を指定してください").nullable()
   ),
-  department: z.string().min(1, "入力必須です"), // 選択リストの型。valueに対する設定のため、string型になる
-  profile: z.string().optional(),
-  gender: z.string(),
+  department: z.string().min(1, "選択必須です"), // 選択リストの型。valueに対する設定のため、string型になる
+  profile: z.string(),
+  gender: z.string().refine((v) => v !== "", { message: "選択必須です" }),
 });
 
 export type DetailFormData = z.infer<typeof schema>;
@@ -55,7 +60,7 @@ export const useDetailForm = () => {
       birthday: undefined,
       age: undefined,
       department: "",
-      gender: "1",
+      gender: "",
       profile: "",
     },
   });

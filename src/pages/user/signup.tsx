@@ -1,8 +1,16 @@
 import React from "react";
-import Signup from "@/components/model/user/Signup";
+import Detail from "@/components/model/user/Detail";
+import { BaseLayout } from "@/components/model/layout";
+import { Container } from "@mui/material";
 
 const signup = () => {
-  return <Signup />;
+  return (
+    <BaseLayout showSideBar={false}>
+      <Container maxWidth="md">
+        <Detail editMode="create" />
+      </Container>
+    </BaseLayout>
+  );
 };
 
 export default signup;

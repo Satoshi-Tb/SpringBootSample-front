@@ -6,7 +6,7 @@ import {
   useUpdateUser,
 } from "@/components/usecase/useUserMutator";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useUserListSelectedRowIds } from "@/components/store/useUserListRowSelectionState";
 import { PagingModeType } from "@/TypeDef";
 import envConfig from "@/utils/envConfig";
@@ -19,15 +19,25 @@ import {
 import dayjs from "dayjs";
 import { calculateAge } from "@/utils/utility";
 import { SelectChangeEvent } from "@mui/material";
+import { UserEditeModeType } from "./Detail";
 
 const replaceSymbols = (input: string) => {
   return input.replace(createInvalidSymbolRegex("g"), "");
 };
 
-export const useDetailHooks = () => {
+type Props = {
+  editMode: UserEditeModeType;
+};
+
+type QueryType = {
+  userId?: string;
+  pagingMode?: "next" | "prev";
+};
+
+export const useDetailHooks = ({ editMode }: Props) => {
   // URLパラメータ取得
   const router = useRouter();
-  const { userId, pagingMode } = router.query;
+  const { userId, pagingMode } = router.query as QueryType;
 
   // フォントサイズ設定
   const fontSize = useFontSizeState();
@@ -58,7 +68,7 @@ export const useDetailHooks = () => {
     userData,
     hasError: hasUserDataError,
     isLoading: isUserDataLoading,
-  } = useUserDetail((userId as string) || undefined);
+  } = useUserDetail(editMode === "create" ? undefined : userId);
 
   // 性別コード
   const {
@@ -67,12 +77,21 @@ export const useDetailHooks = () => {
     isLoading: isCategoryLoading,
   } = useCategoryCode("gender");
 
-  const isDataLoading =
-    isUserDataLoading || isCategoryLoading || !userData || !genderList;
-  const hasFetchError = hasUserDataError || hasCategoryError;
+  // ユーザー詳細データローディング中
+  const userDataLoading = useMemo(() => {
+    if (editMode === "create") return false;
+    if (isUserDataLoading || userData === undefined) return true;
+    return false;
+  }, [isUserDataLoading, userData]);
+
+  // 性別コードローディング中
+  const genderListLoading = useMemo(() => {
+    if (isCategoryLoading || genderList === undefined) return true;
+    return false;
+  }, [genderList, isCategoryLoading]);
 
   // 更新処理
-  const { trigger: updateUser, error, data } = useUpdateUser();
+  const { trigger: updateUser, error, isMutating } = useUpdateUser();
 
   //再読込
   const { mutate } = useSWRMutator();
@@ -88,13 +107,16 @@ export const useDetailHooks = () => {
     // フォーム初期値設定
     const mode = pagingMode as PagingModeType;
     const user = userData.data.user;
-    setValue("userId", user.userId);
-    setValue("password", user.password);
-    setValue("userName", user.userName);
-    setValue("birthday", dayjs(user.birthday).toDate());
-    setValue("gender", user.gender.toString());
-    setValue("profile", user.profile);
-    setValue("department", user.department?.departmentId?.toString() ?? "");
+
+    if (editMode === "update") {
+      setValue("userId", user.userId);
+      setValue("password", user.password);
+      setValue("userName", user.userName);
+      setValue("birthday", dayjs(user.birthday).toDate());
+      setValue("gender", user.gender.toString());
+      setValue("profile", user.profile ?? "");
+      setValue("department", user.department?.departmentId?.toString() ?? "");
+    }
 
     setUpdateButtonEnabled(user.department?.departmentId !== 9);
 
@@ -126,7 +148,7 @@ export const useDetailHooks = () => {
 
   // 更新ボタン押下アクション
   const onValid = async (form: DetailFormData) => {
-    console.log("submit", { form });
+    console.log("submit", { editMode, form });
     try {
       const replacedProfile = replaceSymbols(form.profile ?? "");
 
@@ -143,16 +165,21 @@ export const useDetailHooks = () => {
         updateMode: "replace",
       };
       console.log("更新データ", { payload });
-      const result = await updateUser(payload);
-      console.log("更新結果", result);
 
-      // 更新後データ再読込
-      const key = `${envConfig.apiUrl}/api/user/detail/${form.userId}`;
-      mutate(key);
-      alert("更新!");
+      if (editMode === "create") {
+        // ユーザー新規登録処理
+        // 一覧画面へ
+        router.push("/user/list");
+      } else {
+        // ユーザー更新処理
+        await updateUser(payload);
+
+        // 更新後データ再読込
+        const key = `${envConfig.apiUrl}/api/user/detail/${form.userId}`;
+        mutate(key);
+      }
     } catch (e) {
       console.log(e);
-      alert("エラー!");
     }
   };
 
@@ -179,13 +206,13 @@ export const useDetailHooks = () => {
     fontSize,
     userData,
     genderList,
-    isDataLoading,
-    hasFetchError,
+    isDataLoading: userDataLoading || genderListLoading,
+    hasFetchError: hasUserDataError || hasCategoryError,
     pagingMode,
     nextUserId,
     beforeUserId,
     departments,
-    birthday: watch("birthday"),
+    watchBirthday: watch("birthday"),
     updateButtonEnabled,
     handleChangeDivision,
   };

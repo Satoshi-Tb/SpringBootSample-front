@@ -6,13 +6,18 @@ import { RecoilRoot } from "recoil";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-export const BaseLayout = ({ children }: { children: ReactNode }) => {
+type Props = {
+  children: ReactNode;
+  showSideBar?: boolean;
+};
+
+export const BaseLayout = ({ children, showSideBar = true }: Props) => {
   return (
     <RecoilRoot>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Header />
         <Box sx={{ display: "flex" }}>
-          <SideBar />
+          {showSideBar && <SideBar />}
           {/* メインコンテンツ */}
           <Box component="main" sx={{ flex: 1, p: 1, mt: "60px" }}>
             {children}

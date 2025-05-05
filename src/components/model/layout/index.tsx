@@ -12,8 +12,15 @@ export const SideBar = () => {
   return <SideBarImpl />;
 };
 
-export const BaseLayout = ({ children }: { children: ReactNode }) => {
-  return <BaseLayoutImpl>{children}</BaseLayoutImpl>;
+type BaseLayoutProps = {
+  children: ReactNode;
+  showSideBar?: boolean;
+};
+export const BaseLayout = ({
+  children,
+  showSideBar = true,
+}: BaseLayoutProps) => {
+  return <BaseLayoutImpl showSideBar={showSideBar}>{children}</BaseLayoutImpl>;
 };
 
 export const SimpleLayout = ({ children }: { children: ReactNode }) => {

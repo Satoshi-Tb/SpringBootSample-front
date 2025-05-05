@@ -25,6 +25,11 @@ export const SideBar = () => {
         <ListItem>
           <Typography>メニュー2</Typography>
         </ListItem>
+        <ListItem>
+          <Typography>
+            <Link href="/">ログアウト</Link>
+          </Typography>
+        </ListItem>
         {/* 他のメニューアイテムを追加 */}
       </List>
     </Drawer>

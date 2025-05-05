@@ -32,7 +32,13 @@ import { useDetailHooks } from "./DetailHooks";
 import { calculateAge } from "@/utils/utility";
 import dayjs, { Dayjs } from "dayjs";
 
-export const Detail = () => {
+export type UserEditeModeType = "create" | "update";
+
+type Props = {
+  editMode: UserEditeModeType;
+};
+
+export const Detail = ({ editMode }: Props) => {
   const router = useRouter();
 
   const {
@@ -51,10 +57,10 @@ export const Detail = () => {
     nextUserId,
     beforeUserId,
     departments,
-    birthday,
+    watchBirthday,
     updateButtonEnabled,
     handleChangeDivision,
-  } = useDetailHooks();
+  } = useDetailHooks({ editMode });
 
   if (hasFetchError) return <div>failed to load</div>;
   if (isDataLoading) return <div>loading...</div>;
@@ -66,16 +72,50 @@ export const Detail = () => {
     >
       <Grid container spacing={2}>
         <Grid item md={4}>
-          <Typography>ユーザID</Typography>
+          <Typography>
+            ユーザID<span style={{ color: "red" }}>*</span>
+          </Typography>
         </Grid>
         <Grid item md={8}>
-          <Typography>{userData!.data.user.userId}</Typography>
+          {editMode === "create" ? (
+            <Controller
+              name="userId"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  fullWidth
+                  error={!!errors.userId}
+                  helperText={errors.userId?.message}
+                />
+              )}
+            />
+          ) : (
+            <Typography>{userData!.data.user.userId}</Typography>
+          )}
         </Grid>
         <Grid item md={4}>
-          <Typography>パスワード</Typography>
+          <Typography>
+            パスワード<span style={{ color: "red" }}>*</span>
+          </Typography>
         </Grid>
         <Grid item md={8}>
-          <Typography>{userData!.data.user.password}</Typography>
+          {editMode === "create" ? (
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  fullWidth
+                  error={!!errors.password}
+                  helperText={errors.password?.message}
+                />
+              )}
+            />
+          ) : (
+            <Typography>{userData!.data.user.password}</Typography>
+          )}
         </Grid>
         <Grid item xs={4}>
           <Typography>
@@ -132,26 +172,35 @@ export const Detail = () => {
           <Typography>年齢</Typography>
         </Grid>
         <Grid item xs={8}>
-          <Typography>{calculateAge(birthday)} 歳</Typography>
+          <Typography>{calculateAge(watchBirthday)} 歳</Typography>
         </Grid>
         <Grid item xs={4}>
-          <Typography>性別</Typography>
+          <Typography>
+            性別<span style={{ color: "red" }}>*</span>
+          </Typography>
         </Grid>
         <Grid item xs={8}>
           <Controller
             name="gender"
             control={control}
             render={({ field }) => (
-              <RadioGroup {...field} row>
-                {genderList!.data.map((item) => (
-                  <FormControlLabel
-                    value={item.code}
-                    key={item.code}
-                    control={<Radio />}
-                    label={item.name}
-                  />
-                ))}
-              </RadioGroup>
+              <>
+                <RadioGroup {...field} row>
+                  {genderList!.data.map((item) => (
+                    <FormControlLabel
+                      value={item.code}
+                      key={item.code}
+                      control={<Radio />}
+                      label={item.name}
+                    />
+                  ))}
+                </RadioGroup>
+                {errors.gender?.message && (
+                  <FormHelperText sx={{ color: "red", ml: 1 }}>
+                    {errors.gender?.message}
+                  </FormHelperText>
+                )}
+              </>
             )}
           />
         </Grid>
@@ -182,7 +231,7 @@ export const Detail = () => {
                   ))}
                 </Select>
                 {errors.department?.message && (
-                  <FormHelperText color="red">
+                  <FormHelperText sx={{ color: "red", ml: 1 }}>
                     {errors.department?.message}
                   </FormHelperText>
                 )}
@@ -216,44 +265,65 @@ export const Detail = () => {
           <SimpleToggleButton fontSize={fontSize} />
         </Grid>
         <Grid item xs={12}>
-          <Box display="flex" flexDirection="row" justifyContent="center">
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            gap={5}
+          >
             <Button
               variant="contained"
               sx={{ marginRight: 1 }}
               type="submit"
               disabled={!updateButtonEnabled}
             >
-              更新
+              {editMode === "create" ? "登録" : "更新"}
             </Button>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => {
-                alert("削除!");
-              }}
-            >
-              削除
-            </Button>
-            <IconButton
-              onClick={() => {
-                router.push(
-                  `/user/detail/${beforeUserId}?pagingMode=${pagingMode}`
-                );
-              }}
-              disabled={!beforeUserId}
-            >
-              <NavigateBeforeIcon />
-            </IconButton>
-            <IconButton
-              onClick={() => {
-                router.push(
-                  `/user/detail/${nextUserId}?pagingMode=${pagingMode}`
-                );
-              }}
-              disabled={!nextUserId}
-            >
-              <NavigateNextIcon />
-            </IconButton>
+            {editMode === "update" ? (
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => {
+                  alert("削除!");
+                }}
+              >
+                削除
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                color="warning"
+                onClick={() => {
+                  router.push("/");
+                }}
+              >
+                キャンセル
+              </Button>
+            )}
+            {editMode === "update" && (
+              <>
+                <IconButton
+                  onClick={() => {
+                    router.push(
+                      `/user/detail/${beforeUserId}?pagingMode=${pagingMode}`
+                    );
+                  }}
+                  disabled={!beforeUserId}
+                >
+                  <NavigateBeforeIcon />
+                </IconButton>
+                <IconButton
+                  onClick={() => {
+                    router.push(
+                      `/user/detail/${nextUserId}?pagingMode=${pagingMode}`
+                    );
+                  }}
+                  disabled={!nextUserId}
+                >
+                  <NavigateNextIcon />
+                </IconButton>
+              </>
+            )}
           </Box>
         </Grid>
       </Grid>
