@@ -4,13 +4,8 @@ import { z, ZodError } from "zod";
 
 // バリデーションスキーマの定義
 const loginSchema = z.object({
-  username: z.string().min(4, "ユーザー名は4文字以上である必要があります"),
-  password: z
-    .string()
-    .min(8, "パスワードは8文字以上である必要があります")
-    .regex(/[A-Z]/, "大文字の英字を1文字以上含める必要があります")
-    .regex(/[a-z]/, "小文字の英字を1文字以上含める必要があります")
-    .regex(/[0-9]/, "数字を1文字以上含める必要があります"),
+  username: z.string().min(1, "入力必須です"),
+  password: z.string().min(1, "入力必須です"),
 });
 
 // スキーマから型を生成

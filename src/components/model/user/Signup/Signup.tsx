@@ -101,23 +101,6 @@ export const Signup = () => {
         </Box>
 
         <Box>
-          <Controller
-            name="age"
-            control={control}
-            defaultValue={undefined}
-            render={({ field }) => (
-              <TextField
-                fullWidth
-                margin="normal"
-                label="年齢"
-                disabled={enableAge}
-                {...field}
-              />
-            )}
-          />
-        </Box>
-
-        <Box>
           <FormControl component="fieldset">
             <FormLabel component="legend">性別</FormLabel>
             <RadioGroup row name="gender">

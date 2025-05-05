@@ -13,11 +13,21 @@ import { useForm } from "react-hook-form";
 
 // Zod スキーマ
 const schema = z.object({
-  userId: z.string().min(1, "入力必須です"),
-  password: z.string().min(1, "入力必須です"),
-  userName: z.string().min(1, "入力必須です"),
+  userId: z.string().min(4, "ユーザー名は4文字以上である必要があります"),
+  password: z
+    .string()
+    .min(6, "パスワードは6文字以上である必要があります")
+    .regex(/[A-Z]/, "大文字の英字を1文字以上含める必要があります")
+    .regex(/[a-z]/, "小文字の英字を1文字以上含める必要があります")
+    .regex(/[0-9]/, "数字を1文字以上含める必要があります"),
+  userName: z
+    .string()
+    .min(1, "入力必須です")
+    .max(50, "50文字以内にしてください"),
   birthday: z.string().optional(),
-  age: z.number().optional(),
+  department: z.string().min(1, "選択必須です"),
+  profile: z.string().optional(),
+  gender: z.string().refine((v) => v !== "", { message: "選択必須です" }),
 });
 
 type FormData = z.infer<typeof schema>;

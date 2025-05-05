@@ -58,9 +58,7 @@ export const Login = () => {
                 value={username}
                 onChange={handleUsernameChange}
                 error={Boolean(errors.username)}
-                helperText={
-                  errors.username || "ユーザー名は4文字以上で入力してください"
-                }
+                helperText={errors.username}
               />
             </Box>
             <Box
@@ -89,10 +87,7 @@ export const Login = () => {
                   value={password}
                   onChange={handlePasswordChange}
                   error={Boolean(errors.password)}
-                  helperText={
-                    errors.password ||
-                    "8文字以上、大文字・小文字・数字を各1文字以上含めてください"
-                  }
+                  helperText={errors.password}
                   sx={{ "& .MuiInputBase-root": { pr: 7 } }} // アイコンボタン用のスペースを確保
                 />
                 <IconButton
