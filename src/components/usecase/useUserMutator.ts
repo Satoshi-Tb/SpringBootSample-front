@@ -11,7 +11,7 @@ export type UserPutType = {
   gender: number;
   profile?: string;
   departmentId?: number;
-  updateMode: "append" | "replace";
+  updateMode?: "append" | "replace";
 };
 
 export type UserDeleteType = {
@@ -23,7 +23,6 @@ export const useUpdateUser = () => {
   // フェッチャーの実装
   // 追加の引数は第二引数の `arg` プロパティとして渡されます
   const updateUser = async (url: string, { arg }: { arg: UserPutType }) => {
-    console.log("updateUser", arg);
     await fetch(url, {
       method: "PUT",
       headers: {
@@ -34,6 +33,23 @@ export const useUpdateUser = () => {
   };
 
   return useSWRMutation(`${envConfig.apiUrl}/api/user/update`, updateUser);
+};
+
+// ユーザー情報登録
+export const useCreateUser = () => {
+  // フェッチャーの実装
+  // 追加の引数は第二引数の `arg` プロパティとして渡されます
+  const createUser = async (url: string, { arg }: { arg: UserPutType }) => {
+    await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(arg),
+    });
+  };
+
+  return useSWRMutation(`${envConfig.apiUrl}/api/user/signup`, createUser);
 };
 
 // ユーザー情報削除

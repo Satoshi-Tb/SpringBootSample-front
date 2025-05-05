@@ -2,6 +2,7 @@ import { useCategoryCode } from "@/components/usecase/useCategoryCodeList";
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
 import { useUserDetail } from "@/components/usecase/useUserDetail";
 import {
+  useCreateUser,
   UserPutType,
   useUpdateUser,
 } from "@/components/usecase/useUserMutator";
@@ -93,6 +94,9 @@ export const useDetailHooks = ({ editMode }: Props) => {
   // 更新処理
   const { trigger: updateUser, error, isMutating } = useUpdateUser();
 
+  // 登録処理
+  const { trigger: createUser, isMutating: isCreating } = useCreateUser();
+
   //再読込
   const { mutate } = useSWRMutator();
 
@@ -168,6 +172,8 @@ export const useDetailHooks = ({ editMode }: Props) => {
 
       if (editMode === "create") {
         // ユーザー新規登録処理
+        await createUser(payload);
+
         // 一覧画面へ
         router.push("/user/list");
       } else {
