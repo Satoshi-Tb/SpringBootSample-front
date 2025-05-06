@@ -28,6 +28,7 @@ import styled from "styled-components";
 import FactCheckSharpIcon from "@mui/icons-material/FactCheckSharp";
 import InventorySharpIcon from "@mui/icons-material/InventorySharp";
 import ContentPasteSearchIcon from "@mui/icons-material/ContentPasteSearch";
+import { Eye, EyeOff } from "lucide-react";
 import { useDetailHooks } from "./DetailHooks";
 import { calculateAge } from "@/utils/utility";
 import dayjs, { Dayjs } from "dayjs";
@@ -59,6 +60,8 @@ export const Detail = ({ editMode }: Props) => {
     watchBirthday,
     updateButtonEnabled,
     handleChangeDivision,
+    showPassword,
+    handleClickShowPassword,
   } = useDetailHooks({ editMode });
 
   if (hasFetchError) return <div>failed to load</div>;
@@ -104,12 +107,31 @@ export const Detail = ({ editMode }: Props) => {
               name="password"
               control={control}
               render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  error={!!errors.password}
-                  helperText={errors.password?.message}
-                />
+                <Box sx={{ position: "relative", width: "100%", mt: 2, mb: 1 }}>
+                  <TextField
+                    {...field}
+                    required
+                    fullWidth
+                    label=""
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    error={!!errors.password}
+                    helperText={errors.password?.message}
+                    sx={{ "& .MuiInputBase-root": { pr: 7 } }} // アイコンボタン用のスペースを確保
+                  />
+                  <IconButton
+                    aria-label="パスワードの表示切り替え"
+                    onClick={handleClickShowPassword}
+                    sx={{
+                      position: "absolute",
+                      right: 8,
+                      top: 8,
+                      color: "text.secondary",
+                    }}
+                  >
+                    {showPassword ? <Eye /> : <EyeOff />}
+                  </IconButton>
+                </Box>
               )}
             />
           ) : (

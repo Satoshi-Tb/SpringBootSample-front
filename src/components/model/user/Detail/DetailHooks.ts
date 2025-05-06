@@ -56,6 +56,9 @@ export const useDetailHooks = ({ editMode }: Props) => {
   // 更新ボタンの活性制御
   const [updateButtonEnabled, setUpdateButtonEnabled] = useState(false);
 
+  // パスワード表示制御
+  const [showPassword, setShowPassword] = useState(false);
+
   // 部署リスト
   const departments = [
     { value: "1", label: "開発部" },
@@ -209,6 +212,11 @@ export const useDetailHooks = ({ editMode }: Props) => {
     }
   };
 
+  // パスワード表示切り替えハンドラ
+  const handleClickShowPassword = (): void => {
+    setShowPassword(!showPassword);
+  };
+
   return {
     handleSubmit,
     onValid,
@@ -228,5 +236,7 @@ export const useDetailHooks = ({ editMode }: Props) => {
     watchBirthday: watch("birthday"),
     updateButtonEnabled,
     handleChangeDivision,
+    showPassword,
+    handleClickShowPassword,
   };
 };
