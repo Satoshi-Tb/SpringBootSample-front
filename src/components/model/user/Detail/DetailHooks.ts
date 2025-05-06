@@ -7,7 +7,7 @@ import {
   useUpdateUser,
 } from "@/components/usecase/useUserMutator";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
 import { useUserListSelectedRowIds } from "@/components/store/useUserListRowSelectionState";
 import { PagingModeType } from "@/TypeDef";
 import envConfig from "@/utils/envConfig";
@@ -71,25 +71,32 @@ export const useDetailHooks = ({ editMode }: Props) => {
     isLoading: isUserDataLoading,
   } = useUserDetail(editMode === "create" ? undefined : userId);
 
-  // 性別コード
-  const {
-    categoryCodeListData: genderList,
-    hasError: hasCategoryError,
-    isLoading: isCategoryLoading,
-  } = useCategoryCode("gender");
-
   // ユーザー詳細データローディング中
   const userDataLoading = useMemo(() => {
     if (editMode === "create") return false;
     if (isUserDataLoading || userData === undefined) return true;
     return false;
-  }, [isUserDataLoading, userData]);
+  }, [isUserDataLoading, userData, editMode]);
+
+  const user = useMemo(() => userData?.data.user, [userData]);
+
+  // 性別コード
+  const {
+    categoryCodeListData,
+    hasError: hasCategoryError,
+    isLoading: isCategoryLoading,
+  } = useCategoryCode("gender");
 
   // 性別コードローディング中
   const genderListLoading = useMemo(() => {
-    if (isCategoryLoading || genderList === undefined) return true;
+    if (isCategoryLoading || categoryCodeListData === undefined) return true;
     return false;
-  }, [genderList, isCategoryLoading]);
+  }, [categoryCodeListData, isCategoryLoading]);
+
+  const genderList = useMemo(
+    () => categoryCodeListData?.data ?? [],
+    [categoryCodeListData]
+  );
 
   // 更新処理
   const { trigger: updateUser, error, isMutating } = useUpdateUser();
@@ -148,7 +155,7 @@ export const useDetailHooks = ({ editMode }: Props) => {
         ? (selectedRowIds[idx + 1] as string)
         : undefined
     );
-  }, [userData, selectedRowIds, pagingMode]);
+  }, [userData, selectedRowIds, pagingMode, reset, setValue, editMode]);
 
   // 更新ボタン押下アクション
   const onValid = async (form: DetailFormData) => {
@@ -210,7 +217,7 @@ export const useDetailHooks = ({ editMode }: Props) => {
     register,
     errors,
     fontSize,
-    userData,
+    user,
     genderList,
     isDataLoading: userDataLoading || genderListLoading,
     hasFetchError: hasUserDataError || hasCategoryError,

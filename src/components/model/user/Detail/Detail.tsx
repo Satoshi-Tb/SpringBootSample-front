@@ -48,7 +48,7 @@ export const Detail = ({ editMode }: Props) => {
     control,
     register,
     errors,
-    userData,
+    user,
     genderList,
     isDataLoading,
     hasFetchError,
@@ -91,7 +91,7 @@ export const Detail = ({ editMode }: Props) => {
               )}
             />
           ) : (
-            <Typography>{userData!.data.user.userId}</Typography>
+            <Typography>{user?.userId}</Typography>
           )}
         </Grid>
         <Grid item md={4}>
@@ -114,7 +114,7 @@ export const Detail = ({ editMode }: Props) => {
               )}
             />
           ) : (
-            <Typography>{userData!.data.user.password}</Typography>
+            <Typography>{user?.password}</Typography>
           )}
         </Grid>
         <Grid item xs={4}>
@@ -186,7 +186,7 @@ export const Detail = ({ editMode }: Props) => {
             render={({ field }) => (
               <>
                 <RadioGroup {...field} row>
-                  {genderList!.data.map((item) => (
+                  {genderList.map((item) => (
                     <FormControlLabel
                       value={item.code}
                       key={item.code}
