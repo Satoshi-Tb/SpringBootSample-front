@@ -21,6 +21,10 @@ import dayjs from "dayjs";
 import { calculateAge } from "@/utils/utility";
 import { SelectChangeEvent } from "@mui/material";
 import { UserEditeModeType } from "./Detail";
+import {
+  DepartmentType,
+  useDepartmentList,
+} from "@/components/usecase/useDepartmentList";
 
 const replaceSymbols = (input: string) => {
   return input.replace(createInvalidSymbolRegex("g"), "");
@@ -59,14 +63,6 @@ export const useDetailHooks = ({ editMode }: Props) => {
   // パスワード表示制御
   const [showPassword, setShowPassword] = useState(false);
 
-  // 部署リスト
-  const departments = [
-    { value: "1", label: "開発部" },
-    { value: "2", label: "営業部" },
-    { value: "3", label: "システム部" },
-    { value: "9", label: "外注" },
-  ];
-
   // ユーザー詳細データ取得
   const {
     userData,
@@ -100,6 +96,27 @@ export const useDetailHooks = ({ editMode }: Props) => {
     () => categoryCodeListData?.data ?? [],
     [categoryCodeListData]
   );
+
+  // 部署コード
+  const {
+    departmentListData,
+    isLoading: isDepartmentLoding,
+    hasError: hasDepartmentError,
+  } = useDepartmentList();
+  // 部署コードローディング中
+  const departmentListLoading = useMemo(() => {
+    if (isDepartmentLoding || departmentListData === undefined) return true;
+    return false;
+  }, [departmentListData, isDepartmentLoding]);
+
+  const departmentList = useMemo<DepartmentType[]>(() => {
+    return (
+      departmentListData?.data.map((item) => ({
+        departmentId: item.departmentId,
+        departmentName: item.departmentName,
+      })) ?? []
+    );
+  }, [departmentListData]);
 
   // 更新処理
   const { trigger: updateUser, error, isMutating } = useUpdateUser();
@@ -227,12 +244,13 @@ export const useDetailHooks = ({ editMode }: Props) => {
     fontSize,
     user,
     genderList,
-    isDataLoading: userDataLoading || genderListLoading,
-    hasFetchError: hasUserDataError || hasCategoryError,
+    isDataLoading:
+      userDataLoading || genderListLoading || departmentListLoading,
+    hasFetchError: hasUserDataError || hasCategoryError || hasDepartmentError,
     pagingMode,
     nextUserId,
     beforeUserId,
-    departments,
+    departmentList,
     watchBirthday: watch("birthday"),
     updateButtonEnabled,
     handleChangeDivision,
