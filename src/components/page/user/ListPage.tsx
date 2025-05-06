@@ -1,8 +1,7 @@
-import { Paper, Typography, Divider, Container, Box } from "@mui/material";
+import { Paper, Typography, Box } from "@mui/material";
 import { BaseLayout } from "@/components/model/layout";
 import { List } from "@/components/model/user/List";
 import { Condition } from "@/components/model/user/Condition";
-import Filter from "@/components/model/user/Filter/Filter";
 
 export type UserType = {
   id: string | number;

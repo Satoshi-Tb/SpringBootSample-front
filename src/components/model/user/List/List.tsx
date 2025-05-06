@@ -46,7 +46,7 @@ export const List = () => {
         }}
         pageSizeOptions={[5, 10, 25]}
         initialState={{
-          pagination: { paginationModel: { pageSize: 5, page: 0 } },
+          pagination: { paginationModel: { pageSize: 10, page: 0 } },
         }}
         loading={isLoading}
         onPaginationModelChange={handlePaginationModelChange}

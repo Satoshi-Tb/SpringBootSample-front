@@ -12,7 +12,7 @@ const listSearchConditionState = atom<SearchCondition>({
     ageFrom: undefined,
     ageTo: undefined,
     page: 0,
-    size: 5,
+    size: 10,
   },
 });
 

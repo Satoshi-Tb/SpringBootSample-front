@@ -5,10 +5,11 @@ import { ComponentType, useEffect } from "react";
 export const withLogger =
   <P extends {}>(WrappedComponent: ComponentType<P>) =>
   (props: P) => {
-    console.log("withLogger: start.");
+    console.log(`Component ${WrappedComponent.displayName} start.`);
     useEffect(() => {
-      console.log("withLogger: Component is mounted.");
-      return () => console.log("Component will unmount.");
+      console.log(`Component ${WrappedComponent.displayName} is mounted.`);
+      return () =>
+        console.log(`Component ${WrappedComponent.displayName} will unmount.`);
     }, []);
 
     return <WrappedComponent {...props} />;
