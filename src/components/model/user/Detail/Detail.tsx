@@ -46,7 +46,6 @@ export const Detail = ({ editMode }: Props) => {
     onValid,
     onInvalid,
     control,
-    register,
     errors,
     user,
     genderList,
@@ -327,8 +326,6 @@ export const Detail = ({ editMode }: Props) => {
           </Box>
         </Grid>
       </Grid>
-      <input type="hidden" {...register("userId")} />
-      <input type="hidden" {...register("password")} />
     </Box>
   );
 };
