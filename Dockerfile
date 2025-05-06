@@ -1,5 +1,6 @@
-# ベースイメージに Node.js 18 を使用
-FROM node:18
+# マルチステージ構成
+# ビルド用のステージを定義
+FROM node:18 AS builder
 
 # npm v10 をグローバルインストール（必要な場合）
 RUN npm install -g npm@10
@@ -26,6 +27,18 @@ COPY . .
 
 # Next.js をビルド
 RUN npm run build
+
+# 本番用のステージを定義
+FROM node:18-slim AS production
+
+WORKDIR /app
+
+# ビルドしたアプリをコピー
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/next.config.js ./
 
 # ポートを公開（Next.js のデフォルトポート）
 EXPOSE 3000
