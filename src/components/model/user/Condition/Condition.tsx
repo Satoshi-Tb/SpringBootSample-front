@@ -15,6 +15,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import { useState } from "react";
 import { SearchConditionDialog } from "../SearchConditionDialog/SearchConditionDialog";
+import CSVUploader from "@/components/ui/csvupload/CSVUploadDialog";
 
 export const Condition = () => {
   const [openSearchDialog, setOpenSearchDialog] = useState(false);
@@ -63,6 +64,7 @@ export const Condition = () => {
         >
           <SearchIcon />
         </IconButton>
+        <CSVUploader />
         {searchActivated && (
           <IconButton onClick={clearSearchCondition}>
             <SearchOffIcon />
