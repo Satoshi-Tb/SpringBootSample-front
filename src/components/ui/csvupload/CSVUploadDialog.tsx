@@ -61,7 +61,6 @@ const DropzoneArea = styled(Paper, {
 const CSVUploader = () => {
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState({
     open: false,
     message: "",
@@ -70,7 +69,13 @@ const CSVUploader = () => {
   // 再読込処理用
   const condition = useListSearchConditionState();
 
-  const { trigger: uploadCsv } = useUploadCsv();
+  const {
+    trigger: uploadCsv,
+    isMutating: isUploading,
+    error: uploadError,
+  } = useUploadCsv();
+
+  console.log("uploadStatus", { isUploading, uploadError });
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -108,19 +113,19 @@ const CSVUploader = () => {
   const handleUpload = async () => {
     if (!file) return;
 
-    setLoading(true);
-
     const payload: CSVPostType = {
       file: file,
     };
 
     try {
       const result = await uploadCsv(payload);
+      // アップロード成功時の処理
       setAlert({
         open: true,
         message: "ファイルのアップロードに成功しました",
         severity: "success",
       });
+      // 選択ファイルをリセットし、ダイアログを閉じる
       handleClose();
       // 更新後データ再読込
       const key = [`${envConfig.apiUrl}/api/user/get/list-pager`, condition];
@@ -134,8 +139,6 @@ const CSVUploader = () => {
         }`,
         severity: "error",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -185,17 +188,17 @@ const CSVUploader = () => {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleClose} color="primary" disabled={loading}>
+          <Button onClick={handleClose} color="primary" disabled={isUploading}>
             キャンセル
           </Button>
           <Button
             onClick={handleUpload}
             color="primary"
             variant="contained"
-            disabled={!file || loading}
-            startIcon={loading ? <CircularProgress size={20} /> : null}
+            disabled={!file || isUploading || uploadError}
+            startIcon={isUploading ? <CircularProgress size={20} /> : null}
           >
-            {loading ? "アップロード中..." : "アップロード"}
+            {isUploading ? "アップロード中..." : "アップロード"}
           </Button>
         </DialogActions>
       </Dialog>

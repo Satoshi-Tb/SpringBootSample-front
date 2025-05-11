@@ -17,10 +17,15 @@ export const useUploadCsv = () => {
     const formData = new FormData();
     formData.append("file", arg.file);
 
-    await fetch(url, {
+    const res = await fetch(url, {
       method: "POST",
       body: formData,
     });
+
+    if (!res.ok) {
+      const errorText = await res.text(); // または res.json() に応じて調整
+      throw new Error(errorText || `Upload failed with status ${res.status}`);
+    }
   };
 
   return useSWRMutation(`${envConfig.apiUrl}/api/upload-csv`, uploadCsv);
