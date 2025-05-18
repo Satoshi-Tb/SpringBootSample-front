@@ -41,6 +41,7 @@ export const Condition = () => {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   // upload処理のisMutatingの状態を取得
+  // ★子コンポーネントから親に状況を渡すことは可能。ただし、ページ切り替えされると、デフォルト状態に戻る。
   const handleLoadingChange = (isLoading: boolean) => {
     setIsUploading(isLoading);
   };
@@ -89,13 +90,6 @@ export const Condition = () => {
         >
           CSVファイルをアップロード
         </Button>
-
-        <CSVUploadDialog
-          open={uploadDialogOpen}
-          setUploadDialogOpen={setUploadDialogOpen}
-          uploading={isUploading}
-          handleLoadingChange={handleLoadingChange}
-        />
         {searchActivated && (
           <IconButton onClick={clearSearchCondition}>
             <SearchOffIcon />
@@ -170,6 +164,12 @@ export const Condition = () => {
       <SearchConditionDialog
         open={openSearchDialog}
         setOpen={setOpenSearchDialog}
+      />
+      <CSVUploadDialog
+        open={uploadDialogOpen}
+        setUploadDialogOpen={setUploadDialogOpen}
+        uploading={isUploading}
+        handleLoadingChange={handleLoadingChange}
       />
     </Box>
   );
