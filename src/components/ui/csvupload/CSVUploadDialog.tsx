@@ -12,9 +12,9 @@ import {
   Alert,
   Box,
 } from "@mui/material";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import { useCSVUploadDialogHooks } from "./CSVUploadDialogHooks";
+import { Dispatch, SetStateAction } from "react";
 
 // ドロップゾーン用のインターフェース定義
 interface DropzoneProps {
@@ -50,11 +50,19 @@ const DropzoneArea = styled(Paper, {
   minHeight: 200,
 }));
 
-// type AlertInfo = { open: boolean; message: string; severity: AlertColor };
+type PropType = {
+  open: boolean;
+  setUploadDialogOpen: Dispatch<SetStateAction<boolean>>;
+  uploading: boolean;
+  handleLoadingChange: (isLoading: boolean) => void;
+};
 
-const CSVUploader = () => {
+export const CSVUploadDialog = ({
+  open,
+  setUploadDialogOpen,
+  handleLoadingChange,
+}: PropType) => {
   const {
-    open,
     file,
     alert,
     getRootProps,
@@ -63,25 +71,15 @@ const CSVUploader = () => {
     isDragReject,
     isUploading,
     uploadError,
-    handleClickOpen,
     handleClose,
     handleUpload,
     handleAlertClose,
-  } = useCSVUploadDialogHooks();
+  } = useCSVUploadDialogHooks({ setUploadDialogOpen, handleLoadingChange });
 
   console.log("uploadStatus", { isUploading, uploadError });
 
   return (
     <div>
-      <Button
-        variant="contained"
-        color="primary"
-        startIcon={<CloudUploadIcon />}
-        onClick={handleClickOpen}
-      >
-        CSVファイルをアップロード
-      </Button>
-
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle>CSVファイルのアップロード</DialogTitle>
         <DialogContent>
@@ -144,5 +142,3 @@ const CSVUploader = () => {
     </div>
   );
 };
-
-export default CSVUploader;

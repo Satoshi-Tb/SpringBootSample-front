@@ -5,14 +5,26 @@ import {
 } from "@/components/usecase/useCSVUploadMutator";
 import envConfig from "@/utils/envConfig";
 import { AlertColor } from "@mui/material";
-import { useCallback, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { useDropzone } from "react-dropzone";
 import { mutate } from "swr";
 
 type AlertInfo = { open: boolean; message: string; severity: AlertColor };
 
-export const useCSVUploadDialogHooks = () => {
-  const [open, setOpen] = useState(false);
+type PropType = {
+  setUploadDialogOpen: Dispatch<SetStateAction<boolean>>;
+  handleLoadingChange: (isLoading: boolean) => void;
+};
+export const useCSVUploadDialogHooks = ({
+  setUploadDialogOpen,
+  handleLoadingChange,
+}: PropType) => {
   const [file, setFile] = useState<File | null>(null);
   const [alert, setAlert] = useState<AlertInfo>({
     open: false,
@@ -29,12 +41,8 @@ export const useCSVUploadDialogHooks = () => {
     error: uploadError,
   } = useUploadCsv();
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
   const handleClose = () => {
-    setOpen(false);
+    setUploadDialogOpen(false);
     setFile(null);
   };
 
@@ -121,8 +129,12 @@ export const useCSVUploadDialogHooks = () => {
     setAlert((prev) => ({ ...prev, open: false }));
   };
 
+  // アップロード状態の変更
+  useEffect(() => {
+    handleLoadingChange(isUploading);
+  }, [isUploading, handleLoadingChange]);
+
   return {
-    open,
     file,
     alert,
     getRootProps,
@@ -131,7 +143,6 @@ export const useCSVUploadDialogHooks = () => {
     isDragReject,
     isUploading,
     uploadError,
-    handleClickOpen,
     handleClose,
     handleUpload,
     handleAlertClose,

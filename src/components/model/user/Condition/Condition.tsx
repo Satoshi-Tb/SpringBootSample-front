@@ -5,6 +5,7 @@ import {
   Checkbox,
   FormControlLabel,
   Link,
+  CircularProgress,
 } from "@mui/material";
 import { useConditionHook } from "./ConditionHook";
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
@@ -15,7 +16,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import { useState } from "react";
 import { SearchConditionDialog } from "../SearchConditionDialog/SearchConditionDialog";
-import CSVUploader from "@/components/ui/csvupload/CSVUploadDialog";
+import CSVUploadDialog from "@/components/ui/csvupload";
+import { CloudUploadIcon } from "lucide-react";
 
 export const Condition = () => {
   const [openSearchDialog, setOpenSearchDialog] = useState(false);
@@ -34,6 +36,18 @@ export const Condition = () => {
     searchActivated,
     clearSearchCondition,
   } = useConditionHook();
+
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+
+  // upload処理のisMutatingの状態を取得
+  const handleLoadingChange = (isLoading: boolean) => {
+    setIsUploading(isLoading);
+  };
+
+  const handleClickOpen = () => {
+    setUploadDialogOpen(true);
+  };
 
   // 再読込処理用
   const condition = useListSearchConditionState();
@@ -64,7 +78,24 @@ export const Condition = () => {
         >
           <SearchIcon />
         </IconButton>
-        <CSVUploader />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleClickOpen}
+          disabled={isUploading}
+          startIcon={
+            isUploading ? <CircularProgress size={20} /> : <CloudUploadIcon />
+          }
+        >
+          CSVファイルをアップロード
+        </Button>
+
+        <CSVUploadDialog
+          open={uploadDialogOpen}
+          setUploadDialogOpen={setUploadDialogOpen}
+          uploading={isUploading}
+          handleLoadingChange={handleLoadingChange}
+        />
         {searchActivated && (
           <IconButton onClick={clearSearchCondition}>
             <SearchOffIcon />
