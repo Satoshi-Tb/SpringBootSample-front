@@ -19,7 +19,11 @@ import { SearchConditionDialog } from "../SearchConditionDialog/SearchConditionD
 import CSVUploadDialog from "@/components/ui/csvupload";
 import { CloudUploadIcon } from "lucide-react";
 
-export const Condition = () => {
+type PropType = {
+  isUploading: boolean;
+  handleLoadingChange: (isUploading: boolean) => void;
+};
+export const Condition = ({ isUploading, handleLoadingChange }: PropType) => {
   const [openSearchDialog, setOpenSearchDialog] = useState(false);
 
   // フォーム定義、アクション
@@ -37,14 +41,7 @@ export const Condition = () => {
     clearSearchCondition,
   } = useConditionHook();
 
-  const [isUploading, setIsUploading] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-
-  // upload処理のisMutatingの状態を取得
-  // ★子コンポーネントから親に状況を渡すことは可能。ただし、ページ切り替えされると、デフォルト状態に戻る。
-  const handleLoadingChange = (isLoading: boolean) => {
-    setIsUploading(isLoading);
-  };
 
   const handleClickOpen = () => {
     setUploadDialogOpen(true);
