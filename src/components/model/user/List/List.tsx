@@ -9,7 +9,10 @@ import {
 } from "@mui/x-data-grid";
 import { useListHook } from "./ListHook";
 
-export const List = () => {
+type PropType = {
+  isUploading: boolean;
+};
+export const List = ({ isUploading }: PropType) => {
   // 照会
   const {
     rowData,
@@ -48,7 +51,7 @@ export const List = () => {
         initialState={{
           pagination: { paginationModel: { pageSize: 10, page: 0 } },
         }}
-        loading={isLoading}
+        loading={isLoading || isUploading}
         onPaginationModelChange={handlePaginationModelChange}
         rowCount={rowCount}
         paginationMode="server"

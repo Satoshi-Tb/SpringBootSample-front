@@ -5,6 +5,7 @@ import {
   Checkbox,
   FormControlLabel,
   Link,
+  CircularProgress,
 } from "@mui/material";
 import { useConditionHook } from "./ConditionHook";
 import { useSWRMutator } from "@/components/usecase/useSWRMutator";
@@ -15,8 +16,14 @@ import SearchIcon from "@mui/icons-material/Search";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import { useState } from "react";
 import { SearchConditionDialog } from "../SearchConditionDialog/SearchConditionDialog";
+import CSVUploadDialog from "@/components/ui/csvupload";
+import { CloudUploadIcon } from "lucide-react";
 
-export const Condition = () => {
+type PropType = {
+  isUploading: boolean;
+  handleLoadingChange: (isUploading: boolean) => void;
+};
+export const Condition = ({ isUploading, handleLoadingChange }: PropType) => {
   const [openSearchDialog, setOpenSearchDialog] = useState(false);
 
   // フォーム定義、アクション
@@ -33,6 +40,12 @@ export const Condition = () => {
     searchActivated,
     clearSearchCondition,
   } = useConditionHook();
+
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setUploadDialogOpen(true);
+  };
 
   // 再読込処理用
   const condition = useListSearchConditionState();
@@ -63,6 +76,17 @@ export const Condition = () => {
         >
           <SearchIcon />
         </IconButton>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleClickOpen}
+          disabled={isUploading}
+          startIcon={
+            isUploading ? <CircularProgress size={20} /> : <CloudUploadIcon />
+          }
+        >
+          CSVファイルをアップロード
+        </Button>
         {searchActivated && (
           <IconButton onClick={clearSearchCondition}>
             <SearchOffIcon />
@@ -137,6 +161,12 @@ export const Condition = () => {
       <SearchConditionDialog
         open={openSearchDialog}
         setOpen={setOpenSearchDialog}
+      />
+      <CSVUploadDialog
+        open={uploadDialogOpen}
+        setUploadDialogOpen={setUploadDialogOpen}
+        uploading={isUploading}
+        handleLoadingChange={handleLoadingChange}
       />
     </Box>
   );

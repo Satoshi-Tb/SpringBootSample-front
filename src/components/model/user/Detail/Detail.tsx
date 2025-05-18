@@ -56,7 +56,7 @@ export const Detail = ({ editMode }: Props) => {
     pagingMode,
     nextUserId,
     beforeUserId,
-    departments,
+    departmentList,
     watchBirthday,
     updateButtonEnabled,
     handleChangeDivision,
@@ -245,9 +245,12 @@ export const Detail = ({ editMode }: Props) => {
                   sx={{ width: "100%" }}
                 >
                   <MenuItem value="">選択なし</MenuItem>
-                  {departments.map((item, idx) => (
-                    <MenuItem key={`${idx}-${item.value}`} value={item.value}>
-                      {item.label}
+                  {departmentList.map((item, idx) => (
+                    <MenuItem
+                      key={`${idx}-${item.departmentId}`}
+                      value={item.departmentId}
+                    >
+                      {item.departmentName}
                     </MenuItem>
                   ))}
                 </Select>

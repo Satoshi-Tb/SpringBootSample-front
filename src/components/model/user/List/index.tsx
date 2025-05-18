@@ -1,6 +1,9 @@
 import React from "react";
 import { List as ListImpl } from "./List";
 
-export const List = () => {
-  return <ListImpl />;
+type PropType = {
+  isUploading: boolean;
+};
+export const List = ({ isUploading }: PropType) => {
+  return <ListImpl isUploading={isUploading} />;
 };

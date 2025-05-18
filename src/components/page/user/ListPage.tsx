@@ -2,6 +2,7 @@ import { Paper, Typography, Box } from "@mui/material";
 import { BaseLayout } from "@/components/model/layout";
 import { List } from "@/components/model/user/List";
 import { Condition } from "@/components/model/user/Condition";
+import { useState } from "react";
 
 export type UserType = {
   id: string | number;
@@ -11,6 +12,13 @@ export type UserType = {
 };
 
 export const ListPage = () => {
+  // upload状態をリフトアップ(upload処理のisMutatingの監視)
+  const [isUploading, setIsUploading] = useState(false);
+  // ★子コンポーネントから親に状況を渡すことは可能。ただし、ページ切り替えされると、デフォルト状態に戻る。
+  const handleLoadingChange = (isLoading: boolean) => {
+    setIsUploading(isLoading);
+  };
+
   return (
     <BaseLayout>
       <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -23,9 +31,12 @@ export const ListPage = () => {
             ユーザー一覧
           </Typography>
           {/* 検索条件 */}
-          <Condition />
+          <Condition
+            isUploading={isUploading}
+            handleLoadingChange={handleLoadingChange}
+          />
           {/* 検索結果 */}
-          <List />
+          <List isUploading={isUploading} />
         </Paper>
       </Box>
     </BaseLayout>

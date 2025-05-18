@@ -20,7 +20,6 @@ export const useDepartmentList = () => {
     `${envConfig.apiUrl}/api/department/all`,
     fetcher
   );
-  console.log("useDepartmentList:fetch data", data);
 
   return { departmentListData: data, hasError: error, isLoading, mutate };
 };
