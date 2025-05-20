@@ -33,11 +33,20 @@ FROM node:18-slim AS production
 
 WORKDIR /app
 
+# package.json / package-lock.json のみコピーして production 用に install
+COPY --from=builder /app/package*.json ./
+
+# 必要な production 依存関係だけインストール
+RUN npm install --omit=dev && npm cache clean --force
+# --omit=devの有無では、ビルドサイズはほとんど変わらなかった
+# あり：900MB、なし：870MB
+
 # ビルドしたアプリをコピー
+# COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/node_modules ./node_modules
+# COPY --from=builder /app/package.json ./
+# COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/next.config.js ./
 
 # ポートを公開（Next.js のデフォルトポート）
