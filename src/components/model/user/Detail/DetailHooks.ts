@@ -39,6 +39,8 @@ type QueryType = {
   pagingMode?: "next" | "prev";
 };
 
+export type Department2Type = { someValue: string } & DepartmentType;
+
 export const useDetailHooks = ({ editMode }: Props) => {
   // URLパラメータ取得
   const router = useRouter();
@@ -69,6 +71,10 @@ export const useDetailHooks = ({ editMode }: Props) => {
     hasError: hasUserDataError,
     isLoading: isUserDataLoading,
   } = useUserDetail(editMode === "create" ? undefined : userId);
+
+  // フォーム定義
+  const { handleSubmit, control, errors, register, setValue, reset, watch } =
+    useDetailForm();
 
   // ユーザー詳細データローディング中
   const userDataLoading = useMemo(() => {
@@ -118,6 +124,25 @@ export const useDetailHooks = ({ editMode }: Props) => {
     );
   }, [departmentListData]);
 
+  // テスト用 ダミーデータ
+  const departmentList2 = useMemo<Department2Type[]>(
+    () =>
+      departmentList.map((d, idx) => ({
+        ...d,
+        someValue: `${idx + 1}:${d.departmentName}`,
+      })),
+    [departmentList]
+  );
+
+  // 選択状態
+  const watchDepartment2 = watch("department2");
+  const selectedDeptSomeVal = useMemo(
+    () =>
+      departmentList2.find((d) => d.departmentId === watchDepartment2)
+        ?.someValue || "",
+    [departmentList2, watchDepartment2]
+  );
+
   // 更新処理
   const { trigger: updateUser, error, isMutating } = useUpdateUser();
 
@@ -126,10 +151,6 @@ export const useDetailHooks = ({ editMode }: Props) => {
 
   //再読込
   const { mutate } = useSWRMutator();
-
-  // フォーム定義
-  const { handleSubmit, control, errors, register, setValue, reset, watch } =
-    useDetailForm();
 
   // 初期表示
   useEffect(() => {
@@ -252,9 +273,12 @@ export const useDetailHooks = ({ editMode }: Props) => {
     beforeUserId,
     departmentList,
     watchBirthday: watch("birthday"),
+    watchDepartment2,
     updateButtonEnabled,
     handleChangeDivision,
     showPassword,
     handleClickShowPassword,
+    departmentList2,
+    selectedDeptSomeVal,
   };
 };

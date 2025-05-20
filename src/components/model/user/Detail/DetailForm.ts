@@ -35,6 +35,7 @@ const schema = z.object({
   department: z.string().min(1, "選択必須です"), // 選択リストの型。valueに対する設定のため、string型になる
   profile: z.string(),
   gender: z.string().refine((v) => v !== "", { message: "選択必須です" }),
+  department2: z.number().min(1, "選択必須です"), // オブジェクト形式で持つテスト
 });
 
 export type DetailFormData = z.infer<typeof schema>;
@@ -62,6 +63,7 @@ export const useDetailForm = () => {
       department: "",
       gender: "",
       profile: "",
+      department2: undefined,
     },
   });
 

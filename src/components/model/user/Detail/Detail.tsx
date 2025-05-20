@@ -62,10 +62,13 @@ export const Detail = ({ editMode }: Props) => {
     handleChangeDivision,
     showPassword,
     handleClickShowPassword,
+    departmentList2,
+    selectedDeptSomeVal,
   } = useDetailHooks({ editMode });
 
   if (hasFetchError) return <div>failed to load</div>;
   if (isDataLoading) return <div>loading...</div>;
+
   return (
     <Box
       sx={{ marginTop: 2 }}
@@ -287,6 +290,40 @@ export const Detail = ({ editMode }: Props) => {
         </Grid>
         <Grid item xs={8}>
           <SimpleToggleButton fontSize={fontSize} />
+        </Grid>
+        <Grid item xs={4}>
+          <Typography>
+            部署名２<span style={{ color: "red" }}>*</span>
+          </Typography>
+        </Grid>
+        <Grid item xs={4}>
+          <Controller
+            name="department2"
+            control={control}
+            render={({ field }) => (
+              <Stack direction="column" alignItems="left" width="150px">
+                <Select {...field} sx={{ width: "100%" }}>
+                  <MenuItem value="">選択なし</MenuItem>
+                  {departmentList2.map((item, idx) => (
+                    <MenuItem
+                      key={`${idx}-${item.departmentId}`}
+                      value={item.departmentId}
+                    >
+                      {item.departmentName}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {errors.department2?.message && (
+                  <FormHelperText sx={{ color: "red", ml: 1 }}>
+                    {errors.department2?.message}
+                  </FormHelperText>
+                )}
+              </Stack>
+            )}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <Typography>{`選択中:${selectedDeptSomeVal || ""}`}</Typography>
         </Grid>
         <Grid item xs={12}>
           <Box
