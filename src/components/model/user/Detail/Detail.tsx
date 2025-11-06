@@ -17,6 +17,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+import Carousel from "react-material-ui-carousel";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -38,6 +39,24 @@ export type UserEditeModeType = "create" | "update";
 type Props = {
   editMode: UserEditeModeType;
 };
+
+const dummyUserImages = [
+  {
+    id: "workspace",
+    src: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=960&q=80",
+    alt: "デスクで作業するメンバー",
+  },
+  {
+    id: "team",
+    src: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=960&q=80",
+    alt: "ミーティング中のチーム",
+  },
+  {
+    id: "presentation",
+    src: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=960&q=80",
+    alt: "プレゼンテーション資料",
+  },
+];
 
 export const Detail = ({ editMode }: Props) => {
   const router = useRouter();
@@ -385,6 +404,45 @@ export const Detail = ({ editMode }: Props) => {
                 </IconButton>
               </>
             )}
+          </Box>
+        </Grid>
+        <Grid item xs={12}>
+          <Box mt={4}>
+            <Typography variant="h6" gutterBottom>
+              関連イメージ
+            </Typography>
+            <Carousel
+              navButtonsAlwaysVisible
+              animation="slide"
+              autoPlay={false}
+              sx={{ maxWidth: 640, margin: "0 auto" }}
+            >
+              {dummyUserImages.map((image) => (
+                <Box
+                  key={image.id}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: 320,
+                    backgroundColor: "background.paper",
+                    borderRadius: 2,
+                    overflow: "hidden",
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={image.src}
+                    alt={image.alt}
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </Box>
+              ))}
+            </Carousel>
           </Box>
         </Grid>
       </Grid>
