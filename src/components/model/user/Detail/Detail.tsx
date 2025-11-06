@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
@@ -44,77 +44,76 @@ type Props = {
   editMode: UserEditeModeType;
 };
 
-const dummyUserImages: CarouselImage[] = [
-  {
-    id: "workspace",
-    src: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=960&q=80",
-    alt: "デスクで作業するメンバー",
-  },
-  {
-    id: "team-meeting",
-    src: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=960&q=80",
-    alt: "ミーティング中のチーム",
-  },
-  {
-    id: "presentation",
-    src: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=960&q=80",
-    alt: "プレゼンテーション資料",
-  },
-  {
-    id: "brainstorm",
-    src: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=960&q=70&sat=-20",
-    alt: "ブレーンストーミングの様子",
-  },
-  {
-    id: "workspace-detail",
-    src: "https://images.unsplash.com/photo-1527689368864-3a821dbccc34?auto=format&fit=crop&w=960&q=80",
-    alt: "ノートPCと資料",
-  },
-  {
-    id: "coding",
-    src: "https://images.unsplash.com/photo-1517433456452-f9633a875f6f?auto=format&fit=crop&w=960&q=80",
-    alt: "コードレビューの風景",
-  },
-  {
-    id: "pairwork",
-    src: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=960&q=80",
-    alt: "ペアで作業するメンバー",
-  },
-  {
-    id: "office-lounge",
-    src: "https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=960&q=80",
-    alt: "オフィスラウンジ",
-  },
-  {
-    id: "whiteboard",
-    src: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=960&q=60&sat=20",
-    alt: "ホワイトボードで説明する",
-  },
-  {
-    id: "remote-call",
-    src: "https://images.unsplash.com/photo-1587614292405-7eddcfa12c28?auto=format&fit=crop&w=960&q=80",
-    alt: "オンラインミーティング",
-  },
-  {
-    id: "support-desk",
-    src: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=960&q=50",
-    alt: "サポートチームの打ち合わせ",
-  },
-  {
-    id: "analytics",
-    src: "https://images.unsplash.com/photo-1517148815978-75f6acaaf32c?auto=format&fit=crop&w=960&q=80",
-    alt: "分析ダッシュボード",
-  },
-  {
-    id: "workspace-night",
-    src: "https://images.unsplash.com/photo-1448932223592-d1fc686e76ea?auto=format&fit=crop&w=960&q=80",
-    alt: "夜のオフィス",
-  },
-];
+const IMAGE_COUNT_DEFAULT = 13;
+const IMAGE_COUNT_MIN = 1;
+const IMAGE_COUNT_MAX = 20;
+
+const imageSeedPool = [
+  { seed: "workspace", alt: "ワークスペース" },
+  { seed: "team-meeting", alt: "チームミーティング" },
+  { seed: "presentation", alt: "プレゼンテーション" },
+  { seed: "brainstorm", alt: "ブレーンストーミング" },
+  { seed: "workspace-detail", alt: "デスクと資料" },
+  { seed: "coding", alt: "コーディング作業" },
+  { seed: "pairwork", alt: "ペアワーク" },
+  { seed: "office-lounge", alt: "オフィスラウンジ" },
+  { seed: "whiteboard", alt: "ホワイトボード説明" },
+  { seed: "remote-call", alt: "オンラインミーティング" },
+  { seed: "support-desk", alt: "サポートチーム" },
+  { seed: "analytics", alt: "分析ダッシュボード" },
+  { seed: "workspace-night", alt: "夜のオフィス" },
+] as const;
+
+const createDummyUserImages = (count: number): CarouselImage[] => {
+  if (count <= 0) return [];
+
+  const selectedIndices: number[] = [];
+  for (let i = 0; i < count; i += 1) {
+    const randomIndex = Math.floor(Math.random() * imageSeedPool.length);
+    selectedIndices.push(randomIndex);
+  }
+
+  if (count > 1) {
+    const uniqueIndices = new Set(selectedIndices);
+    if (uniqueIndices.size === 1) {
+      const originalIndex = selectedIndices[0];
+      const offset =
+        imageSeedPool.length > 1
+          ? (Math.floor(Math.random() * (imageSeedPool.length - 1)) + 1) %
+            imageSeedPool.length
+          : 0;
+      const alternativeIndex = (originalIndex + offset) % imageSeedPool.length;
+      selectedIndices[1] =
+        alternativeIndex === originalIndex
+          ? (originalIndex + 1) % imageSeedPool.length
+          : alternativeIndex;
+    }
+  }
+
+  const timestamp = Date.now();
+
+  return selectedIndices.map((poolIndex, position) => {
+    const base = imageSeedPool[poolIndex];
+    const seed = `${base.seed}-${timestamp}-${position}-${Math.floor(Math.random() * 1000)}`;
+    return {
+      id: `${base.seed}-${timestamp}-${position}`,
+      src: `https://picsum.photos/seed/${seed}/960/640`,
+      alt: base.alt,
+    };
+  });
+};
 
 export const Detail = ({ editMode }: Props) => {
   const router = useRouter();
   const [showThumbnails, setShowThumbnails] = useState(true);
+  const [imageCount, setImageCount] = useState<number>(IMAGE_COUNT_DEFAULT);
+  const [userImages, setUserImages] = useState<CarouselImage[]>(() =>
+    createDummyUserImages(IMAGE_COUNT_DEFAULT)
+  );
+
+  useEffect(() => {
+    setUserImages(createDummyUserImages(imageCount));
+  }, [imageCount]);
 
   const {
     handleSubmit,
@@ -399,6 +398,55 @@ export const Detail = ({ editMode }: Props) => {
         <Grid item xs={4}>
           <Typography>{`選択中:${selectedDeptSomeVal || ""}`}</Typography>
         </Grid>
+        <Grid item xs={4}>
+          <Typography>サムネイル表示</Typography>
+        </Grid>
+        <Grid item xs={8}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={showThumbnails}
+                onChange={(_, checked) => setShowThumbnails(checked)}
+              />
+            }
+            label={showThumbnails ? "表示" : "非表示"}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <Typography>ダミー画像枚数</Typography>
+        </Grid>
+        <Grid item xs={8}>
+          <Stack spacing={1}>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <TextField
+                type="number"
+                size="small"
+                value={imageCount}
+                onChange={(event) => {
+                  const value = Number(event.target.value);
+                  if (Number.isNaN(value)) return;
+                  const normalized = Math.min(
+                    Math.max(value, IMAGE_COUNT_MIN),
+                    IMAGE_COUNT_MAX
+                  );
+                  setImageCount(normalized);
+                }}
+                inputProps={{ min: IMAGE_COUNT_MIN, max: IMAGE_COUNT_MAX }}
+                sx={{ maxWidth: 120 }}
+              />
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => setUserImages(createDummyUserImages(imageCount))}
+              >
+                画像を再生成
+              </Button>
+            </Stack>
+            <Typography variant="caption" color="text.secondary">
+              {IMAGE_COUNT_MIN}〜{IMAGE_COUNT_MAX}枚で指定できます
+            </Typography>
+          </Stack>
+        </Grid>
         <Grid item xs={12}>
           <Box
             display="flex"
@@ -461,25 +509,11 @@ export const Detail = ({ editMode }: Props) => {
             )}
           </Box>
         </Grid>
-        <Grid item xs={4}>
-          <Typography>サムネイル表示</Typography>
-        </Grid>
-        <Grid item xs={8}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={showThumbnails}
-                onChange={(_, checked) => setShowThumbnails(checked)}
-              />
-            }
-            label={showThumbnails ? "表示" : "非表示"}
-          />
-        </Grid>
         <Grid item xs={12}>
           <Box mt={4}>
             <UserImageCarousel
               title="関連イメージ"
-              images={dummyUserImages}
+              images={userImages}
               showThumbnails={showThumbnails}
             />
           </Box>
