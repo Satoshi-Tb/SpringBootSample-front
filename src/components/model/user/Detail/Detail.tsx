@@ -5,6 +5,7 @@ import {
   FormControlLabel,
   FormHelperText,
   Grid,
+  ButtonBase,
   IconButton,
   MenuItem,
   Radio,
@@ -60,6 +61,7 @@ const dummyUserImages = [
 
 export const Detail = ({ editMode }: Props) => {
   const router = useRouter();
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
   const {
     handleSubmit,
@@ -415,6 +417,13 @@ export const Detail = ({ editMode }: Props) => {
               navButtonsAlwaysVisible
               animation="slide"
               autoPlay={false}
+              indicators={false}
+              index={carouselIndex}
+              onChange={(now) => {
+                if (typeof now === "number") {
+                  setCarouselIndex(now);
+                }
+              }}
               sx={{ maxWidth: 640, margin: "0 auto" }}
             >
               {dummyUserImages.map((image) => (
@@ -443,6 +452,37 @@ export const Detail = ({ editMode }: Props) => {
                 </Box>
               ))}
             </Carousel>
+            <Stack
+              direction="row"
+              justifyContent="center"
+              spacing={1}
+              mt={2}
+              flexWrap="wrap"
+            >
+              {dummyUserImages.map((image, index) => (
+                <ButtonBase
+                  key={`${image.id}-thumbnail`}
+                  onClick={() => setCarouselIndex(index)}
+                  focusRipple
+                  sx={{
+                    borderRadius: 1,
+                    overflow: "hidden",
+                    border: index === carouselIndex ? "2px solid" : "1px solid",
+                    borderColor:
+                      index === carouselIndex ? "primary.main" : "divider",
+                    width: 96,
+                    height: 64,
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={image.src}
+                    alt={`${image.alt} サムネイル`}
+                    sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                </ButtonBase>
+              ))}
+            </Stack>
           </Box>
         </Grid>
       </Grid>
