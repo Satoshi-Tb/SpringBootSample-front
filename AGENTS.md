@@ -1,31 +1,46 @@
 # Repository Guidelines
 
-この ドキュメント は spring-boot-sample-front リポジトリ に 参加 する コントリビューター が 一貫性 を 保ち 迅速 に 開発 する ための 実務 的 な 指針 を 提供 し ます。
+spring-boot-sample-front への貢献者が一貫性を保って開発できるよう、リポジトリ固有のルールとヒントをまとめました。
 
 ## プロジェクト構造とモジュール
 
-アプリケーション は Next.js 14 と TypeScript を 基盤 に し `src` 配下 に 主要 コード を まとめて います。`src/components` は UI 部品 と ドメイン ロジック を レイヤ 別 に 配置 し `page` `repository` `store` `usecase` が 役割 を 明確 化 します。`src/pages` は ルーティング エントリ `pages/api` は バックエンド API プロキシ を 担当 し 画像 や 静的 アセット は `public` に 保管 されます。型 定義 や 汎用 関数 は それぞれ `TypeDef.ts` と `src/utils` に 集約 されて います。
+- ベース: Next.js 14 + TypeScript、型設定は `tsconfig.json` と `TypeDef.ts` に集約
+- `src/components`: UI とドメイン別に `page` `repository` `store` `usecase` `ui` を配置
+- `src/pages`: ルーティング定義。`pages/api` は Spring Boot への API プロキシ
+- `src/utils` / `src/utils/dummy`: 共通関数とモックデータ
+- 静的アセット: `public`、スタイルは `src/styles`
 
 ## ビルド・テスト・開発コマンド
 
-- `npm install` 依存 パッケージ を 解決 し Volta 設定 に 合わせて Node 18.19.0 を 使用 します。
-- `npm run dev` ローカル 開発 サーバー を 起動 し Spring Boot バックエンド と 統合 動作 を 確認 します。
-- `npm run build` 本番 ビルド を 作成 し 静的 最適化 や 型 チェック エラー を 検出 します。
-- `npm run start` ビルド 済み アーティファクト を 本番 モード で サーブ します。
-- `npm run lint` Next.js 付属 ESLint 設定 を 実行 し 規約 違反 を 早期 検知 します。
+- `npm install`: Volta が指定する Node 18.19.0 で依存解決
+- `npm run dev`: 開発サーバー起動 (`http://localhost:3000`)、バックエンドと接続確認
+- `npm run build`: 本番ビルドと型チェック
+- `npm run start`: ビルド済み成果物を本番モードで確認
+- `npm run lint`: Next.js 付属 ESLint で静的解析
 
 ## コーディングスタイルと命名規約
 
-TypeScript ファイル は 2 スペース インデント と ダブルクォート を 維持 し 可能 な 限り 型 注釈 を 明示 します。モジュール 参照 には `@/` エイリアス を 利用 し ドメイン 名 を 反映 し た フォルダ 階層 を 保ち ます。コンポーネント 名 は パスカルケース で export し Recoil 状態 フック は `useXxxState` `useXxxMutators` パターン を 継続 します。
+- インデント 2 スペース、文字列はダブルクォート
+- 可能な範囲で型注釈を明示し、`@/` エイリアスでモジュール参照
+- React コンポーネントはパスカルケース、Recoil フックは `useXxxState` / `useXxxMutators`
+- ファイル名は機能単位 (例: `UserListTable.tsx`、`useUserListPaginationState.ts`)
 
 ## テスト方針
 
-現在 自動 テスト は 導入 段階 です。新規 機能 を 追加 する 際 は React Testing Library と Jest を 想定 し `__tests__` ディレクトリ を ページ ごと に 作成 してください。ユースケース と ストア 用 の テスト では モック データ を `src/utils/dummy` から 参照 し 成功 経路 と 失敗 経路 を 最低 1 ケース ずつ 追加 します。Lint が 唯一 の CI ガード で ある ため 重要 機能 は 手動 統合 テスト を `npm run dev` 上 で 記録 し ましょう。
+- 現在テストは未整備。新規機能追加時は Jest + React Testing Library を想定
+- ページ単位で `__tests__` ディレクトリを作成し、成功/失敗ケースを最低 1 件ずつ
+- モックデータは `src/utils/dummy` を再利用し、API 呼び出しは fetch モックで分離
+- Lint が唯一の自動ガードのため、`npm run dev` 上での手動確認手順を残す
 
-## コミット と プルリクエスト
+## コミットとプルリクエスト
 
-コミット メッセージ は 既存 履歴 に 合わせ 日本語 で 変更 内容 を 簡潔 に 要約 し 文末 に 句点 を 付けない 形 を 推奨 します。複数 タスク を 含む 場合 は 事前 に 分割 し 1 コミット 1 目的 を 徹底 します。プルリクエスト では 変更 背景 と 動作 検証 手順 を 箇条書き し 関連 Issue 番号 や スクリーンショット を 添付 してください。開発 用 バックエンド エンドポイント や 確認 した ブラウザ 情報 も 記す と レビュー が 円滑 に 進み ます。
+- コミットメッセージは日本語で簡潔に要約 (例: `ユーザー一覧の検索条件を保存`)
+- 1 コミット 1 目的を徹底し、リファクタと機能追加を分ける
+- プルリクエスト本文では背景・変更点・確認手順・影響範囲を箇条書き
+- 関連 Issue、スクリーンショット、確認ブラウザ、使用したバックエンド URL を添付
 
 ## 環境構成のヒント
 
-Volta を インストール し `.volta` 設定 に 従う と 全員 が 同じ Node/npm バージョン を 共有 でき ます。環境 変数 は `.env.local` に 設定 し サンプル を README の 指示 に 従って 作成 してください。Docker 化 する 際 は 既存 `Dockerfile` を 参照 し バックエンド への 接続 URL を ビルド 引数 で 渡す と 再現性 が 高まり ます。
+- Volta を導入して `.volta` 設定通りの Node/npm を使用
+- `.env.local` を作成し API エンドポイントや認証情報を管理 (例: `NEXT_PUBLIC_API_BASE`)
+- Docker 利用時は既存 `Dockerfile` をベースに Spring Boot のエンドポイントをビルド引数化
