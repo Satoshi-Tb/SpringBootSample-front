@@ -5,7 +5,6 @@ import {
   FormControlLabel,
   FormHelperText,
   Grid,
-  ButtonBase,
   IconButton,
   MenuItem,
   Radio,
@@ -18,7 +17,6 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import Carousel from "react-material-ui-carousel";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -34,6 +32,10 @@ import { Eye, EyeOff } from "lucide-react";
 import { useDetailHooks } from "./DetailHooks";
 import { calculateAge } from "@/utils/utility";
 import dayjs, { Dayjs } from "dayjs";
+import {
+  UserImageCarousel,
+  CarouselImage,
+} from "@/components/ui/UserImageCarousel";
 
 export type UserEditeModeType = "create" | "update";
 
@@ -41,7 +43,7 @@ type Props = {
   editMode: UserEditeModeType;
 };
 
-const dummyUserImages = [
+const dummyUserImages: CarouselImage[] = [
   {
     id: "workspace",
     src: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=960&q=80",
@@ -111,7 +113,6 @@ const dummyUserImages = [
 
 export const Detail = ({ editMode }: Props) => {
   const router = useRouter();
-  const [carouselIndex, setCarouselIndex] = useState(0);
 
   const {
     handleSubmit,
@@ -460,82 +461,11 @@ export const Detail = ({ editMode }: Props) => {
         </Grid>
         <Grid item xs={12}>
           <Box mt={4}>
-            <Typography variant="h6" gutterBottom>
-              関連イメージ
-            </Typography>
-            <Carousel
-              navButtonsAlwaysVisible
-              animation="slide"
-              autoPlay={false}
-              indicators={false}
-              index={carouselIndex}
-              onChange={(now) => {
-                if (typeof now === "number") {
-                  setCarouselIndex(now);
-                }
-              }}
-              sx={{ maxWidth: 640, margin: "0 auto", mb: 2 }}
-            >
-              {dummyUserImages.map((image) => (
-                <Box
-                  key={image.id}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: 320,
-                    backgroundColor: "background.paper",
-                    borderRadius: 2,
-                    overflow: "hidden",
-                  }}
-                >
-                  <Box
-                    component="img"
-                    src={image.src}
-                    alt={image.alt}
-                    sx={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                </Box>
-              ))}
-            </Carousel>
-            <Box
-              mt={3}
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
-                gap: 1,
-                maxWidth: 640,
-                margin: "0 auto",
-              }}
-            >
-              {dummyUserImages.map((image, index) => (
-                <ButtonBase
-                  key={`${image.id}-thumbnail`}
-                  onClick={() => setCarouselIndex(index)}
-                  focusRipple
-                  sx={{
-                    borderRadius: 1,
-                    overflow: "hidden",
-                    border: index === carouselIndex ? "2px solid" : "1px solid",
-                    borderColor:
-                      index === carouselIndex ? "primary.main" : "divider",
-                    width: "100%",
-                    height: 64,
-                  }}
-                >
-                  <Box
-                    component="img"
-                    src={image.src}
-                    alt={`${image.alt} サムネイル`}
-                    sx={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  />
-                </ButtonBase>
-              ))}
-            </Box>
+            <UserImageCarousel
+              title="関連イメージ"
+              images={dummyUserImages}
+              showThumbnails
+            />
           </Box>
         </Grid>
       </Grid>
