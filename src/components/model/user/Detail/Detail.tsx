@@ -48,7 +48,7 @@ const dummyUserImages = [
     alt: "デスクで作業するメンバー",
   },
   {
-    id: "team",
+    id: "team-meeting",
     src: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=960&q=80",
     alt: "ミーティング中のチーム",
   },
@@ -56,6 +56,56 @@ const dummyUserImages = [
     id: "presentation",
     src: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=960&q=80",
     alt: "プレゼンテーション資料",
+  },
+  {
+    id: "brainstorm",
+    src: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=960&q=70&sat=-20",
+    alt: "ブレーンストーミングの様子",
+  },
+  {
+    id: "workspace-detail",
+    src: "https://images.unsplash.com/photo-1527689368864-3a821dbccc34?auto=format&fit=crop&w=960&q=80",
+    alt: "ノートPCと資料",
+  },
+  {
+    id: "coding",
+    src: "https://images.unsplash.com/photo-1517433456452-f9633a875f6f?auto=format&fit=crop&w=960&q=80",
+    alt: "コードレビューの風景",
+  },
+  {
+    id: "pairwork",
+    src: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=960&q=80",
+    alt: "ペアで作業するメンバー",
+  },
+  {
+    id: "office-lounge",
+    src: "https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=960&q=80",
+    alt: "オフィスラウンジ",
+  },
+  {
+    id: "whiteboard",
+    src: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=960&q=60&sat=20",
+    alt: "ホワイトボードで説明する",
+  },
+  {
+    id: "remote-call",
+    src: "https://images.unsplash.com/photo-1587614292405-7eddcfa12c28?auto=format&fit=crop&w=960&q=80",
+    alt: "オンラインミーティング",
+  },
+  {
+    id: "support-desk",
+    src: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=960&q=50",
+    alt: "サポートチームの打ち合わせ",
+  },
+  {
+    id: "analytics",
+    src: "https://images.unsplash.com/photo-1517148815978-75f6acaaf32c?auto=format&fit=crop&w=960&q=80",
+    alt: "分析ダッシュボード",
+  },
+  {
+    id: "workspace-night",
+    src: "https://images.unsplash.com/photo-1448932223592-d1fc686e76ea?auto=format&fit=crop&w=960&q=80",
+    alt: "夜のオフィス",
   },
 ];
 
@@ -424,7 +474,7 @@ export const Detail = ({ editMode }: Props) => {
                   setCarouselIndex(now);
                 }
               }}
-              sx={{ maxWidth: 640, margin: "0 auto" }}
+              sx={{ maxWidth: 640, margin: "0 auto", mb: 2 }}
             >
               {dummyUserImages.map((image) => (
                 <Box
@@ -452,12 +502,15 @@ export const Detail = ({ editMode }: Props) => {
                 </Box>
               ))}
             </Carousel>
-            <Stack
-              direction="row"
-              justifyContent="center"
-              spacing={1}
-              mt={2}
-              flexWrap="wrap"
+            <Box
+              mt={3}
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
+                gap: 1,
+                maxWidth: 640,
+                margin: "0 auto",
+              }}
             >
               {dummyUserImages.map((image, index) => (
                 <ButtonBase
@@ -470,7 +523,7 @@ export const Detail = ({ editMode }: Props) => {
                     border: index === carouselIndex ? "2px solid" : "1px solid",
                     borderColor:
                       index === carouselIndex ? "primary.main" : "divider",
-                    width: 96,
+                    width: "100%",
                     height: 64,
                   }}
                 >
@@ -482,7 +535,7 @@ export const Detail = ({ editMode }: Props) => {
                   />
                 </ButtonBase>
               ))}
-            </Stack>
+            </Box>
           </Box>
         </Grid>
       </Grid>
