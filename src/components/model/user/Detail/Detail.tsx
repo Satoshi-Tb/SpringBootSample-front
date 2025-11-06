@@ -12,6 +12,7 @@ import {
   Select,
   SelectChangeEvent,
   Stack,
+  Switch,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
@@ -113,6 +114,7 @@ const dummyUserImages: CarouselImage[] = [
 
 export const Detail = ({ editMode }: Props) => {
   const router = useRouter();
+  const [showThumbnails, setShowThumbnails] = useState(true);
 
   const {
     handleSubmit,
@@ -459,12 +461,26 @@ export const Detail = ({ editMode }: Props) => {
             )}
           </Box>
         </Grid>
+        <Grid item xs={4}>
+          <Typography>サムネイル表示</Typography>
+        </Grid>
+        <Grid item xs={8}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={showThumbnails}
+                onChange={(_, checked) => setShowThumbnails(checked)}
+              />
+            }
+            label={showThumbnails ? "表示" : "非表示"}
+          />
+        </Grid>
         <Grid item xs={12}>
           <Box mt={4}>
             <UserImageCarousel
               title="関連イメージ"
               images={dummyUserImages}
-              showThumbnails
+              showThumbnails={showThumbnails}
             />
           </Box>
         </Grid>
