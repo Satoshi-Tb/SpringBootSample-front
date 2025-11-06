@@ -37,6 +37,12 @@ import {
   UserImageCarousel,
   CarouselImage,
 } from "@/components/ui/UserImageCarousel";
+import {
+  createDummyUserImages,
+  getDefaultImageCount,
+  getMaxImageCount,
+  getMinImageCount,
+} from "@/utils/images/dummyUserImages";
 
 export type UserEditeModeType = "create" | "update";
 
@@ -44,71 +50,12 @@ type Props = {
   editMode: UserEditeModeType;
 };
 
-const IMAGE_COUNT_DEFAULT = 13;
-const IMAGE_COUNT_MIN = 1;
-const IMAGE_COUNT_MAX = 20;
-
-const imageSeedPool = [
-  { seed: "workspace", alt: "ワークスペース" },
-  { seed: "team-meeting", alt: "チームミーティング" },
-  { seed: "presentation", alt: "プレゼンテーション" },
-  { seed: "brainstorm", alt: "ブレーンストーミング" },
-  { seed: "workspace-detail", alt: "デスクと資料" },
-  { seed: "coding", alt: "コーディング作業" },
-  { seed: "pairwork", alt: "ペアワーク" },
-  { seed: "office-lounge", alt: "オフィスラウンジ" },
-  { seed: "whiteboard", alt: "ホワイトボード説明" },
-  { seed: "remote-call", alt: "オンラインミーティング" },
-  { seed: "support-desk", alt: "サポートチーム" },
-  { seed: "analytics", alt: "分析ダッシュボード" },
-  { seed: "workspace-night", alt: "夜のオフィス" },
-] as const;
-
-const createDummyUserImages = (count: number): CarouselImage[] => {
-  if (count <= 0) return [];
-
-  const selectedIndices: number[] = [];
-  for (let i = 0; i < count; i += 1) {
-    const randomIndex = Math.floor(Math.random() * imageSeedPool.length);
-    selectedIndices.push(randomIndex);
-  }
-
-  if (count > 1) {
-    const uniqueIndices = new Set(selectedIndices);
-    if (uniqueIndices.size === 1) {
-      const originalIndex = selectedIndices[0];
-      const offset =
-        imageSeedPool.length > 1
-          ? (Math.floor(Math.random() * (imageSeedPool.length - 1)) + 1) %
-            imageSeedPool.length
-          : 0;
-      const alternativeIndex = (originalIndex + offset) % imageSeedPool.length;
-      selectedIndices[1] =
-        alternativeIndex === originalIndex
-          ? (originalIndex + 1) % imageSeedPool.length
-          : alternativeIndex;
-    }
-  }
-
-  const timestamp = Date.now();
-
-  return selectedIndices.map((poolIndex, position) => {
-    const base = imageSeedPool[poolIndex];
-    const seed = `${base.seed}-${timestamp}-${position}-${Math.floor(Math.random() * 1000)}`;
-    return {
-      id: `${base.seed}-${timestamp}-${position}`,
-      src: `https://picsum.photos/seed/${seed}/960/640`,
-      alt: base.alt,
-    };
-  });
-};
-
 export const Detail = ({ editMode }: Props) => {
   const router = useRouter();
   const [showThumbnails, setShowThumbnails] = useState(true);
-  const [imageCount, setImageCount] = useState<number>(IMAGE_COUNT_DEFAULT);
+  const [imageCount, setImageCount] = useState<number>(getDefaultImageCount());
   const [userImages, setUserImages] = useState<CarouselImage[]>(() =>
-    createDummyUserImages(IMAGE_COUNT_DEFAULT)
+    createDummyUserImages(getDefaultImageCount())
   );
 
   useEffect(() => {
@@ -426,12 +373,12 @@ export const Detail = ({ editMode }: Props) => {
                   const value = Number(event.target.value);
                   if (Number.isNaN(value)) return;
                   const normalized = Math.min(
-                    Math.max(value, IMAGE_COUNT_MIN),
-                    IMAGE_COUNT_MAX
+                    Math.max(value, getMinImageCount()),
+                    getMaxImageCount()
                   );
                   setImageCount(normalized);
                 }}
-                inputProps={{ min: IMAGE_COUNT_MIN, max: IMAGE_COUNT_MAX }}
+                inputProps={{ min: getMinImageCount(), max: getMaxImageCount() }}
                 sx={{ maxWidth: 120 }}
               />
               <Button
@@ -443,7 +390,7 @@ export const Detail = ({ editMode }: Props) => {
               </Button>
             </Stack>
             <Typography variant="caption" color="text.secondary">
-              {IMAGE_COUNT_MIN}〜{IMAGE_COUNT_MAX}枚で指定できます
+              {getMinImageCount()}〜{getMaxImageCount()}枚で指定できます
             </Typography>
           </Stack>
         </Grid>
