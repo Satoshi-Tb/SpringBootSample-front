@@ -53,9 +53,12 @@ type Props = {
 export const Detail = ({ editMode }: Props) => {
   const router = useRouter();
   const [showThumbnails, setShowThumbnails] = useState(true);
-  const [imageCount, setImageCount] = useState<number>(getDefaultImageCount());
+  const defaultImageCount = getDefaultImageCount();
+  const minImageCount = getMinImageCount();
+  const maxImageCount = getMaxImageCount();
+  const [imageCount, setImageCount] = useState<number>(defaultImageCount);
   const [userImages, setUserImages] = useState<CarouselImage[]>(() =>
-    createDummyUserImages(getDefaultImageCount())
+    createDummyUserImages(defaultImageCount)
   );
 
   useEffect(() => {
@@ -373,12 +376,12 @@ export const Detail = ({ editMode }: Props) => {
                   const value = Number(event.target.value);
                   if (Number.isNaN(value)) return;
                   const normalized = Math.min(
-                    Math.max(value, getMinImageCount()),
-                    getMaxImageCount()
+                    Math.max(value, minImageCount),
+                    maxImageCount
                   );
                   setImageCount(normalized);
                 }}
-                inputProps={{ min: getMinImageCount(), max: getMaxImageCount() }}
+                inputProps={{ min: minImageCount, max: maxImageCount }}
                 sx={{ maxWidth: 120 }}
               />
               <Button
@@ -390,7 +393,7 @@ export const Detail = ({ editMode }: Props) => {
               </Button>
             </Stack>
             <Typography variant="caption" color="text.secondary">
-              {getMinImageCount()}〜{getMaxImageCount()}枚で指定できます
+              {minImageCount}〜{maxImageCount}枚で指定できます
             </Typography>
           </Stack>
         </Grid>
@@ -462,6 +465,7 @@ export const Detail = ({ editMode }: Props) => {
               title="関連イメージ"
               images={userImages}
               showThumbnails={showThumbnails}
+              thumbnailRows={3}
             />
           </Box>
         </Grid>
