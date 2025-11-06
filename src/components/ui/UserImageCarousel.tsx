@@ -75,11 +75,11 @@ export const UserImageCarousel = ({
           }
         }}
         sx={{ maxWidth, margin: "0 auto", mb: showThumbnails ? 2 : 0 }}
-      >
-        {images.map((image) => (
-          <Box
-            key={image.id}
-            sx={{
+          >
+            {images.map((image) => (
+              <Box
+                key={image.id}
+                sx={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -88,16 +88,17 @@ export const UserImageCarousel = ({
               borderRadius: 2,
               overflow: "hidden",
             }}
-          >
-            <Box
-              component="img"
-              src={image.src}
-              alt={image.alt}
-              sx={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
+              >
+                <Box
+                  component="img"
+                  src={image.src}
+                  alt={image.alt}
+                  loading="lazy"
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
             />
           </Box>
         ))}
@@ -137,6 +138,7 @@ export const UserImageCarousel = ({
                   component="img"
                   src={image.src}
                   alt={`${image.alt} サムネイル`}
+                  loading="lazy"
                   sx={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               </ButtonBase>

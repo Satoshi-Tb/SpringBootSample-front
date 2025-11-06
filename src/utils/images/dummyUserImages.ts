@@ -1,6 +1,6 @@
 import type { CarouselImage } from "@/components/ui/UserImageCarousel";
 
-const IMAGE_COUNT_DEFAULT = 13;
+const IMAGE_COUNT_DEFAULT = 30;
 const IMAGE_COUNT_MIN = 1;
 const IMAGE_COUNT_MAX = 50;
 
