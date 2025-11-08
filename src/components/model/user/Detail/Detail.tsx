@@ -348,54 +348,71 @@ export const Detail = ({ editMode }: Props) => {
         <Grid item xs={4}>
           <Typography>{`選択中:${selectedDeptSomeVal || ""}`}</Typography>
         </Grid>
-        <Grid item xs={4}>
-          <Typography>サムネイル表示</Typography>
-        </Grid>
-        <Grid item xs={8}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={showThumbnails}
-                onChange={(_, checked) => setShowThumbnails(checked)}
-              />
-            }
-            label={showThumbnails ? "表示" : "非表示"}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <Typography>ダミー画像枚数</Typography>
-        </Grid>
-        <Grid item xs={8}>
-          <Stack spacing={1}>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <TextField
-                type="number"
-                size="small"
-                value={imageCount}
-                onChange={(event) => {
-                  const value = Number(event.target.value);
-                  if (Number.isNaN(value)) return;
-                  const normalized = Math.min(
-                    Math.max(value, minImageCount),
-                    maxImageCount
-                  );
-                  setImageCount(normalized);
-                }}
-                inputProps={{ min: minImageCount, max: maxImageCount }}
-                sx={{ maxWidth: 120 }}
-              />
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={() => setUserImages(createDummyUserImages(imageCount))}
-              >
-                画像を再生成
-              </Button>
-            </Stack>
-            <Typography variant="caption" color="text.secondary">
-              {minImageCount}〜{maxImageCount}枚で指定できます
+        <Grid item xs={12}>
+          <Box mt={4}>
+            <Typography variant="h6" gutterBottom>
+              関連イメージ
             </Typography>
-          </Stack>
+            <Stack
+              sx={{display:"flex", flexDirection:"row", width:"100%"}}
+              spacing={2}
+              mb={2}
+            >
+              <Stack spacing={1} width="50%" alignItems="center">
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={2}
+                  alignItems={{ xs: "stretch", sm: "center" }}
+                >
+                  <TextField
+                    type="number"
+                    size="small"
+                    value={imageCount}
+                    onChange={(event) => {
+                      const value = Number(event.target.value);
+                      if (Number.isNaN(value)) return;
+                      const normalized = Math.min(
+                        Math.max(value, minImageCount),
+                        maxImageCount
+                      );
+                      setImageCount(normalized);
+                    }}
+                    inputProps={{ min: minImageCount, max: maxImageCount }}
+                    sx={{ maxWidth: 160 }}
+                  />
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() =>
+                      setUserImages(createDummyUserImages(imageCount))
+                    }
+                  >
+                    画像を再生成
+                  </Button>
+                </Stack>
+                <Typography variant="caption" color="text.secondary">
+                  {minImageCount}〜{maxImageCount}枚で指定できます
+                </Typography>
+              </Stack>
+              <Stack spacing={1} width="50%" alignItems="center">
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={showThumbnails}
+                      onChange={(_, checked) => setShowThumbnails(checked)}
+                    />
+                  }
+                  label={showThumbnails ? "サムネイル表示" : "サムネイル非表示"}
+                  labelPlacement="start"
+                />
+              </Stack>
+            </Stack>
+            <UserImageCarousel
+              images={userImages}
+              showThumbnails={showThumbnails}
+              thumbnailRows={3}
+            />
+          </Box>
         </Grid>
         <Grid item xs={12}>
           <Box
@@ -457,18 +474,6 @@ export const Detail = ({ editMode }: Props) => {
                 </IconButton>
               </>
             )}
-          </Box>
-        </Grid>
-        <Grid item xs={12}>
-          <Box mt={4}>
-            <Typography variant="h6" gutterBottom>
-              関連イメージ
-            </Typography>
-            <UserImageCarousel
-              images={userImages}
-              showThumbnails={showThumbnails}
-              thumbnailRows={3}
-            />
           </Box>
         </Grid>
       </Grid>
