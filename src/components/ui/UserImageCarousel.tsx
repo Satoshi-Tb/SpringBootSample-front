@@ -1,6 +1,8 @@
+import type { CSSProperties } from "react";
 import { useState } from "react";
 import Carousel from "react-material-ui-carousel";
-import { Box, ButtonBase, SxProps, Theme, Typography } from "@mui/material";
+import { Box, SxProps, Theme, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 export type CarouselImage = {
   id: string;
@@ -30,6 +32,7 @@ export const UserImageCarousel = ({
   thumbnailRows,
 }: Props) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const theme = useTheme();
 
   if (images.length === 0) {
     return null;
@@ -47,14 +50,72 @@ export const UserImageCarousel = ({
   const shouldScroll =
     resolvedRows !== undefined &&
     images.length > resolvedRows * resolvedColumns;
-  const scrollStyles =
+  const scrollContainerStyles: CSSProperties | undefined =
     shouldScroll && resolvedRows
       ? {
           maxHeight: resolvedRows * rowHeight,
-          overflowY: "auto" as const,
-          pr: 1,
+          overflowY: "auto",
+          paddingRight: 8,
         }
       : undefined;
+  const shouldShowIndicators = showThumbnails && images.length > 1;
+  const indicatorBorderRadius =
+    typeof theme.shape.borderRadius === "number"
+      ? theme.shape.borderRadius * 2
+      : theme.shape.borderRadius;
+  const indicatorContainerStyle: CSSProperties = {
+    maxWidth,
+    margin: "24px auto 0",
+    display: "grid",
+    gridTemplateColumns: `repeat(${resolvedColumns}, minmax(0, 1fr))`,
+    gap: 8,
+    ...(scrollContainerStyles ?? {}),
+  };
+  const indicatorIconButtonStyle: CSSProperties = {
+    width: "100%",
+    height: rowHeight,
+    padding: 0,
+    borderRadius: indicatorBorderRadius,
+    overflow: "hidden",
+    border: `1px solid ${theme.palette.divider}`,
+    boxSizing: "border-box",
+    backgroundColor: theme.palette.background.paper,
+  };
+  const activeIndicatorIconButtonStyle: CSSProperties = {
+    border: `2px solid ${theme.palette.primary.main}`,
+  };
+  const indicatorIcons = shouldShowIndicators
+    ? images.map((image) => (
+        <Box
+          key={`${image.id}-indicator`}
+          component="img"
+          src={image.src}
+          alt={`${image.alt} サムネイル`}
+          loading="lazy"
+          sx={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            display: "block",
+          }}
+        />
+      ))
+    : undefined;
+  const indicatorProps = shouldShowIndicators
+    ? {
+        IndicatorIcon: indicatorIcons,
+        indicatorContainerProps: {
+          style: indicatorContainerStyle,
+        },
+        indicatorIconButtonProps: {
+          style: indicatorIconButtonStyle,
+          "aria-label": "carousel thumbnail",
+        },
+        activeIndicatorIconButtonProps: {
+          style: activeIndicatorIconButtonStyle,
+        },
+      }
+    : {};
 
   return (
     <Box sx={{ width: "100%", ...containerSx }}>
@@ -67,19 +128,20 @@ export const UserImageCarousel = ({
         navButtonsAlwaysVisible
         animation="slide"
         autoPlay={false}
-        indicators={false}
+        indicators={shouldShowIndicators}
         index={activeIndex}
         onChange={(now) => {
           if (typeof now === "number") {
             setActiveIndex(now);
           }
         }}
-        sx={{ maxWidth, margin: "0 auto", mb: showThumbnails ? 2 : 0 }}
-          >
-            {images.map((image) => (
-              <Box
-                key={image.id}
-                sx={{
+        sx={{ maxWidth, margin: "0 auto", mb: shouldShowIndicators ? 2 : 0 }}
+        {...indicatorProps}
+      >
+        {images.map((image) => (
+          <Box
+            key={image.id}
+            sx={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -88,64 +150,21 @@ export const UserImageCarousel = ({
               borderRadius: 2,
               overflow: "hidden",
             }}
-              >
-                <Box
-                  component="img"
-                  src={image.src}
-                  alt={image.alt}
-                  loading="lazy"
-                  sx={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
+          >
+            <Box
+              component="img"
+              src={image.src}
+              alt={image.alt}
+              loading="lazy"
+              sx={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
             />
           </Box>
         ))}
       </Carousel>
-      {showThumbnails && (
-        <Box
-          sx={{
-            maxWidth,
-            margin: "0 auto",
-            mt: 3,
-          }}
-        >
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: `repeat(${resolvedColumns}, minmax(0, 1fr))`,
-              gap: 1,
-              ...(scrollStyles ?? {}),
-            }}
-          >
-            {images.map((image, index) => (
-              <ButtonBase
-                key={`${image.id}-thumbnail`}
-                onClick={() => setActiveIndex(index)}
-                focusRipple
-                sx={{
-                  borderRadius: 1,
-                  overflow: "hidden",
-                  border: index === activeIndex ? "2px solid" : "1px solid",
-                  borderColor:
-                    index === activeIndex ? "primary.main" : "divider",
-                  width: "100%",
-                  height: 64,
-                }}
-              >
-                <Box
-                  component="img"
-                  src={image.src}
-                  alt={`${image.alt} サムネイル`}
-                  loading="lazy"
-                  sx={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              </ButtonBase>
-            ))}
-          </Box>
-        </Box>
-      )}
     </Box>
   );
 };
