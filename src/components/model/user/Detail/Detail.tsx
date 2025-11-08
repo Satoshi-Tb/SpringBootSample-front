@@ -461,8 +461,10 @@ export const Detail = ({ editMode }: Props) => {
         </Grid>
         <Grid item xs={12}>
           <Box mt={4}>
+            <Typography variant="h6" gutterBottom>
+              関連イメージ
+            </Typography>
             <UserImageCarousel
-              title="関連イメージ"
               images={userImages}
               showThumbnails={showThumbnails}
               thumbnailRows={3}

@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import { useState } from "react";
 import Carousel from "react-material-ui-carousel";
-import { Box, SxProps, Theme, Typography } from "@mui/material";
+import { Box, SxProps, Theme } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 export type CarouselImage = {
@@ -11,7 +11,6 @@ export type CarouselImage = {
 };
 
 type Props = {
-  title?: string;
   images: CarouselImage[];
   showThumbnails?: boolean;
   maxWidth?: number;
@@ -22,7 +21,6 @@ type Props = {
 };
 
 export const UserImageCarousel = ({
-  title,
   images,
   showThumbnails = true,
   maxWidth = 640,
@@ -119,11 +117,6 @@ export const UserImageCarousel = ({
 
   return (
     <Box sx={{ width: "100%", ...containerSx }}>
-      {title && (
-        <Typography variant="h6" gutterBottom>
-          {title}
-        </Typography>
-      )}
       <Carousel
         navButtonsAlwaysVisible
         animation="slide"
