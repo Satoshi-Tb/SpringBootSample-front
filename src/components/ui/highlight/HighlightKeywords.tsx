@@ -67,17 +67,18 @@ const traverse = (
 
   // JSX.Elementの場合
   if (isValidElement(node)) {
-    if (!node.props.children) {
-      return node; // 子要素がない場合、そのまま返す
+    const element = node as React.ReactElement<{ children?: ReactNode }>;
+    if (!element.props.children) {
+      return element; // 子要素がない場合、そのまま返す
     }
 
     // 子要素が複数の場合に対応するため、再帰的に処理
-    const newChildren = Children.map(node.props.children, (child) =>
+    const newChildren = Children.map(element.props.children, (child) =>
       traverse(child, hs, normalize)
     );
 
     // 新しい子要素で新しい要素を作成
-    return createElement(node.type, { ...node.props }, newChildren);
+    return createElement(element.type, { ...element.props }, newChildren);
   }
 
   // その他の型はそのまま返す
