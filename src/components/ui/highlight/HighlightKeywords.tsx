@@ -30,7 +30,7 @@ const applyHighlightNode = (
   let match;
   let ptr = 0;
 
-  const jsxElements: (string | JSX.Element)[] = [];
+  const jsxElements: (string | React.JSX.Element)[] = [];
   // ノーマライズ結果に対して、全ての検索ヒット位置を取得
   while ((match = regex.exec(normalizedInputText)) !== null) {
     // console.log(
