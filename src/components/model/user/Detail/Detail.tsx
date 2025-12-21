@@ -12,6 +12,7 @@ import {
   Select,
   SelectChangeEvent,
   Stack,
+  Switch,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
@@ -19,7 +20,7 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
@@ -32,6 +33,16 @@ import { Eye, EyeOff } from "lucide-react";
 import { useDetailHooks } from "./DetailHooks";
 import { calculateAge } from "@/utils/utility";
 import dayjs, { Dayjs } from "dayjs";
+import {
+  UserImageCarousel,
+  CarouselImage,
+} from "@/components/ui/UserImageCarousel";
+import {
+  createDummyUserImages,
+  getDefaultImageCount,
+  getMaxImageCount,
+  getMinImageCount,
+} from "@/utils/images/dummyUserImages";
 
 export type UserEditeModeType = "create" | "update";
 
@@ -41,6 +52,18 @@ type Props = {
 
 export const Detail = ({ editMode }: Props) => {
   const router = useRouter();
+  const [showThumbnails, setShowThumbnails] = useState(true);
+  const defaultImageCount = getDefaultImageCount();
+  const minImageCount = getMinImageCount();
+  const maxImageCount = getMaxImageCount();
+  const [imageCount, setImageCount] = useState<number>(defaultImageCount);
+  const [userImages, setUserImages] = useState<CarouselImage[]>(() =>
+    createDummyUserImages(defaultImageCount)
+  );
+
+  useEffect(() => {
+    setUserImages(createDummyUserImages(imageCount));
+  }, [imageCount]);
 
   const {
     handleSubmit,
@@ -324,6 +347,72 @@ export const Detail = ({ editMode }: Props) => {
         </Grid>
         <Grid item xs={4}>
           <Typography>{`選択中:${selectedDeptSomeVal || ""}`}</Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Box mt={4}>
+            <Typography variant="h6" gutterBottom>
+              関連イメージ
+            </Typography>
+            <Stack
+              sx={{display:"flex", flexDirection:"row", width:"100%"}}
+              spacing={2}
+              mb={2}
+            >
+              <Stack spacing={1} width="50%" alignItems="center">
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={2}
+                  alignItems={{ xs: "stretch", sm: "center" }}
+                >
+                  <TextField
+                    type="number"
+                    size="small"
+                    value={imageCount}
+                    onChange={(event) => {
+                      const value = Number(event.target.value);
+                      if (Number.isNaN(value)) return;
+                      const normalized = Math.min(
+                        Math.max(value, minImageCount),
+                        maxImageCount
+                      );
+                      setImageCount(normalized);
+                    }}
+                    inputProps={{ min: minImageCount, max: maxImageCount }}
+                    sx={{ maxWidth: 160 }}
+                  />
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() =>
+                      setUserImages(createDummyUserImages(imageCount))
+                    }
+                  >
+                    画像を再生成
+                  </Button>
+                </Stack>
+                <Typography variant="caption" color="text.secondary">
+                  {minImageCount}〜{maxImageCount}枚で指定できます
+                </Typography>
+              </Stack>
+              <Stack spacing={1} width="50%" alignItems="center">
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={showThumbnails}
+                      onChange={(_, checked) => setShowThumbnails(checked)}
+                    />
+                  }
+                  label={showThumbnails ? "サムネイル表示" : "サムネイル非表示"}
+                  labelPlacement="start"
+                />
+              </Stack>
+            </Stack>
+            <UserImageCarousel
+              images={userImages}
+              showThumbnails={showThumbnails}
+              thumbnailRows={3}
+            />
+          </Box>
         </Grid>
         <Grid item xs={12}>
           <Box
